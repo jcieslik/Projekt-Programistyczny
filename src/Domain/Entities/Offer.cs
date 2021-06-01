@@ -14,7 +14,9 @@ namespace Domain.Entities
         public Product Product { get; set; }
 
         public Guid SellerId { get; set; }
+        public User Seller { get; set; }
         public Guid? CustomerId { get; set; }
+        public User Customer { get; set; }
 
         public Guid CityId { get; set; }
         public City City { get; set; }
