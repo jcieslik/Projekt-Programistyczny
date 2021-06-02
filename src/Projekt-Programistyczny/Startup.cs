@@ -1,6 +1,9 @@
 using Application.Common.Interfaces;
+using Application.Common.Services;
 using Infrastructure;
 using Infrastructure.Persistence;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -14,6 +17,8 @@ using Projekt_Programistyczny.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Projekt_Programistyczny
@@ -30,6 +35,40 @@ namespace Projekt_Programistyczny
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
+            {
+                options.Cookie.Name = "AuthCookie";
+                options.SlidingExpiration = true;
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+                options.Cookie.Path = "/";
+
+                options.Events = new CookieAuthenticationEvents
+                {
+                    OnValidatePrincipal = async context =>
+                    {
+                        var userIdString = context.Principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+                        if (!Guid.TryParse(userIdString, out Guid userId))
+                        {
+                            context.RejectPrincipal();
+                            await context.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+                        }
+                    },
+                    OnRedirectToLogin = context =>
+                    {
+                        context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                        return Task.FromResult(0);
+                    },
+                    OnRedirectToAccessDenied = context =>
+                    {
+                        context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                        return Task.FromResult(0);
+                    }
+                };
+            });
+
+            services.AddScoped<IUserService, UserService>();
+
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
@@ -52,7 +91,11 @@ namespace Projekt_Programistyczny
 
             app.UseRouting();
 
+            app.UseAuthentication();
+
             app.UseAuthorization();
+
+            app.UseCors("AllowAll");
 
             app.UseEndpoints(endpoints =>
             {
