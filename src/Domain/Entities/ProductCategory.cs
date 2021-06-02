@@ -8,6 +8,6 @@ namespace Domain.Entities
     {
         public string Name { get; set; }
         public ProductCategory ParentCategory { get; set; }
-        public ICollection<Product> Products { get; set; }
+        public ICollection<Offer> Offers { get; set; }
     }
 }
