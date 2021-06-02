@@ -1,5 +1,6 @@
 ﻿using Application.Common.Interfaces;
 using Application.DAL;
+using AutoMapper;
 using Domain.Entities;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -19,12 +20,16 @@ namespace Projekt_Programistyczny.Controllers
     public class UserController : Controller
     {
         private readonly IUserService userService;
+        private readonly ICurrentUserService currentUserService;
+        private readonly IMapper mapper;
 
-        public UserController(IUserService userService)
+        public UserController(IUserService userService, ICurrentUserService currentUserService, IMapper mapper)
         {
             this.userService = userService;
+            this.currentUserService = currentUserService;
+            this.mapper = mapper;
         }
-        
+
         [HttpPost]
         [AllowAnonymous]
         [Route("Authenticate")]
@@ -51,8 +56,8 @@ namespace Projekt_Programistyczny.Controllers
             };
 
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
-
-            return new UserDTO(user);
+            currentUserService.Id = user.Id;
+            return mapper.Map<UserDTO>(user);
         }
 
         [HttpGet]
@@ -60,6 +65,7 @@ namespace Projekt_Programistyczny.Controllers
         public async Task Deauthenticate()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            currentUserService.Id = Guid.Empty;
         }
 
     }
