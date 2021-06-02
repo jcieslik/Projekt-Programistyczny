@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Domain.Entities;
+using System;
 
 namespace Domain.Common
 {
@@ -6,8 +7,8 @@ namespace Domain.Common
     {
         public Guid Id { get; set; }
         public DateTime Created { get; set; }
-        public Guid CreatedBy { get; set; }
+        public User CreatedBy { get; set; }
         public DateTime? LastModified { get; set; }
-        public Guid? ModifiedBy { get; set; }
+        public User ModifiedBy { get; set; }
     }
 }
