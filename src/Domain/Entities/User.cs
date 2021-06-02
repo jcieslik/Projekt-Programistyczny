@@ -21,6 +21,12 @@ namespace Domain.Entities
         [Required]
         public string Password { get; set; }
 
+        [Required]
+        public string Name { get; set; }
+
+        [Required]
+        public string Surname { get; set; }
+
         public ICollection<Offer> SoldOffers { get; set; }
         public ICollection<Order> Orders { get; set; }
         public ICollection<Comment> Comments { get; set; }
