@@ -1,23 +1,24 @@
 ﻿using Domain.Common;
 using Domain.Enums;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
 
 namespace Domain.Entities
 {
-    class Message : AuditableAndAbleToBeHiddenEntity
+    public class Message : AuditableAndAbleToBeHiddenEntity
     {
         public User Sender { get; set; }
         public User Recipient { get; set; }
-        
+
+        [Required]
         public string Topic { get; set; }
+
+        [Required]
         public string Content { get; set; }
         
         public DateTime? SendDate { get; set; }
 
+        [Required]
         public MailboxType MailboxType { get; set; }
 
     }

@@ -1,11 +1,16 @@
+using Application.Common.Interfaces;
+using Infrastructure;
+using Infrastructure.Persistence;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Projekt_Programistyczny.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,10 +36,12 @@ namespace Projekt_Programistyczny
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Projekt_Programistyczny", Version = "v1" });
             });
+            services.AddSingleton<ICurrentUserService, CurrentUserService>();
+            services.AddInfrastructure(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider provider)
         {
             if (env.IsDevelopment())
             {
@@ -51,6 +58,8 @@ namespace Projekt_Programistyczny
             {
                 endpoints.MapControllers();
             });
+
+            provider.GetService<ApplicationDbContext>().Database.Migrate();
         }
     }
 }

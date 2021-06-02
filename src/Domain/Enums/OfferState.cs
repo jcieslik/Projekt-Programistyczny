@@ -2,7 +2,7 @@
 {
     public enum OfferState
     {
-        Avaiting = 0,
+        Awaiting = 0,
         Finished = 1,
         Outdated = 2,
         Hidden = 3,
