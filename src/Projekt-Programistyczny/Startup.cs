@@ -1,5 +1,5 @@
+using Application;
 using Application.Common.Interfaces;
-using Application.Common.Services;
 using Infrastructure;
 using Infrastructure.Persistence;
 using Microsoft.AspNetCore.Authentication;
@@ -69,8 +69,6 @@ namespace Projekt_Programistyczny
                 };
             });
 
-            services.AddScoped<IUserService, UserService>();
-
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
@@ -79,6 +77,7 @@ namespace Projekt_Programistyczny
             });
             services.AddSingleton<ICurrentUserService, CurrentUserService>();
             services.AddInfrastructure(Configuration);
+            services.AddApplication();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
