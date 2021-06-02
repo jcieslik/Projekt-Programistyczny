@@ -29,6 +29,7 @@ namespace Projekt_Programistyczny.Controllers
         [HttpGet]
         public IEnumerable<WeatherForecast> Get()
         {
+            HttpContext.User.GetUserId();
             var rng = new Random();
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {

@@ -41,7 +41,9 @@ namespace Infrastructure.Persistence.Configurations
                         IsActive = true,
                         Password = "admin",
                         Email = "example@example.com",
-                        Role = UserRole.Admin
+                        Role = UserRole.Admin,
+                        Name = "Jan",
+                        Surname = "Kowalski"
                     }
                 );
         }

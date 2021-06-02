@@ -21,6 +21,8 @@ namespace Application.DAL
             Username = user.Username;
             Role = user.Role;
             Email = user.Email;
+            Name = user.Name;
+            Surname = user.Surname;
         }
     }
 }
