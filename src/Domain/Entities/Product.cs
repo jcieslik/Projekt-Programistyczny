@@ -13,9 +13,7 @@ namespace Domain.Entities
 
         public ProductState State { get; set; }
 
-        public Guid CategoryId { get; set; }
         public ProductCategory Category { get; set; }
-        public Guid BrandId { get; set; }
         public Brand Brand { get; set; }
 
         public ICollection<ProductImage> Images { get; set; }

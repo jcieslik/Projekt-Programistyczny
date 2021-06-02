@@ -15,7 +15,6 @@ namespace Domain.Entities
         public ICollection<Offer> Acquisitions { get; set; }
         public ICollection<Comment> Comments { get; set; }
         public ICollection<ProductRate> Rates { get; set; }
-
         public bool IsActive { get; set; }
 
     }
