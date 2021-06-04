@@ -1,5 +1,5 @@
 ﻿using Application.Common.Interfaces;
-using Application.DAL;
+using Application.DAL.DTO;
 using AutoMapper;
 using Domain.Entities;
 using Microsoft.AspNetCore.Authentication;
