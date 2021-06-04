@@ -2,7 +2,7 @@
 using Domain.Entities;
 using Domain.Enums;
 
-namespace Application.DAL
+namespace Application.DAL.DTO
 {
     public class UserDTO : IMapFrom<User>
     {
