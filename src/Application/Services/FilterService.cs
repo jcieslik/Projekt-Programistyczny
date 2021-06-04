@@ -7,6 +7,7 @@ using AutoMapper.QueryableExtensions;
 using Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -17,6 +18,31 @@ namespace Application.Services
         public FilterService(IApplicationDbContext context, IMapper mapper) : base(context, mapper)
         {
         }
+
+        public async Task<IEnumerable<BrandDTO>> GetBrandsAsync()
+            => await _context.Brands.AsNoTracking()
+                    .ProjectTo<BrandDTO>(_mapper.ConfigurationProvider)
+                    .ToListAsync();
+
+        public async Task<IEnumerable<CityDTO>> GetCitiesAsync()
+            => await _context.Cities.AsNoTracking()
+                    .ProjectTo<CityDTO>(_mapper.ConfigurationProvider)
+                    .ToListAsync();
+
+        public async Task<IEnumerable<ProvinceDTO>> GetProvincessAsync()
+            => await _context.Provinces.AsNoTracking()
+                    .ProjectTo<ProvinceDTO>(_mapper.ConfigurationProvider)
+                    .ToListAsync();
+
+        public async Task<IEnumerable<OfferType>> GetOfferTypesAsync()
+            => await Task.FromResult(Enum.GetValues(typeof(OfferType))
+                .Cast<OfferType>()
+                .ToList());
+
+        public async Task<IEnumerable<ProductState>> GetProductStatesAsync()
+            => await Task.FromResult(Enum.GetValues(typeof(ProductState))
+                .Cast<ProductState>()
+                .ToList());
 
         public async Task<FilterVm> GetFiltersData()
         {
