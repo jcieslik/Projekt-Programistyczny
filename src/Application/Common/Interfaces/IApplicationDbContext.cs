@@ -20,6 +20,7 @@ namespace Application.Common.Interfaces
         DbSet<ProductRate> Rates { get; set; }
         DbSet<User> Users { get; set; }
 
+        DbSet<TEntity> Set<TEntity>() where TEntity : class;
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }
 }
