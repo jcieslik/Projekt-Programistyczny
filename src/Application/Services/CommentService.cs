@@ -5,10 +5,12 @@ using Application.DAL.DTO;
 using Application.DAL.DTO.CommandDTOs.Create;
 using Application.DAL.DTO.CommandDTOs.Update;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Application.Services
@@ -22,7 +24,13 @@ namespace Application.Services
         public async Task<CommentDTO> GetCommentByIdAsync(Guid id)
             => _mapper.Map<CommentDTO>(await _context.Comments.FindAsync(id));
 
-        
+        public async Task<IEnumerable<CommentDTO>> GetCommentsFromUserAsync(Guid userId)   
+            =>  await _context.Comments
+            .Include(c => c.Customer).Include(c => c.Offer)
+            .AsNoTracking()
+            .Where(c => c.Customer.Id == userId)
+            .ProjectTo<CommentDTO>(_mapper.ConfigurationProvider)
+            .ToListAsync();
 
         public async Task<Guid> CreateCommentAsync(CreateCommentDTO dto)
         {

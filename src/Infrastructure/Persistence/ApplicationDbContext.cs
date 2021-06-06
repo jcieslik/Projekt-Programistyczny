@@ -25,6 +25,8 @@ namespace Infrastructure.Persistence
         public DbSet<Province> Provinces { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Wish> Wishes { get; set; }
+        public DbSet<Cart> Carts { get; set; }
+        public DbSet<CartAndOffer> CartsAndOffers { get; set; }
         public ApplicationDbContext(
             DbContextOptions<ApplicationDbContext> options,
             IDateTimeService dateTimeService,

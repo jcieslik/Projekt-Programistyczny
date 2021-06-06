@@ -36,6 +36,10 @@ namespace Infrastructure.Persistence.Configurations
             builder.HasMany(u => u.Wishes)
                 .WithOne(w => w.Customer);
 
+            builder.HasOne(u => u.Cart)
+                .WithOne(c => c.Customer)
+                .HasForeignKey<Cart>(c => c.CustomerId);
+
             builder.HasData(
                     new User
                     {

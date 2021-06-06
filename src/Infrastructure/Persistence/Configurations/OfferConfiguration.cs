@@ -29,6 +29,9 @@ namespace Infrastructure.Persistence.Configurations
             builder.HasMany(o => o.Wishes)
                 .WithOne(w => w.Offer);
 
+            builder.HasMany(o => o.Carts)
+                .WithOne(c => c.Offer);
+
             builder.HasOne(o => o.Category)
                 .WithMany(c => c.Offers);
 
