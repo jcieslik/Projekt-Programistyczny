@@ -34,6 +34,7 @@ namespace Domain.Entities
         public ICollection<Bid> Bids { get; set; }
         public ICollection<Message> SendMessages { get; set; }
         public ICollection<Message> ReceivedMessages { get; set; }
+        public ICollection<Wish> Wishes { get; set; }
 
         [Required]
         public bool IsActive { get; set; }
