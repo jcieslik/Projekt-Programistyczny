@@ -32,8 +32,7 @@ namespace Domain.Entities
         public ICollection<Comment> Comments { get; set; }
         public ICollection<ProductRate> Rates { get; set; }
         public ICollection<Bid> Bids { get; set; }
-        public ICollection<Message> SendMessages { get; set; }
-        public ICollection<Message> ReceivedMessages { get; set; }
+        public ICollection<Message> Messages { get; set; }
         public ICollection<Wish> Wishes { get; set; }
         public Cart Cart { get; set; }
 

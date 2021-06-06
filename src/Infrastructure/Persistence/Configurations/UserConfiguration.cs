@@ -27,11 +27,8 @@ namespace Infrastructure.Persistence.Configurations
             builder.HasMany(u => u.Bids)
                 .WithOne(b => b.Bidder);
 
-            builder.HasMany(u => u.ReceivedMessages)
+            builder.HasMany(u => u.Messages)
                 .WithOne(m => m.Recipient);
-
-            builder.HasMany(u => u.SendMessages)
-                .WithOne(m => m.Sender);
 
             builder.HasMany(u => u.Wishes)
                 .WithOne(w => w.Customer);
