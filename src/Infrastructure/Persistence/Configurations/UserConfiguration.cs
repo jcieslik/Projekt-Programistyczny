@@ -33,6 +33,9 @@ namespace Infrastructure.Persistence.Configurations
             builder.HasMany(u => u.SendMessages)
                 .WithOne(m => m.Sender);
 
+            builder.HasMany(u => u.Wishes)
+                .WithOne(w => w.Customer);
+
             builder.HasData(
                     new User
                     {

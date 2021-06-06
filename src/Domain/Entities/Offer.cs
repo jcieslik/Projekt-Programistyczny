@@ -46,5 +46,6 @@ namespace Domain.Entities
         public ICollection<ProductRate> Rates { get; set; }
         public ICollection<Comment> Comments { get; set; }
         public ICollection<Bid> Bids { get; set; }
+        public ICollection<Wish> Wishes { get; set; }
     }
 }
