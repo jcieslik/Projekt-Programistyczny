@@ -8,6 +8,6 @@ namespace Domain.Entities
     {
         public Guid CustomerId { get; set; }
         public User Customer { get; set; }
-        public ICollection<CartAndOffer> Offers { get; set; }
+        public ICollection<Offer> Offers { get; set; }
     }
 }

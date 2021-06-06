@@ -30,7 +30,7 @@ namespace Infrastructure.Persistence.Configurations
                 .WithOne(w => w.Offer);
 
             builder.HasMany(o => o.Carts)
-                .WithOne(c => c.Offer);
+                .WithMany(c => c.Offers);
 
             builder.HasOne(o => o.Category)
                 .WithMany(c => c.Offers);
