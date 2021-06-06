@@ -35,6 +35,7 @@ namespace Domain.Entities
         public ICollection<Message> SendMessages { get; set; }
         public ICollection<Message> ReceivedMessages { get; set; }
         public ICollection<Wish> Wishes { get; set; }
+        public Cart Cart { get; set; }
 
         [Required]
         public bool IsActive { get; set; }
