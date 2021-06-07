@@ -32,6 +32,14 @@ namespace Application.Services
             .ProjectTo<CommentDTO>(_mapper.ConfigurationProvider)
             .ToListAsync();
 
+        public async Task<IEnumerable<CommentDTO>> GetCommentsFromOfferAsync(Guid offerId)
+            => await _context.Comments
+            .Include(c => c.Customer).Include(c => c.Offer)
+            .AsNoTracking()
+            .Where(c => c.Offer.Id == offerId)
+            .ProjectTo<CommentDTO>(_mapper.ConfigurationProvider)
+            .ToListAsync();
+
         public async Task<Guid> CreateCommentAsync(CreateCommentDTO dto)
         {
             var user = await _context.Users.FindAsync(dto.UserId);
