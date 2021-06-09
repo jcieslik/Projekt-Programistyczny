@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace Application.Services
 {
-    public class FilterService : BaseDataService
+    public class FilterService : BaseDataService, IFilterService
     {
         public FilterService(IApplicationDbContext context, IMapper mapper) : base(context, mapper)
         {

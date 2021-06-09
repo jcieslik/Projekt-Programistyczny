@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace Application.Services
 {
-    public class ProductImageService : BaseDataService
+    public class ProductImageService : BaseDataService, IProductImageService
     {
         public ProductImageService(IApplicationDbContext context, IMapper mapper) : base(context, mapper)
         {

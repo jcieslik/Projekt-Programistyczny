@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace Application.Services
 {
-    public class RateService : BaseDataService
+    public class RateService : BaseDataService, IRateService
     {
         public RateService(IApplicationDbContext context, IMapper mapper) : base(context, mapper)
         {

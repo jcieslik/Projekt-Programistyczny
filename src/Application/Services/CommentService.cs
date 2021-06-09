@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace Application.Services
 {
-    public class CommentService : BaseDataService
+    public class CommentService : BaseDataService, ICommentService
     {
         public CommentService(IApplicationDbContext context, IMapper mapper) : base(context, mapper)
         {

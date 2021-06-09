@@ -1,4 +1,6 @@
 ﻿using Application.Common.Interfaces;
+using Application.Common.Services;
+using AutoMapper;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -7,23 +9,21 @@ using System.Threading.Tasks;
 
 namespace Application.Services
 {
-    public class UserService : IUserService
-    {
-        private readonly IApplicationDbContext context;
-
-        public UserService(IApplicationDbContext applicationDbContext)
+    public class UserService : BaseDataService, IUserService
+    { 
+        public UserService(IApplicationDbContext context, IMapper mapper) : base(context, mapper)
         {
-            context = applicationDbContext;
+
         }
 
         public async Task<User> AuthenticateUser(string login, string password)
         {
-            return await context.Users.Where(u => u.Username == login && u.Password == password).SingleOrDefaultAsync();
+            return await _context.Users.Where(u => u.Username == login && u.Password == password).SingleOrDefaultAsync();
         }
             
         public async Task<User> GetUserById(Guid Id)
         {
-            return await context.Users.FindAsync(Id);
+            return await _context.Users.FindAsync(Id);
         }
     }
 }

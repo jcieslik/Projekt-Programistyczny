@@ -11,6 +11,10 @@ namespace Application
         {
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ICommentService, CommentService>();
+            services.AddScoped<IFilterService, FilterService>();
+            services.AddScoped<IRateService, RateService>();
+            services.AddScoped<IProductImageService, ProductImageService>();
 
             return services;
         }
