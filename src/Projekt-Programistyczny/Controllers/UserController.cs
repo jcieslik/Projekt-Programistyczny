@@ -1,10 +1,12 @@
 ﻿using Application.Common.Interfaces;
 using Application.DAL.DTO;
+using Application.DAL.DTO.CommandDTOs.Create;
 using AutoMapper;
 using Domain.Entities;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -68,5 +70,22 @@ namespace Projekt_Programistyczny.Controllers
             currentUserService.Id = Guid.Empty;
         }
 
+        [AllowAnonymous]
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Guid))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Route("Create")]
+        public async Task<IActionResult> CreateUser([FromBody] CreateUserDTO userData)
+        {
+            try
+            {
+                var id = await userService.CreateUserAsync(userData);
+                return Ok(id);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
     }
 }
