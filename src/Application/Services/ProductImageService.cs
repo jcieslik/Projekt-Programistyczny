@@ -23,7 +23,7 @@ namespace Application.Services
         }
 
         public async Task<ProductImageDTO> GetProductImageByIdAsync(Guid id)
-            => _mapper.Map< ProductImageDTO>(await _context.Images.FindAsync(id));
+            => _mapper.Map<ProductImageDTO>(await _context.Images.FindAsync(id));
 
         public async Task<IEnumerable<ProductImageDTO>> GetProductImagesFromOfferdAsync(Guid offerId)
             => await _context.Images.Include(i => i.Offer)
@@ -32,7 +32,7 @@ namespace Application.Services
             .ProjectTo<ProductImageDTO>(_mapper.ConfigurationProvider)
             .ToListAsync();
 
-        public async Task<Guid> CreateProductImageAsync(CreateProductImageDTO dto)
+        public async Task<ProductImageDTO> CreateProductImageAsync(CreateProductImageDTO dto)
         {
             var offer = await _context.Offers.FindAsync(dto.OfferId);
             if (offer == null)
@@ -51,11 +51,11 @@ namespace Application.Services
 
             _context.Images.Add(entity);
             await _context.SaveChangesAsync();
-            return entity.Id;
+            return _mapper.Map<ProductImageDTO>(entity);
         }
 
 
-        public async Task<Guid> UpdateProductImageAsync(UpdateProductImageDTO dto)
+        public async Task<ProductImageDTO> UpdateProductImageAsync(UpdateProductImageDTO dto)
         {
             var image = await _context.Images.FindAsync(dto.Id);
             if (image == null)
@@ -84,7 +84,7 @@ namespace Application.Services
             }
 
             await _context.SaveChangesAsync();
-            return image.Id;
+            return _mapper.Map<ProductImageDTO>(image);
         }
     }
 }

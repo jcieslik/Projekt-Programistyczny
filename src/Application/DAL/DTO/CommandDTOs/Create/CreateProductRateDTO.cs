@@ -3,7 +3,7 @@ using System;
 
 namespace Application.DAL.DTO.CommandDTOs.Create
 {
-    public class CreateProductRateDTO : EntityDTO
+    public class CreateProductRateDTO
     {
         public Guid OfferId { get; set; }
         public Guid UserId { get; set; }
