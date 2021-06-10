@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 
 namespace Application.Services
 {
-    public class MessageService : BaseDataService
+    public class MessageService : BaseDataService, IMessageService
     {
         public MessageService(IApplicationDbContext context, IMapper mapper) : base(context, mapper)
         {
@@ -44,7 +44,8 @@ namespace Application.Services
             .PaginatedListAsync(properties.PageIndex, properties.PageSize);
         }
 
-        public async Task<Guid> CreateMessageAsync(CreateMessageDTO dto) {
+        public async Task<Guid> CreateMessageAsync(CreateMessageDTO dto)
+        {
             var sender = await _context.Users.FindAsync(dto.SenderId);
             if (sender == null)
             {
