@@ -1,4 +1,5 @@
 ﻿using Application.Common.Interfaces;
+using Application.Common.Interfaces.DataServiceInterfaces;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using System;

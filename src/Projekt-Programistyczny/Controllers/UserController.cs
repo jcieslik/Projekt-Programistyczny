@@ -1,8 +1,10 @@
-﻿using Application.Common.Interfaces;
+﻿using Application.Common.Exceptions;
+using Application.Common.Interfaces;
+using Application.Common.Interfaces.DataServiceInterfaces;
 using Application.DAL.DTO;
 using Application.DAL.DTO.CommandDTOs.Create;
+using Application.DAL.DTO.CommandDTOs.Update;
 using AutoMapper;
-using Domain.Entities;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
@@ -10,8 +12,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -34,14 +34,15 @@ namespace Projekt_Programistyczny.Controllers
 
         [HttpPost]
         [AllowAnonymous]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [Route("Authenticate")]
-        public async Task<UserDTO> Authenticate(string login, string password)
+        public async Task<ActionResult<UserDTO>> Authenticate(string login, string password)
         {
             var user = await userService.AuthenticateUser(login, password);
             if(user == null)
             {
-                HttpContext.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-                return null;
+                return Unauthorized();
             }
 
             var claims = new List<Claim>()
@@ -59,32 +60,65 @@ namespace Projekt_Programistyczny.Controllers
 
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
             currentUserService.Id = user.Id;
-            return mapper.Map<UserDTO>(user);
+            return Ok(user);
         }
 
         [HttpPost]
         [Route("Deauthenticate")]
-        public async Task Deauthenticate()
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> Deauthenticate()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             currentUserService.Id = Guid.Empty;
+            return Ok();
+
         }
 
-        [AllowAnonymous]
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Guid))]
+        [AllowAnonymous]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [Route("Create")]
-        public async Task<IActionResult> CreateUser([FromBody] CreateUserDTO userData)
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        public async Task<ActionResult<UserDTO>> CreateUser([FromBody] CreateUserDTO userData)
         {
             try
             {
-                var id = await userService.CreateUserAsync(userData);
-                return Ok(id);
+                var user = await userService.CreateUserAsync(userData);
+                return Ok(user);
             }
-            catch(Exception ex)
+            catch(EmailAlreadyInUseException ex)
             {
-                return BadRequest(new { message = ex.Message });
+                return Conflict(new { message = ex.Message });
+            }
+            catch(UsernameAlreadyInUseException ex)
+            {
+                return Conflict(new { message = ex.Message });
+            }
+        }
+
+        [HttpPut]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        public async Task<ActionResult<UserDTO>> UpdateUser([FromBody] UpdateUserDTO userData)
+        {
+            try
+            {
+                var user = await userService.UpdateUserAsync(userData);
+                return Ok(user);
+            }
+            catch(NotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (EmailAlreadyInUseException ex)
+            {
+                return Conflict(new { message = ex.Message });
+            }
+            catch (UsernameAlreadyInUseException ex)
+            {
+                return Conflict(new { message = ex.Message });
             }
         }
     }

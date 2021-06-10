@@ -1,5 +1,6 @@
 ﻿using Application.Common.Exceptions;
 using Application.Common.Interfaces;
+using Application.Common.Interfaces.DataServiceInterfaces;
 using Application.Common.Services;
 using Application.DAL.DTO;
 using Application.DAL.DTO.CommandDTOs.Create;
@@ -40,7 +41,7 @@ namespace Application.Services
             .ProjectTo<ProductRateDTO>(_mapper.ConfigurationProvider)
             .ToListAsync();
 
-        public async Task<Guid> CreateRateAsync(CreateProductRateDTO dto)
+        public async Task<ProductRateDTO> CreateRateAsync(CreateProductRateDTO dto)
         {
             var user = await _context.Users.FindAsync(dto.UserId);
             if (user == null)
@@ -64,10 +65,10 @@ namespace Application.Services
 
             _context.Rates.Add(entity);
             await _context.SaveChangesAsync();
-            return entity.Id;
+            return _mapper.Map<ProductRateDTO>(entity);
         }
 
-        public async Task<Guid> UpdateRateAsync(UpdateProductRateDTO dto)
+        public async Task<ProductRateDTO> UpdateRateAsync(UpdateProductRateDTO dto)
         {
             var rate = await _context.Rates.FindAsync(dto.Id);
             if (rate == null)
@@ -85,7 +86,7 @@ namespace Application.Services
             }
 
             await _context.SaveChangesAsync();
-            return rate.Id;
+            return _mapper.Map<ProductRateDTO>(rate);
         }
     }
 }

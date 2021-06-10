@@ -1,4 +1,4 @@
-﻿using Application.Common.Interfaces;
+﻿using Application.Common.Interfaces.DataServiceInterfaces;
 using Application.Services;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;

@@ -5,14 +5,14 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Application.Common.Interfaces
+namespace Application.Common.Interfaces.DataServiceInterfaces
 {
     public interface ICommentService
     {
         Task<CommentDTO> GetCommentByIdAsync(Guid id);
         Task<IEnumerable<CommentDTO>> GetCommentsFromUserAsync(Guid userId);
         Task<IEnumerable<CommentDTO>> GetCommentsFromOfferAsync(Guid offerId);
-        Task<Guid> CreateCommentAsync(CreateCommentDTO dto);
-        Task<Guid> UpdateCommentAsync(UpdateCommentDTO dto);
+        Task<CommentDTO> CreateCommentAsync(CreateCommentDTO dto);
+        Task<CommentDTO> UpdateCommentAsync(UpdateCommentDTO dto);
     }
 }

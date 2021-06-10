@@ -1,10 +1,11 @@
-﻿using Application.Common.Mappings;
+﻿using Application.Common.Dto;
+using Application.Common.Mappings;
 using Domain.Entities;
 using Domain.Enums;
 
 namespace Application.DAL.DTO
 {
-    public class UserDTO : IMapFrom<User>
+    public class UserDTO : EntityDTO, IMapFrom<User>
     {
         public string Username { get; set; }
         public UserRole Role { get; set; }

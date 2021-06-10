@@ -1,5 +1,6 @@
 ﻿using Application.Common.Exceptions;
 using Application.Common.Interfaces;
+using Application.Common.Interfaces.DataServiceInterfaces;
 using Application.Common.Mappings;
 using Application.Common.Models;
 using Application.Common.Services;

@@ -5,7 +5,7 @@ using Application.DAL.DTO.CommandDTOs.Update;
 using System;
 using System.Threading.Tasks;
 
-namespace Application.Common.Interfaces
+namespace Application.Common.Interfaces.DataServiceInterfaces
 {
     public interface IMessageService
     {
