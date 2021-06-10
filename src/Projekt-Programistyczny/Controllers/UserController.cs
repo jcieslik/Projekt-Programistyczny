@@ -62,7 +62,7 @@ namespace Projekt_Programistyczny.Controllers
             return mapper.Map<UserDTO>(user);
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("Deauthenticate")]
         public async Task Deauthenticate()
         {
