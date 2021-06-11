@@ -25,21 +25,33 @@ namespace Application.Services
         public async Task<CommentDTO> GetCommentByIdAsync(Guid id)
             => _mapper.Map<CommentDTO>(await _context.Comments.FindAsync(id));
 
-        public async Task<IEnumerable<CommentDTO>> GetCommentsFromUserAsync(Guid userId)   
-            =>  await _context.Comments
-            .Include(c => c.Customer).Include(c => c.Offer)
-            .AsNoTracking()
-            .Where(c => c.Customer.Id == userId)
-            .ProjectTo<CommentDTO>(_mapper.ConfigurationProvider)
-            .ToListAsync();
+        public async Task<IEnumerable<CommentDTO>> GetCommentsFromUserAsync(Guid userId, bool onlyNotHidden = true)
+        {
+            var comments = _context.Comments
+                .Include(c => c.Customer).Include(c => c.Offer)
+                .AsNoTracking()
+                .Where(c => c.Customer.Id == userId);
 
-        public async Task<IEnumerable<CommentDTO>> GetCommentsFromOfferAsync(Guid offerId)
-            => await _context.Comments
-            .Include(c => c.Customer).Include(c => c.Offer)
-            .AsNoTracking()
-            .Where(c => c.Offer.Id == offerId)
-            .ProjectTo<CommentDTO>(_mapper.ConfigurationProvider)
-            .ToListAsync();
+            comments = onlyNotHidden ? comments.Where(x => !x.IsHidden) : comments;
+
+            return await comments
+                .ProjectTo<CommentDTO>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<CommentDTO>> GetCommentsFromOfferAsync(Guid offerId, bool onlyNotHidden = true)
+        {
+            var comments = _context.Comments
+                .Include(c => c.Customer).Include(c => c.Offer)
+                .AsNoTracking()
+                .Where(c => c.Offer.Id == offerId);
+
+            comments = onlyNotHidden ? comments.Where(x => !x.IsHidden) : comments;
+
+            return await comments
+                .ProjectTo<CommentDTO>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+        }
 
         public async Task<CommentDTO> CreateCommentAsync(CreateCommentDTO dto)
         {

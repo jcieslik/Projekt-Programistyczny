@@ -10,7 +10,7 @@ namespace Application.Common.Interfaces.DataServiceInterfaces
     public interface IProductImageService
     {
         Task<ProductImageDTO> GetProductImageByIdAsync(Guid id);
-        Task<IEnumerable<ProductImageDTO>> GetProductImagesFromOfferdAsync(Guid offerId);
+        Task<IEnumerable<ProductImageDTO>> GetProductImagesFromOfferdAsync(Guid offerId, bool onlyNotHidden);
         Task<ProductImageDTO> CreateProductImageAsync(CreateProductImageDTO dto);
         Task<ProductImageDTO> UpdateProductImageAsync(UpdateProductImageDTO dto);
     }

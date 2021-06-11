@@ -1,8 +1,10 @@
 ﻿using Application.Common.Exceptions;
 using Application.Common.Interfaces;
+using Application.Common.Interfaces.DataServiceInterfaces;
 using Application.Common.Services;
 using Application.DAL.DTO;
 using Application.DAL.DTO.CommandDTOs.Create;
+using Application.DAL.DTO.CommandDTOs.Update;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Domain.Entities;
@@ -10,12 +12,11 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Application.Services
 {
-    public class BidService : BaseDataService
+    public class BidService : BaseDataService, IBidService
     {
         public BidService(IApplicationDbContext context, IMapper mapper) : base(context, mapper)
         {
@@ -24,25 +25,35 @@ namespace Application.Services
         public async Task<BidDTO> GetBidByIdAsync(Guid id)
             => _mapper.Map<BidDTO>(await _context.Bids.FindAsync(id));
 
-        public async Task<IEnumerable<BidDTO>> GetBidsFromOfferAsync(Guid offerId)
-            => await _context.Bids.Include(x => x.Offer).Include(x => x.Bidder)
+        public async Task<IEnumerable<BidDTO>> GetBidsFromOfferAsync(Guid offerId, bool onlyNotHidden)
+        {
+            var bids = _context.Bids.Include(x => x.Offer).Include(x => x.Bidder)
             .AsNoTracking()
-            .Where(x => x.Offer.Id == offerId)
-            .ProjectTo<BidDTO>(_mapper.ConfigurationProvider)
-            .ToListAsync();
+            .Where(x => x.Offer.Id == offerId);
 
-        public async Task<IEnumerable<BidDTO>> GetBidsFromUserAsync(Guid userId)
-            => await _context.Bids.Include(x => x.Offer).Include(x => x.Bidder)
-            .AsNoTracking()
-            .Where(x => x.Bidder.Id == userId)
-            .ProjectTo<BidDTO>(_mapper.ConfigurationProvider)
+            bids = onlyNotHidden ? bids.Where(x => !x.IsHidden) : bids;
+
+            return await bids.ProjectTo<BidDTO>(_mapper.ConfigurationProvider)
             .ToListAsync();
+        }
+
+        public async Task<IEnumerable<BidDTO>> GetBidsFromUserAsync(Guid userId, bool onlyNotHidden)
+        {
+            var bids = _context.Bids.Include(x => x.Offer).Include(x => x.Bidder)
+            .AsNoTracking()
+            .Where(x => x.Offer.Id == userId);
+
+            bids = onlyNotHidden ? bids.Where(x => !x.IsHidden) : bids;
+
+            return await bids.ProjectTo<BidDTO>(_mapper.ConfigurationProvider)
+            .ToListAsync();
+        }
 
         public async Task<BidDTO> CreateBidAsync(CreateBidDTO dto)
         {
             var user = await _context.Users.FindAsync(dto.BidderId);
             var offer = await _context.Offers.FindAsync(dto.OfferId);
-            if(user == null)
+            if (user == null)
             {
                 throw new NotFoundException(nameof(User), dto.BidderId);
             }
@@ -55,13 +66,37 @@ namespace Application.Services
             {
                 Bidder = user,
                 Offer = offer,
-                Value = dto.Value
+                Value = dto.Value,
+                IsHidden = false
             };
 
             _context.Bids.Add(entity);
             await _context.SaveChangesAsync();
 
             return _mapper.Map<BidDTO>(entity);
+        }
+
+        public async Task<BidDTO> UpdateBidAsync(UpdateBidDTO dto)
+        {
+            var bid = await _context.Bids.FindAsync(dto.Id);
+            if (bid == null)
+            {
+                throw new NotFoundException(nameof(Bid), dto.Id);
+            }
+
+            if (dto.Value.HasValue)
+            {
+                bid.Value = dto.Value.Value;
+            }
+
+            if (dto.IsHidden.HasValue)
+            {
+                bid.IsHidden = dto.IsHidden.Value;
+            }
+
+            await _context.SaveChangesAsync();
+
+            return _mapper.Map<BidDTO>(bid);
         }
     }
 }

@@ -39,11 +39,11 @@ namespace Projekt_Programistyczny.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [Route("Offer/{id}")]
-        public async Task<ActionResult<IEnumerable<CommentDTO>>> GetCommentsFromOffer([FromRoute] Guid id)
+        public async Task<ActionResult<IEnumerable<CommentDTO>>> GetCommentsFromOffer([FromRoute] Guid id, [FromQuery] bool onlyNotHidden = true)
         {
             try
             {
-                var comments = await _commentService.GetCommentsFromOfferAsync(id);
+                var comments = await _commentService.GetCommentsFromOfferAsync(id, onlyNotHidden);
                 return Ok(comments);
             }
             catch(NotFoundException ex)
@@ -57,11 +57,11 @@ namespace Projekt_Programistyczny.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [Route("User/{id}")]
-        public async Task<ActionResult<IEnumerable<CommentDTO>>> GetCommentsFromUser([FromRoute] Guid id)
+        public async Task<ActionResult<IEnumerable<CommentDTO>>> GetCommentsFromUser([FromRoute] Guid id, [FromQuery] bool onlyNotHidden = true)
         {
             try
             {
-                var comments = await _commentService.GetCommentsFromUserAsync(id);
+                var comments = await _commentService.GetCommentsFromUserAsync(id, onlyNotHidden);
                 return Ok(comments);
             }
             catch (NotFoundException ex)

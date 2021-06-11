@@ -45,11 +45,11 @@ namespace Projekt_Programistyczny.Controllers
         [Route("Offer/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IEnumerable<ProductRateDTO>>> GetRatesFromOffer(Guid id)
+        public async Task<ActionResult<IEnumerable<ProductRateDTO>>> GetRatesFromOffer([FromRoute] Guid id, [FromQuery] bool onlyNotHidden = true)
         {
             try
             {
-                var rates = await _rateService.GetRatesFromOfferAsync(id);
+                var rates = await _rateService.GetRatesFromOfferAsync(id, onlyNotHidden);
                 return Ok(rates);
             }
             catch(NotFoundException ex)
@@ -62,11 +62,11 @@ namespace Projekt_Programistyczny.Controllers
         [Route("User/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IEnumerable<ProductRateDTO>>> GetRatesFromUser(Guid id)
+        public async Task<ActionResult<IEnumerable<ProductRateDTO>>> GetRatesFromUser([FromRoute] Guid id, [FromQuery] bool onlyNotHidden = true)
         {
             try
             {
-                var rates = await _rateService.GetRatesFromUserAsync(id);
+                var rates = await _rateService.GetRatesFromUserAsync(id, onlyNotHidden);
                 return Ok(rates);
             }
             catch (NotFoundException ex)

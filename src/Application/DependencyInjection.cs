@@ -15,7 +15,8 @@ namespace Application
             services.AddScoped<IFilterService, FilterService>();
             services.AddScoped<IRateService, RateService>();
             services.AddScoped<IProductImageService, ProductImageService>();
-
+            services.AddScoped<IBidService, BidService>();
+            services.AddScoped<IMessageService, MessageService>();
             return services;
         }
     }

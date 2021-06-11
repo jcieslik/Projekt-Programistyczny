@@ -1,10 +1,8 @@
 ﻿using Application.Common.Exceptions;
-using Application.Common.Interfaces;
 using Application.Common.Interfaces.DataServiceInterfaces;
 using Application.DAL.DTO;
 using Application.DAL.DTO.CommandDTOs.Create;
 using Application.DAL.DTO.CommandDTOs.Update;
-using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -16,40 +14,57 @@ namespace Projekt_Programistyczny.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProductImageController : Controller
+    public class BidController : ControllerBase
     {
-        private readonly IProductImageService _productImageService;
+        private readonly IBidService _bidService;
 
-        public ProductImageController(IProductImageService productImageService)
+        public BidController(IBidService bidService)
         {
-            _productImageService = productImageService;
+            _bidService = bidService;
         }
 
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<ProductImageDTO>> GetImageById(Guid id)
+        public async Task<ActionResult<BidDTO>> GetBidById([FromRoute] Guid id)
         {
-            var image = await _productImageService.GetProductImageByIdAsync(id);
-            if(image == null)
+            var bid = await _bidService.GetBidByIdAsync(id);
+            if(bid == null)
             {
                 return NotFound();
             }
-            return Ok(image);
+            return Ok(bid);
         }
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [Route("Offer/{id}")]
-        public async Task<ActionResult<IEnumerable<ProductImageDTO>>> GetImagesFromOffer([FromRoute] Guid id, [FromQuery] bool onlyNotHidden = true)
+        public async Task<ActionResult<IEnumerable<BidDTO>>> GetBidsFromOffer([FromRoute] Guid id, [FromQuery] bool onlyNotHidden = true)
         {
             try
             {
-                var images = await _productImageService.GetProductImagesFromOfferdAsync(id, onlyNotHidden);
-                return Ok(images);
+                var bids = await _bidService.GetBidsFromOfferAsync(id, onlyNotHidden);
+                return Ok(bids);
             }
             catch(NotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+        }
+
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Route("User/{id}")]
+        public async Task<ActionResult<IEnumerable<BidDTO>>> GetBidsFromUser([FromRoute] Guid id, [FromQuery] bool onlyNotHidden = true)
+        {
+            try
+            {
+                var bids = await _bidService.GetBidsFromUserAsync(id, onlyNotHidden);
+                return Ok(bids);
+            }
+            catch (NotFoundException ex)
             {
                 return NotFound(new { message = ex.Message });
             }
@@ -58,12 +73,12 @@ namespace Projekt_Programistyczny.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<ProductImageDTO>> Create([FromBody] CreateProductImageDTO dto)
+        public async Task<ActionResult<BidDTO>> Create([FromBody] CreateBidDTO dto)
         {
             try
             {
-                var image = await _productImageService.CreateProductImageAsync(dto);
-                return Ok(image);
+                var bid = await _bidService.CreateBidAsync(dto);
+                return Ok(bid);
             }
             catch(NotFoundException ex)
             {
@@ -73,24 +88,18 @@ namespace Projekt_Programistyczny.Controllers
 
         [HttpPut]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<ProductImageDTO>> Update([FromBody] UpdateProductImageDTO dto)
+        public async Task<ActionResult<BidDTO>> Update([FromBody] UpdateBidDTO dto)
         {
             try
             {
-                var image = await _productImageService.UpdateProductImageAsync(dto);
-                return Ok(image);
+                var bid = await _bidService.UpdateBidAsync(dto);
+                return Ok(bid);
             }
             catch (NotFoundException ex)
             {
                 return NotFound(new { message = ex.Message });
             }
-            catch(Exception ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
         }
-
     }
 }

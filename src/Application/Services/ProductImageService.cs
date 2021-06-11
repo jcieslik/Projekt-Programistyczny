@@ -25,12 +25,17 @@ namespace Application.Services
         public async Task<ProductImageDTO> GetProductImageByIdAsync(Guid id)
             => _mapper.Map<ProductImageDTO>(await _context.Images.FindAsync(id));
 
-        public async Task<IEnumerable<ProductImageDTO>> GetProductImagesFromOfferdAsync(Guid offerId)
-            => await _context.Images.Include(i => i.Offer)
+        public async Task<IEnumerable<ProductImageDTO>> GetProductImagesFromOfferdAsync(Guid offerId, bool onlyNotHidden)
+        {
+            var images = _context.Images.Include(i => i.Offer)
             .AsNoTracking()
-            .Where(i => i.Offer.Id == offerId)
-            .ProjectTo<ProductImageDTO>(_mapper.ConfigurationProvider)
+            .Where(i => i.Offer.Id == offerId);
+
+            images = onlyNotHidden ? images.Where(x => !x.IsHidden) : images;
+
+            return await images.ProjectTo<ProductImageDTO>(_mapper.ConfigurationProvider)
             .ToListAsync();
+        }
 
         public async Task<ProductImageDTO> CreateProductImageAsync(CreateProductImageDTO dto)
         {

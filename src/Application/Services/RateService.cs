@@ -25,21 +25,31 @@ namespace Application.Services
         public async Task<ProductRateDTO> GetRateByIdAsync(Guid id)
             => _mapper.Map<ProductRateDTO>(await _context.Rates.FindAsync(id));
 
-        public async Task<IEnumerable<ProductRateDTO>> GetRatesFromUserAsync(Guid userId)
-            => await _context.Rates
-            .Include(c => c.Customer).Include(c => c.Offer)
-            .AsNoTracking()
-            .Where(c => c.Customer.Id == userId)
-            .ProjectTo<ProductRateDTO>(_mapper.ConfigurationProvider)
-            .ToListAsync();
+        public async Task<IEnumerable<ProductRateDTO>> GetRatesFromUserAsync(Guid userId, bool onlyNotHidden = true)
+        {
+            var rates = _context.Rates
+                       .Include(c => c.Customer).Include(c => c.Offer)
+                       .AsNoTracking()
+                       .Where(c => c.Customer.Id == userId);
 
-        public async Task<IEnumerable<ProductRateDTO>> GetRatesFromOfferAsync(Guid offerId)
-            => await _context.Rates
-            .Include(c => c.Customer).Include(c => c.Offer)
-            .AsNoTracking()
-            .Where(c => c.Offer.Id == offerId)
-            .ProjectTo<ProductRateDTO>(_mapper.ConfigurationProvider)
-            .ToListAsync();
+            rates = onlyNotHidden ? rates.Where(x => !x.IsHidden) : rates;
+
+            return await rates.ProjectTo<ProductRateDTO>(_mapper.ConfigurationProvider)
+                       .ToListAsync();
+        }
+
+        public async Task<IEnumerable<ProductRateDTO>> GetRatesFromOfferAsync(Guid offerId, bool onlyNotHidden = true)
+        {
+            var rates = _context.Rates
+                       .Include(c => c.Customer).Include(c => c.Offer)
+                       .AsNoTracking()
+                       .Where(c => c.Offer.Id == offerId);
+
+            rates = onlyNotHidden ? rates.Where(x => !x.IsHidden) : rates;
+
+            return await rates.ProjectTo<ProductRateDTO>(_mapper.ConfigurationProvider)
+                       .ToListAsync();
+        }
 
         public async Task<ProductRateDTO> CreateRateAsync(CreateProductRateDTO dto)
         {
