@@ -2,7 +2,7 @@
 
 namespace Domain.Entities
 {
-    public class Wish : AuditableEntity
+    public class Wish : AuditableAndAbleToBeHiddenEntity
     {
         public User Customer { get; set; }
         public Offer Offer { get; set; }
