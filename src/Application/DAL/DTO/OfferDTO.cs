@@ -22,6 +22,7 @@ namespace Application.DAL.DTO
         public ProvinceDTO Province { get; set; }
         public ProductState ProductState { get; set; }
         public OfferState State { get; set; }
+        public OfferType OfferType { get; set; }
 
         public ProductCategoryDTO Category { get; set; }
         public BrandDTO Brand { get; set; }

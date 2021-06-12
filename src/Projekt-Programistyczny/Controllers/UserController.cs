@@ -4,7 +4,6 @@ using Application.Common.Interfaces.DataServiceInterfaces;
 using Application.DAL.DTO;
 using Application.DAL.DTO.CommandDTOs.Create;
 using Application.DAL.DTO.CommandDTOs.Update;
-using AutoMapper;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
@@ -23,13 +22,11 @@ namespace Projekt_Programistyczny.Controllers
     {
         private readonly IUserService userService;
         private readonly ICurrentUserService currentUserService;
-        private readonly IMapper mapper;
 
-        public UserController(IUserService userService, ICurrentUserService currentUserService, IMapper mapper)
+        public UserController(IUserService userService, ICurrentUserService currentUserService)
         {
             this.userService = userService;
             this.currentUserService = currentUserService;
-            this.mapper = mapper;
         }
 
         [HttpPost]
@@ -90,7 +87,7 @@ namespace Projekt_Programistyczny.Controllers
             {
                 return Conflict(new { message = ex.Message });
             }
-            catch(UsernameAlreadyInUseException ex)
+            catch(NameAlreadyInUseException ex)
             {
                 return Conflict(new { message = ex.Message });
             }
@@ -116,7 +113,7 @@ namespace Projekt_Programistyczny.Controllers
             {
                 return Conflict(new { message = ex.Message });
             }
-            catch (UsernameAlreadyInUseException ex)
+            catch (NameAlreadyInUseException ex)
             {
                 return Conflict(new { message = ex.Message });
             }

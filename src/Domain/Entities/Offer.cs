@@ -39,6 +39,9 @@ namespace Domain.Entities
         [Required]
         public OfferState State { get; set; }
 
+        [Required]
+        public OfferType OfferType { get; set; }
+
         public ProductCategory Category { get; set; }
         public Brand Brand { get; set; }
 

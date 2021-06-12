@@ -43,7 +43,7 @@ namespace Application.Services
             var usernameCheck = await _context.Users.Where(x => x.Username == dto.Username).CountAsync();
             if (usernameCheck > 0)
             {
-                throw new UsernameAlreadyInUseException(dto.Username);
+                throw new NameAlreadyInUseException(dto.Username);
             }
 
             var user = new User
@@ -85,7 +85,7 @@ namespace Application.Services
                 var usernameCheck = await _context.Users.Where(x => x.Username == dto.Username).CountAsync();
                 if (usernameCheck > 0)
                 {
-                    throw new UsernameAlreadyInUseException(dto.Username);
+                    throw new NameAlreadyInUseException(dto.Username);
                 }
                 user.Username = dto.Username;
             }
