@@ -3,54 +3,49 @@ using Application.Common.Interfaces.DataServiceInterfaces;
 using Application.DAL.DTO;
 using Application.DAL.DTO.CommandDTOs.Create;
 using Application.DAL.DTO.CommandDTOs.Update;
-using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Projekt_Programistyczny.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class RateController : Controller
+    public class BidController : ControllerBase
     {
-        private readonly IRateService _rateService;
+        private readonly IBidService _bidService;
 
-        public RateController(IRateService rateService)
+        public BidController(IBidService bidService)
         {
-            _rateService = rateService;
-        }
-
-        public RateController(IRateService rateService, IMapper mapper)
-        {
-            _rateService = rateService;
+            _bidService = bidService;
         }
 
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<ProductRateDTO>> GetRateById(Guid id)
+        public async Task<ActionResult<BidDTO>> GetBidById([FromRoute] Guid id)
         {
-            var rate = await _rateService.GetRateByIdAsync(id);
-            if(rate == null)
+            var bid = await _bidService.GetBidByIdAsync(id);
+            if(bid == null)
             {
                 return NotFound();
             }
-            return Ok(rate);
+            return Ok(bid);
         }
 
         [HttpGet]
-        [Route("Offer/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IEnumerable<ProductRateDTO>>> GetRatesFromOffer([FromRoute] Guid id, [FromQuery] bool onlyNotHidden = true)
+        [Route("Offer/{id}")]
+        public async Task<ActionResult<IEnumerable<BidDTO>>> GetBidsFromOffer([FromRoute] Guid id, [FromQuery] bool onlyNotHidden = true)
         {
             try
             {
-                var rates = await _rateService.GetRatesFromOfferAsync(id, onlyNotHidden);
-                return Ok(rates);
+                var bids = await _bidService.GetBidsFromOfferAsync(id, onlyNotHidden);
+                return Ok(bids);
             }
             catch(NotFoundException ex)
             {
@@ -59,15 +54,15 @@ namespace Projekt_Programistyczny.Controllers
         }
 
         [HttpGet]
-        [Route("User/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IEnumerable<ProductRateDTO>>> GetRatesFromUser([FromRoute] Guid id, [FromQuery] bool onlyNotHidden = true)
+        [Route("User/{id}")]
+        public async Task<ActionResult<IEnumerable<BidDTO>>> GetBidsFromUser([FromRoute] Guid id, [FromQuery] bool onlyNotHidden = true)
         {
             try
             {
-                var rates = await _rateService.GetRatesFromUserAsync(id, onlyNotHidden);
-                return Ok(rates);
+                var bids = await _bidService.GetBidsFromUserAsync(id, onlyNotHidden);
+                return Ok(bids);
             }
             catch (NotFoundException ex)
             {
@@ -78,12 +73,12 @@ namespace Projekt_Programistyczny.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<ProductRateDTO>> Create([FromBody] CreateProductRateDTO dto)
+        public async Task<ActionResult<BidDTO>> Create([FromBody] CreateBidDTO dto)
         {
             try
             {
-                var rate = await _rateService.CreateRateAsync(dto);
-                return Ok(rate);
+                var bid = await _bidService.CreateBidAsync(dto);
+                return Ok(bid);
             }
             catch(NotFoundException ex)
             {
@@ -94,21 +89,16 @@ namespace Projekt_Programistyczny.Controllers
         [HttpPut]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<ProductRateDTO>> Update([FromBody] UpdateProductRateDTO dto)
+        public async Task<ActionResult<BidDTO>> Update([FromBody] UpdateBidDTO dto)
         {
             try
             {
-                var rate = await _rateService.UpdateRateAsync(dto);
-                return Ok(rate);
+                var bid = await _bidService.UpdateBidAsync(dto);
+                return Ok(bid);
             }
             catch (NotFoundException ex)
             {
                 return NotFound(new { message = ex.Message });
-            }
-            catch(Exception ex)
-            {
-                return BadRequest(new { message = ex.Message });
             }
         }
     }

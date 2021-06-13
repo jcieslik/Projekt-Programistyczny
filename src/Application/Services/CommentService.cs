@@ -1,5 +1,6 @@
 ﻿using Application.Common.Exceptions;
 using Application.Common.Interfaces;
+using Application.Common.Interfaces.DataServiceInterfaces;
 using Application.Common.Services;
 using Application.DAL.DTO;
 using Application.DAL.DTO.CommandDTOs.Create;
@@ -24,23 +25,35 @@ namespace Application.Services
         public async Task<CommentDTO> GetCommentByIdAsync(Guid id)
             => _mapper.Map<CommentDTO>(await _context.Comments.FindAsync(id));
 
-        public async Task<IEnumerable<CommentDTO>> GetCommentsFromUserAsync(Guid userId)   
-            =>  await _context.Comments
-            .Include(c => c.Customer).Include(c => c.Offer)
-            .AsNoTracking()
-            .Where(c => c.Customer.Id == userId)
-            .ProjectTo<CommentDTO>(_mapper.ConfigurationProvider)
-            .ToListAsync();
+        public async Task<IEnumerable<CommentDTO>> GetCommentsFromUserAsync(Guid userId, bool onlyNotHidden = true)
+        {
+            var comments = _context.Comments
+                .Include(c => c.Customer).Include(c => c.Offer)
+                .AsNoTracking()
+                .Where(c => c.Customer.Id == userId);
 
-        public async Task<IEnumerable<CommentDTO>> GetCommentsFromOfferAsync(Guid offerId)
-            => await _context.Comments
-            .Include(c => c.Customer).Include(c => c.Offer)
-            .AsNoTracking()
-            .Where(c => c.Offer.Id == offerId)
-            .ProjectTo<CommentDTO>(_mapper.ConfigurationProvider)
-            .ToListAsync();
+            comments = onlyNotHidden ? comments.Where(x => !x.IsHidden) : comments;
 
-        public async Task<Guid> CreateCommentAsync(CreateCommentDTO dto)
+            return await comments
+                .ProjectTo<CommentDTO>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<CommentDTO>> GetCommentsFromOfferAsync(Guid offerId, bool onlyNotHidden = true)
+        {
+            var comments = _context.Comments
+                .Include(c => c.Customer).Include(c => c.Offer)
+                .AsNoTracking()
+                .Where(c => c.Offer.Id == offerId);
+
+            comments = onlyNotHidden ? comments.Where(x => !x.IsHidden) : comments;
+
+            return await comments
+                .ProjectTo<CommentDTO>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+        }
+
+        public async Task<CommentDTO> CreateCommentAsync(CreateCommentDTO dto)
         {
             var user = await _context.Users.FindAsync(dto.UserId);
             if(user == null)
@@ -64,10 +77,11 @@ namespace Application.Services
 
             _context.Comments.Add(entity);
             await _context.SaveChangesAsync();
-            return entity.Id;
+
+            return _mapper.Map<CommentDTO>(entity);
         }
 
-        public async Task<Guid> UpdateCommentAsync(UpdateCommentDTO dto)
+        public async Task<CommentDTO> UpdateCommentAsync(UpdateCommentDTO dto)
         {
             var comment = await _context.Comments.FindAsync(dto.Id);
             if (comment == null)
@@ -85,7 +99,8 @@ namespace Application.Services
             }
 
             await _context.SaveChangesAsync();
-            return comment.Id;
+
+            return _mapper.Map<CommentDTO>(comment);
         }
     }
 }

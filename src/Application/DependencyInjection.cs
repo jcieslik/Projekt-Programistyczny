@@ -1,4 +1,4 @@
-﻿using Application.Common.Interfaces;
+﻿using Application.Common.Interfaces.DataServiceInterfaces;
 using Application.Services;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
@@ -15,7 +15,9 @@ namespace Application
             services.AddScoped<IFilterService, FilterService>();
             services.AddScoped<IRateService, RateService>();
             services.AddScoped<IProductImageService, ProductImageService>();
-
+            services.AddScoped<IBidService, BidService>();
+            services.AddScoped<IMessageService, MessageService>();
+            services.AddScoped<IBrandService, BrandService>();
             return services;
         }
     }

@@ -4,14 +4,16 @@ using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210611111256_AddedIsHiddenToSomeEntities")]
+    partial class AddedIsHiddenToSomeEntities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -283,9 +285,6 @@ namespace Infrastructure.Migrations
                     b.Property<Guid>("ModifiedBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("OfferType")
-                        .HasColumnType("int");
-
                     b.Property<double>("PriceForOneProduct")
                         .HasColumnType("float");
 
@@ -540,7 +539,7 @@ namespace Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("6e050a22-12d6-47b4-bddc-f6d99a5b1a60"),
+                            Id = new Guid("46306a0d-a4d9-4a45-a32b-bd1f14e5e56d"),
                             Email = "example@example.com",
                             IsActive = true,
                             Name = "Jan",

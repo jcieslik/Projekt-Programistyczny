@@ -1,7 +1,8 @@
 ﻿using Application.Common.Exceptions;
-using Application.Common.Interfaces;
+using Application.Common.Interfaces.DataServiceInterfaces;
 using Application.DAL.DTO;
-using AutoMapper;
+using Application.DAL.DTO.CommandDTOs.Create;
+using Application.DAL.DTO.CommandDTOs.Update;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -14,34 +15,40 @@ namespace Projekt_Programistyczny.Controllers
     [ApiController]
     public class CommentController : Controller
     {
-        private readonly ICommentService commentService;
-        private readonly IMapper mapper;
+        private readonly ICommentService _commentService;
 
-        public CommentController(ICommentService commentService, IMapper mapper)
+        public CommentController(ICommentService commentService)
         {
-            this.commentService = commentService;
-            this.mapper = mapper;
+            _commentService = commentService;
+        }
+
+        [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<IEnumerable<CommentDTO>>> GetCommentById([FromRoute] Guid id)
+        {
+            var comment = await _commentService.GetCommentByIdAsync(id);
+            if(comment == null)
+            {
+                return NotFound();
+            }
+            return Ok(comment);
         }
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [Route("Offer/{id}")]
-        public async Task<ActionResult<IEnumerable<CommentDTO>>> GetCommentsFromOffer([FromRoute] Guid id)
+        public async Task<ActionResult<IEnumerable<CommentDTO>>> GetCommentsFromOffer([FromRoute] Guid id, [FromQuery] bool onlyNotHidden = true)
         {
             try
             {
-                var comments = await commentService.GetCommentsFromOfferAsync(id);
+                var comments = await _commentService.GetCommentsFromOfferAsync(id, onlyNotHidden);
                 return Ok(comments);
             }
             catch(NotFoundException ex)
             {
                 return NotFound(new { message = ex.Message });
-            }
-            catch(Exception ex)
-            {
-                return BadRequest(new { message = ex.Message });
             }
         }
 
@@ -50,12 +57,54 @@ namespace Projekt_Programistyczny.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [Route("User/{id}")]
-        public async Task<ActionResult<IEnumerable<CommentDTO>>> GetCommentsFromUser([FromRoute] Guid id)
+        public async Task<ActionResult<IEnumerable<CommentDTO>>> GetCommentsFromUser([FromRoute] Guid id, [FromQuery] bool onlyNotHidden = true)
         {
             try
             {
-                var comments = await commentService.GetCommentsFromUserAsync(id);
+                var comments = await _commentService.GetCommentsFromUserAsync(id, onlyNotHidden);
                 return Ok(comments);
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<CommentDTO>> Create([FromBody] CreateCommentDTO dto)
+        {
+            try
+            {
+                var comment = await _commentService.CreateCommentAsync(dto);
+                return Ok(comment);
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpPut]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<CommentDTO>> Update([FromBody] UpdateCommentDTO dto)
+        {
+            try
+            {
+                var comment = await _commentService.UpdateCommentAsync(dto);
+                return Ok(comment);
             }
             catch (NotFoundException ex)
             {

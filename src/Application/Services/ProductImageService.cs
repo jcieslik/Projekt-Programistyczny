@@ -1,5 +1,6 @@
 ﻿using Application.Common.Exceptions;
 using Application.Common.Interfaces;
+using Application.Common.Interfaces.DataServiceInterfaces;
 using Application.Common.Services;
 using Application.DAL.DTO;
 using Application.DAL.DTO.CommandDTOs.Create;
@@ -22,16 +23,21 @@ namespace Application.Services
         }
 
         public async Task<ProductImageDTO> GetProductImageByIdAsync(Guid id)
-            => _mapper.Map< ProductImageDTO>(await _context.Images.FindAsync(id));
+            => _mapper.Map<ProductImageDTO>(await _context.Images.FindAsync(id));
 
-        public async Task<IEnumerable<ProductImageDTO>> GetProductImagesFromOfferdAsync(Guid offerId)
-            => await _context.Images.Include(i => i.Offer)
+        public async Task<IEnumerable<ProductImageDTO>> GetProductImagesFromOfferdAsync(Guid offerId, bool onlyNotHidden)
+        {
+            var images = _context.Images.Include(i => i.Offer)
             .AsNoTracking()
-            .Where(i => i.Offer.Id == offerId)
-            .ProjectTo<ProductImageDTO>(_mapper.ConfigurationProvider)
-            .ToListAsync();
+            .Where(i => i.Offer.Id == offerId);
 
-        public async Task<Guid> CreateProductImageAsync(CreateProductImageDTO dto)
+            images = onlyNotHidden ? images.Where(x => !x.IsHidden) : images;
+
+            return await images.ProjectTo<ProductImageDTO>(_mapper.ConfigurationProvider)
+            .ToListAsync();
+        }
+
+        public async Task<ProductImageDTO> CreateProductImageAsync(CreateProductImageDTO dto)
         {
             var offer = await _context.Offers.FindAsync(dto.OfferId);
             if (offer == null)
@@ -50,11 +56,11 @@ namespace Application.Services
 
             _context.Images.Add(entity);
             await _context.SaveChangesAsync();
-            return entity.Id;
+            return _mapper.Map<ProductImageDTO>(entity);
         }
 
 
-        public async Task<Guid> UpdateProductImageAsync(UpdateProductImageDTO dto)
+        public async Task<ProductImageDTO> UpdateProductImageAsync(UpdateProductImageDTO dto)
         {
             var image = await _context.Images.FindAsync(dto.Id);
             if (image == null)
@@ -83,7 +89,7 @@ namespace Application.Services
             }
 
             await _context.SaveChangesAsync();
-            return image.Id;
+            return _mapper.Map<ProductImageDTO>(image);
         }
     }
 }

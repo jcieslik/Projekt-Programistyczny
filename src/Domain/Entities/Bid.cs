@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Domain.Entities
 {
-    public class Bid : AuditableEntity
+    public class Bid : AuditableAndAbleToBeHiddenEntity
     {
         [Required]
         public double Value { get; set; }
