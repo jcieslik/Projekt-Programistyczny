@@ -12,5 +12,39 @@ namespace Domain.Entities
         public ProductCategory ParentCategory { get; set; }
         public ICollection<Offer> Offers { get; set; }
         public ICollection<ProductCategory> ChildrenCategories { get; set; }
+
+        public bool HasDescendantCategory(Guid categoryId)
+        {
+            if(ChildrenCategories.Count == 0)
+            {
+                return false;
+            }
+            foreach(var cat in ChildrenCategories)
+            {
+                if(cat.Id == categoryId)
+                {
+                    return true;
+                }
+                var result = cat.HasDescendantCategory(categoryId);
+                if (result == true)
+                {
+                    return result;
+                }
+            }
+            return false;
+        }
+
+        public bool HasAncestorCategory(Guid categoryId)
+        {
+            if(ParentCategory == null)
+            {
+                return false;
+            }
+            if(ParentCategory.Id == categoryId)
+            {
+                return true;
+            }
+            return ParentCategory.HasAncestorCategory(categoryId);
+        }
     }
 }

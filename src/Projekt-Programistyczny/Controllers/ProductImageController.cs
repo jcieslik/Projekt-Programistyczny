@@ -1,15 +1,12 @@
 ﻿using Application.Common.Exceptions;
-using Application.Common.Interfaces;
 using Application.Common.Interfaces.DataServiceInterfaces;
 using Application.DAL.DTO;
 using Application.DAL.DTO.CommandDTOs.Create;
 using Application.DAL.DTO.CommandDTOs.Update;
-using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Projekt_Programistyczny.Controllers

@@ -1,9 +1,10 @@
 ﻿using Application.Common.Dto;
 using Application.Common.Mappings;
+using AutoMapper;
 using Domain.Entities;
 using Domain.Enums;
 using System;
-using System.Collections.Generic;
+using System.Linq;
 
 namespace Application.DAL.DTO
 {
@@ -15,21 +16,23 @@ namespace Application.DAL.DTO
         public string Description { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-
-        public UserDTO Seller { get; set; }
-        public ICollection<OrderDTO> Orders { get; set; }
-        public CityDTO City { get; set; }
-        public ProvinceDTO Province { get; set; }
+        public Guid SellerId { get; set; }
+        public Guid CityId { get; set; }
+        public Guid ProvinceId { get; set; }
         public ProductState ProductState { get; set; }
         public OfferState State { get; set; }
         public OfferType OfferType { get; set; }
+        public Guid CategoryId { get; set; }
+        public Guid BrandId { get; set; }
 
-        public ProductCategoryDTO Category { get; set; }
-        public BrandDTO Brand { get; set; }
-
-        public ICollection<ProductImageDTO> Images { get; set; }
-        public ICollection<ProductRateDTO> Rates { get; set; }
-        public ICollection<CommentDTO> Comments { get; set; }
-        public ICollection<BidDTO> Bids { get; set; }
+        public void Mapping(Profile profile)
+        {
+            profile.CreateMap<Offer, OfferDTO>()
+                .ForMember(dest => dest.SellerId, opt => opt.MapFrom(src => src.Seller.Id))
+                .ForMember(dest => dest.CategoryId, opt => opt.MapFrom(src => src.Category.Id))
+                .ForMember(dest => dest.BrandId, opt => opt.MapFrom(src => src.Brand.Id))
+                .ForMember(dest => dest.ProvinceId, opt => opt.MapFrom(src => src.Province.Id))
+                .ForMember(dest => dest.CityId, opt => opt.MapFrom(src => src.City.Id));
+        }
     }
 }

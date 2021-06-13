@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Application.Common.Models
+namespace Projekt_Programistyczny.Models
 {
-    public class FilterModel
+    public class SearchModel
     {
         public double? MinPrice { get; set; }
         public double? MaxPrice { get; set; }
@@ -14,5 +14,8 @@ namespace Application.Common.Models
         public int OfferType { get; set; }
         public int ProductState { get; set; }
         public int OfferState { get; set; }
+        public int PageIndex { get; set; }
+        public int PageSize { get; set; }
+        public string OrderBy { get; set; }
     }
 }
