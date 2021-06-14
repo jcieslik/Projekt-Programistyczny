@@ -25,7 +25,12 @@ namespace Application.Services
         }
 
         public async Task<MessageDTO> GetMessageByIdAsync(Guid id)
-            => _mapper.Map<MessageDTO>(await _context.Messages.FindAsync(id));
+            => _mapper.Map<MessageDTO>(
+                await _context.Messages
+                .Include(x => x.Recipient)
+                .Include(x => x.Sender)
+                .SingleOrDefaultAsync(x => x.Id == id)
+                );
 
         public async Task<PaginatedList<MessageDTO>> GetPaginatedMessagesFromUserAsync(Guid userId, PaginationProperties properties)
         {

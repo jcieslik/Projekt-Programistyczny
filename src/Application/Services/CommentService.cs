@@ -23,7 +23,13 @@ namespace Application.Services
         }
 
         public async Task<CommentDTO> GetCommentByIdAsync(Guid id)
-            => _mapper.Map<CommentDTO>(await _context.Comments.FindAsync(id));
+            => _mapper.Map<CommentDTO>(
+                await _context.Comments
+                .Include(x => x.Offer)
+                .Include(x => x.Customer)
+                .AsNoTracking()
+                .SingleOrDefaultAsync(x => x.Id == id)
+                );
 
         public async Task<IEnumerable<CommentDTO>> GetCommentsFromUserAsync(Guid userId, bool onlyNotHidden = true)
         {
