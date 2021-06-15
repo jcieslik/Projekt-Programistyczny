@@ -12,7 +12,6 @@ using System.Threading.Tasks;
 
 namespace Projekt_Programistyczny.Controllers
 {
-    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class CommentController : Controller
