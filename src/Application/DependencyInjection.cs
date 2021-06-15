@@ -18,6 +18,7 @@ namespace Application
             services.AddScoped<IBidService, BidService>();
             services.AddScoped<IMessageService, MessageService>();
             services.AddScoped<IBrandService, BrandService>();
+            services.AddScoped<IOfferService, OfferService>();
             return services;
         }
     }

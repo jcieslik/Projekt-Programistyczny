@@ -4,6 +4,7 @@ using Application.Common.Models;
 using Application.DAL.DTO;
 using Application.DAL.DTO.CommandDTOs.Create;
 using Application.DAL.DTO.CommandDTOs.Update;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Projekt_Programistyczny.Models;
@@ -14,6 +15,7 @@ using System.Threading.Tasks;
 
 namespace Projekt_Programistyczny.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class OfferController : ControllerBase
@@ -25,10 +27,11 @@ namespace Projekt_Programistyczny.Controllers
             _offerService = offerService;
         }
 
-        [HttpGet("{id}")]
+        [HttpGet]
+        [Route("GetOfferById")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<OfferDTO>> GetOfferId(Guid id)
+        public async Task<ActionResult<OfferDTO>> GetOfferById([FromQuery] Guid id)
         {
             var offer = await _offerService.GetOfferByIdAsync(id);
             if(offer == null)
@@ -39,6 +42,7 @@ namespace Projekt_Programistyczny.Controllers
         }
 
         [HttpGet]
+        [Route("GetOffers")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<PaginatedList<OfferWithBaseDataDTO>>> GetOffers([FromBody] SearchModel searchModel)
         {
@@ -67,6 +71,7 @@ namespace Projekt_Programistyczny.Controllers
         }
 
         [HttpPost]
+        [Route("CreateOffer")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<OfferDTO>> Create([FromBody] CreateOfferDTO dto)
@@ -83,6 +88,7 @@ namespace Projekt_Programistyczny.Controllers
         }
 
         [HttpPut]
+        [Route("UpdateOffer")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<OfferDTO>> Update([FromBody] UpdateOfferDTO dto)
