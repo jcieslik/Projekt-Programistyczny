@@ -26,7 +26,7 @@ namespace Application.Services
                     .ProjectTo<BrandDTO>(_mapper.ConfigurationProvider)
                     .ToListAsync();
 
-        public async Task<IEnumerable<BrandDTO>> GetBrandsFromCategoryAsync(Guid categoryId)
+        public async Task<IEnumerable<BrandDTO>> GetBrandsFromCategoryAsync(long categoryId)
             => await _context.Brands
                     .Include(x => x.Offers).ThenInclude(x => x.Category)
                     .AsNoTracking()

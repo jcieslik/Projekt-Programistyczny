@@ -22,10 +22,10 @@ namespace Application.Services
         {
         }
 
-        public async Task<ProductRateDTO> GetRateByIdAsync(Guid id)
+        public async Task<ProductRateDTO> GetRateByIdAsync(long id)
             => _mapper.Map<ProductRateDTO>(await _context.Rates.FindAsync(id));
 
-        public async Task<IEnumerable<ProductRateDTO>> GetRatesFromUserAsync(Guid userId, bool onlyNotHidden = true)
+        public async Task<IEnumerable<ProductRateDTO>> GetRatesFromUserAsync(long userId, bool onlyNotHidden = true)
         {
             var rates = _context.Rates
                        .Include(c => c.Customer).Include(c => c.Offer)
@@ -38,7 +38,7 @@ namespace Application.Services
                        .ToListAsync();
         }
 
-        public async Task<IEnumerable<ProductRateDTO>> GetRatesFromOfferAsync(Guid offerId, bool onlyNotHidden = true)
+        public async Task<IEnumerable<ProductRateDTO>> GetRatesFromOfferAsync(long offerId, bool onlyNotHidden = true)
         {
             var rates = _context.Rates
                        .Include(c => c.Customer).Include(c => c.Offer)

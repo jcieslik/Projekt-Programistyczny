@@ -24,10 +24,10 @@ namespace Application.Services
         {
         }
 
-        public async Task<MessageDTO> GetMessageByIdAsync(Guid id)
+        public async Task<MessageDTO> GetMessageByIdAsync(long id)
             => _mapper.Map<MessageDTO>(await _context.Messages.FindAsync(id));
 
-        public async Task<PaginatedList<MessageDTO>> GetPaginatedMessagesFromUserAsync(Guid userId, PaginationProperties properties)
+        public async Task<PaginatedList<MessageDTO>> GetPaginatedMessagesFromUserAsync(long userId, PaginationProperties properties)
         {
             var messages = _context.Messages
             .Include(m => m.Recipient).Include(m => m.Sender)
@@ -45,7 +45,7 @@ namespace Application.Services
             .PaginatedListAsync(properties.PageIndex, properties.PageSize);
         }
 
-        public async Task<Guid> CreateMessageAsync(CreateMessageDTO dto)
+        public async Task<long> CreateMessageAsync(CreateMessageDTO dto)
         {
             var sender = await _context.Users.FindAsync(dto.SenderId);
             if (sender == null)
@@ -76,7 +76,7 @@ namespace Application.Services
             return entity.Id;
         }
 
-        public async Task<Guid> UpdateMessageAsync(UpdateMessageDTO dto)
+        public async Task<long> UpdateMessageAsync(UpdateMessageDTO dto)
         {
             var message = await _context.Messages.FindAsync(dto.Id);
             if (message == null)

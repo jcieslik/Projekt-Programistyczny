@@ -28,7 +28,7 @@ namespace Projekt_Programistyczny.Controllers
         [Route("GetCommentById")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IEnumerable<CommentDTO>>> GetCommentById([FromQuery] Guid id)
+        public async Task<ActionResult<IEnumerable<CommentDTO>>> GetCommentById([FromQuery] long id)
         {
             var comment = await _commentService.GetCommentByIdAsync(id);
             if(comment == null)
@@ -42,7 +42,7 @@ namespace Projekt_Programistyczny.Controllers
         [Route("GetCommentsFromOffer")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IEnumerable<CommentDTO>>> GetCommentsFromOffer([FromQuery] Guid id, [FromQuery] bool onlyNotHidden = true)
+        public async Task<ActionResult<IEnumerable<CommentDTO>>> GetCommentsFromOffer([FromQuery] long id, [FromQuery] bool onlyNotHidden = true)
         {
             try
             {
@@ -60,7 +60,7 @@ namespace Projekt_Programistyczny.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IEnumerable<CommentDTO>>> GetCommentsFromUser([FromQuery] Guid id, [FromQuery] bool onlyNotHidden = true)
+        public async Task<ActionResult<IEnumerable<CommentDTO>>> GetCommentsFromUser([FromQuery] long id, [FromQuery] bool onlyNotHidden = true)
         {
             try
             {

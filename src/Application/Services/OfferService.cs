@@ -24,7 +24,7 @@ namespace Application.Services
         {
         }
 
-        public async Task<OfferDTO> GetOfferByIdAsync(Guid id)
+        public async Task<OfferDTO> GetOfferByIdAsync(long id)
         {
             var offer = await _context.Offers
                 .Include(x => x.Bids).ThenInclude(b => b.Bidder)

@@ -9,8 +9,8 @@ namespace Application.DAL.DTO
     public class BidDTO : EntityDTO, IMapFrom<Bid>
     {
         public double Value { get; set; }
-        public Guid BidderId { get; set; }
-        public Guid OfferId { get; set; }
+        public long BidderId { get; set; }
+        public long OfferId { get; set; }
 
         public void Mapping(Profile profile)
         {

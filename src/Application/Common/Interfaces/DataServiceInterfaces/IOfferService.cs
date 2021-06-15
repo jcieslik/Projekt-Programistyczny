@@ -10,7 +10,7 @@ namespace Application.Common.Interfaces.DataServiceInterfaces
     public interface IOfferService
     {
         Task<OfferDTO> CreateOfferAsync(CreateOfferDTO dto);
-        Task<OfferDTO> GetOfferByIdAsync(Guid id);
+        Task<OfferDTO> GetOfferByIdAsync(long id);
         Task<PaginatedList<OfferWithBaseDataDTO>> GetPaginatedOffersAsync(FilterModel filterModel, PaginationProperties paginationProperties);
         Task<OfferDTO> UpdateOfferAsync(UpdateOfferDTO dto);
     }

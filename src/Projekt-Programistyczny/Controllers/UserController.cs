@@ -66,7 +66,7 @@ namespace Projekt_Programistyczny.Controllers
         public async Task<IActionResult> Deauthenticate()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            currentUserService.Id = Guid.Empty;
+            currentUserService.Id = 0;
             return Ok();
 
         }

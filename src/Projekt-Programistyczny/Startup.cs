@@ -61,7 +61,7 @@ namespace Projekt_Programistyczny
                     OnValidatePrincipal = async context =>
                     {
                         var userIdString = context.Principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-                        if (!Guid.TryParse(userIdString, out Guid userId))
+                        if (!long.TryParse(userIdString, out long userId))
                         {
                             context.RejectPrincipal();
                             await context.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);

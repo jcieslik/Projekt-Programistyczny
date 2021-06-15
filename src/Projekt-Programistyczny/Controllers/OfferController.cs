@@ -31,7 +31,7 @@ namespace Projekt_Programistyczny.Controllers
         [Route("GetOfferById")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<OfferDTO>> GetOfferById([FromQuery] Guid id)
+        public async Task<ActionResult<OfferDTO>> GetOfferById([FromQuery] long id)
         {
             var offer = await _offerService.GetOfferByIdAsync(id);
             if(offer == null)
