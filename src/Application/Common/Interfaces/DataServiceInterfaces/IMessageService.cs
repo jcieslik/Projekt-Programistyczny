@@ -9,9 +9,9 @@ namespace Application.Common.Interfaces.DataServiceInterfaces
 {
     public interface IMessageService
     {
-        Task<Guid> CreateMessageAsync(CreateMessageDTO dto);
-        Task<MessageDTO> GetMessageByIdAsync(Guid id);
-        Task<PaginatedList<MessageDTO>> GetPaginatedMessagesFromUserAsync(Guid userId, PaginationProperties properties);
-        Task<Guid> UpdateMessageAsync(UpdateMessageDTO dto);
+        Task<long> CreateMessageAsync(CreateMessageDTO dto);
+        Task<MessageDTO> GetMessageByIdAsync(long id);
+        Task<PaginatedList<MessageDTO>> GetPaginatedMessagesFromUserAsync(long userId, PaginationProperties properties);
+        Task<long> UpdateMessageAsync(UpdateMessageDTO dto);
     }
 }

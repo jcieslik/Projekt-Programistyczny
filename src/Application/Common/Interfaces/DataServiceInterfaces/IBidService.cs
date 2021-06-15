@@ -10,9 +10,9 @@ namespace Application.Common.Interfaces.DataServiceInterfaces
     public interface IBidService
     {
         Task<BidDTO> CreateBidAsync(CreateBidDTO dto);
-        Task<BidDTO> GetBidByIdAsync(Guid id);
-        Task<IEnumerable<BidDTO>> GetBidsFromOfferAsync(Guid offerId, bool onlyNotHidden);
-        Task<IEnumerable<BidDTO>> GetBidsFromUserAsync(Guid userId, bool onlyNotHidden);
+        Task<BidDTO> GetBidByIdAsync(long id);
+        Task<IEnumerable<BidDTO>> GetBidsFromOfferAsync(long offerId, bool onlyNotHidden);
+        Task<IEnumerable<BidDTO>> GetBidsFromUserAsync(long userId, bool onlyNotHidden);
         Task<BidDTO> UpdateBidAsync(UpdateBidDTO dto);
     }
 }

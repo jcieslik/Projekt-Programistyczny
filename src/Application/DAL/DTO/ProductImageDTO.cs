@@ -8,7 +8,7 @@ namespace Application.DAL.DTO
 {
     public class ProductImageDTO : EntityDTO, IMapFrom<ProductImage>
     {
-        public Guid OfferId { get; set; }
+        public long OfferId { get; set; }
         public string ImageTitle { get; set; }
         public byte[] ImageData { get; set; }
         public bool IsMainProductImage { get; set; }

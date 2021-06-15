@@ -13,7 +13,7 @@ namespace Domain.Entities
         public ICollection<Offer> Offers { get; set; }
         public ICollection<ProductCategory> ChildrenCategories { get; set; }
 
-        public bool HasDescendantCategory(Guid categoryId)
+        public bool HasDescendantCategory(long categoryId)
         {
             if(ChildrenCategories.Count == 0)
             {
@@ -34,7 +34,7 @@ namespace Domain.Entities
             return false;
         }
 
-        public bool HasAncestorCategory(Guid categoryId)
+        public bool HasAncestorCategory(long categoryId)
         {
             if(ParentCategory == null)
             {

@@ -7,7 +7,7 @@ namespace Domain.Entities
 {
     public class User
     {
-        public Guid Id { get; set; }
+        public long Id { get; set; }
 
         [Required]
         public UserRole Role { get; set; }

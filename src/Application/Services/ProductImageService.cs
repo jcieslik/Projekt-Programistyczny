@@ -22,10 +22,10 @@ namespace Application.Services
         {
         }
 
-        public async Task<ProductImageDTO> GetProductImageByIdAsync(Guid id)
+        public async Task<ProductImageDTO> GetProductImageByIdAsync(long id)
             => _mapper.Map<ProductImageDTO>(await _context.Images.FindAsync(id));
 
-        public async Task<IEnumerable<ProductImageDTO>> GetProductImagesFromOfferdAsync(Guid offerId, bool onlyNotHidden)
+        public async Task<IEnumerable<ProductImageDTO>> GetProductImagesFromOfferdAsync(long offerId, bool onlyNotHidden)
         {
             var images = _context.Images.Include(i => i.Offer)
             .AsNoTracking()

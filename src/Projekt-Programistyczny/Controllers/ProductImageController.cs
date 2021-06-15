@@ -28,7 +28,7 @@ namespace Projekt_Programistyczny.Controllers
         [Route("GetImageById")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<ProductImageDTO>> GetImageById([FromQuery] Guid id)
+        public async Task<ActionResult<ProductImageDTO>> GetImageById([FromQuery] long id)
         {
             var image = await _productImageService.GetProductImageByIdAsync(id);
             if(image == null)
@@ -42,7 +42,7 @@ namespace Projekt_Programistyczny.Controllers
         [Route("GetImagesFromOffer")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IEnumerable<ProductImageDTO>>> GetImagesFromOffer([FromQuery] Guid id, [FromQuery] bool onlyNotHidden = true)
+        public async Task<ActionResult<IEnumerable<ProductImageDTO>>> GetImagesFromOffer([FromQuery] long id, [FromQuery] bool onlyNotHidden = true)
         {
             try
             {

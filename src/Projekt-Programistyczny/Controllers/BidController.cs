@@ -29,7 +29,7 @@ namespace Projekt_Programistyczny.Controllers
         [Route("GetBidById")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<BidDTO>> GetBidById([FromQuery] Guid id)
+        public async Task<ActionResult<BidDTO>> GetBidById([FromQuery] long id)
         {
             var bid = await _bidService.GetBidByIdAsync(id);
             if(bid == null)
@@ -43,7 +43,7 @@ namespace Projekt_Programistyczny.Controllers
         [Route("GetBidsFromOffer")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IEnumerable<BidDTO>>> GetBidsFromOffer([FromQuery] Guid id, [FromQuery] bool onlyNotHidden = true)
+        public async Task<ActionResult<IEnumerable<BidDTO>>> GetBidsFromOffer([FromQuery] long id, [FromQuery] bool onlyNotHidden = true)
         {
             try
             {
@@ -60,7 +60,7 @@ namespace Projekt_Programistyczny.Controllers
         [Route("GetBidsFromUser")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IEnumerable<BidDTO>>> GetBidsFromUser([FromQuery] Guid id, [FromQuery] bool onlyNotHidden = true)
+        public async Task<ActionResult<IEnumerable<BidDTO>>> GetBidsFromUser([FromQuery] long id, [FromQuery] bool onlyNotHidden = true)
         {
             try
             {

@@ -9,7 +9,7 @@ namespace Application.DAL.DTO
 {
     public class OfferWithBaseDataDTO : IMapFrom<Offer>
     {
-        public Guid Id { get; set; }
+        public long Id { get; set; }
         public double PriceForOneProduct { get; set; }
         public string Title { get; set; }
         public OfferType OfferType { get; set; }

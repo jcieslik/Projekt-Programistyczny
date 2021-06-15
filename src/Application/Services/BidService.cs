@@ -22,10 +22,10 @@ namespace Application.Services
         {
         }
 
-        public async Task<BidDTO> GetBidByIdAsync(Guid id)
+        public async Task<BidDTO> GetBidByIdAsync(long id)
             => _mapper.Map<BidDTO>(await _context.Bids.FindAsync(id));
 
-        public async Task<IEnumerable<BidDTO>> GetBidsFromOfferAsync(Guid offerId, bool onlyNotHidden)
+        public async Task<IEnumerable<BidDTO>> GetBidsFromOfferAsync(long offerId, bool onlyNotHidden)
         {
             var bids = _context.Bids.Include(x => x.Offer).Include(x => x.Bidder)
             .AsNoTracking()
@@ -37,7 +37,7 @@ namespace Application.Services
             .ToListAsync();
         }
 
-        public async Task<IEnumerable<BidDTO>> GetBidsFromUserAsync(Guid userId, bool onlyNotHidden)
+        public async Task<IEnumerable<BidDTO>> GetBidsFromUserAsync(long userId, bool onlyNotHidden)
         {
             var bids = _context.Bids.Include(x => x.Offer).Include(x => x.Bidder)
             .AsNoTracking()

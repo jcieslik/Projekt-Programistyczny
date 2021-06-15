@@ -9,10 +9,10 @@ namespace Projekt_Programistyczny.Extensions
 {
     public static class ClaimsPrincipalExtensions
     {
-        public static Guid GetUserId(this ClaimsPrincipal claimsPrincipal)
+        public static long GetUserId(this ClaimsPrincipal claimsPrincipal)
         {
             var idString = claimsPrincipal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-            if(!Guid.TryParse(idString, out Guid userId))
+            if(!long.TryParse(idString, out long userId))
             {
                 throw new InvalidCookieException();
             }

@@ -9,8 +9,8 @@ namespace Application.DAL.DTO
 {
     public class OrderDTO : EntityDTO, IMapFrom<Order>
     {
-        public Guid CustomerId { get; set; }
-        public Guid OfferId { get; set; }
+        public long CustomerId { get; set; }
+        public long OfferId { get; set; }
         public OrderStatus OrderStatus { get; set; }
 
         public void Mapping(Profile profile)

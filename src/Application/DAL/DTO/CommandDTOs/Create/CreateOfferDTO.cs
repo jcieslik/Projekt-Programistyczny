@@ -11,14 +11,14 @@ namespace Application.DAL.DTO.CommandDTOs.Create
         public string Description { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public Guid SellerId { get; set; }
-        public Guid CityId { get; set; }
-        public Guid ProvinceId { get; set; }
+        public long SellerId { get; set; }
+        public long CityId { get; set; }
+        public long ProvinceId { get; set; }
         public int ProductState { get; set; }
         public int State { get; set; }
         public int OfferType { get; set; }
-        public Guid CategoryId { get; set; }
-        public Guid BrandId { get; set; }
+        public long CategoryId { get; set; }
+        public long BrandId { get; set; }
         public IEnumerable<ProductImageDTO> Images { get; set; }
     }
 }
