@@ -3,6 +3,7 @@ using Application.Common.Interfaces;
 using Application.Common.Interfaces.DataServiceInterfaces;
 using Application.Common.Services;
 using Application.DAL.DTO;
+using Application.DAL.DTO.CommandDTOs.Update;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Domain.Entities;
@@ -21,6 +22,9 @@ namespace Application.Services
         {
         }
 
+        public async Task<ProvinceDTO> GetProvinceByIdAsync(long id)
+            => _mapper.Map<ProvinceDTO>(await _context.Provinces.FindAsync(id));
+
         public async Task<IEnumerable<ProvinceDTO>> GetProvincesAsync()
             => await _context.Provinces.AsNoTracking()
                 .ProjectTo<ProvinceDTO>(_mapper.ConfigurationProvider)
@@ -28,7 +32,7 @@ namespace Application.Services
 
         public async Task<ProvinceDTO> CreateProvinceAsync(string name)
         {
-            var checkName = await _context.Cities.Where(x => x.Name == name).CountAsync();
+            var checkName = await _context.Provinces.Where(x => x.Name == name).CountAsync();
             if (checkName > 0)
             {
                 throw new NameAlreadyInUseException(name);
@@ -40,6 +44,24 @@ namespace Application.Services
             _context.Provinces.Add(entity);
             await _context.SaveChangesAsync();
             return _mapper.Map<ProvinceDTO>(entity);
+        }
+
+        public async Task<ProvinceDTO> UpdateProvinceAsync(UpdateProvinceDTO dto)
+        {
+            var province = await _context.Provinces.FindAsync(dto.Id);
+            if(province == null)
+            {
+                throw new NotFoundException(nameof(Province), dto.Id);
+            }
+            var checkName = await _context.Provinces.Where(x => x.Name == dto.Name).CountAsync();
+            if (checkName > 0)
+            {
+                throw new NameAlreadyInUseException(dto.Name);
+            }
+            province.Name = dto.Name;
+            await _context.SaveChangesAsync();
+
+            return _mapper.Map<ProvinceDTO>(province);
         }
     }
 }

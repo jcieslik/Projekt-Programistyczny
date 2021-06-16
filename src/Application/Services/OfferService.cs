@@ -250,7 +250,7 @@ namespace Application.Services
                 .AsNoTracking()
                 .Include(x => x.ParentCategory)
                 .Where(x => x.ParentCategory.Id == parentId).Select(x => x.Id).ToList();
-            List<long> result = new List<long>(childrenIds);
+            List<long> result = new ();
             foreach(long id in childrenIds)
             {
                 var ids = GetChildrenCategoriesIds(id);

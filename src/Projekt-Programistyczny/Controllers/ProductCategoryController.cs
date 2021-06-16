@@ -2,6 +2,7 @@
 using Application.Common.Interfaces.DataServiceInterfaces;
 using Application.DAL.DTO;
 using Application.DAL.DTO.CommandDTOs.Create;
+using Application.DAL.DTO.CommandDTOs.Update;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -22,6 +23,19 @@ namespace Projekt_Programistyczny.Controllers
             _productCategoryService = productCategoryService;
         }
 
+        [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<IEnumerable<ProductCategoryDTO>>> GetProductById(long id)
+        {
+            var brand = await _productCategoryService.GetProductCategoryByIdAsync(id);
+            if(brand == null)
+            {
+                return NotFound();
+            }
+            return Ok(brand);
+        }
+
         [HttpGet]
         [Route("GetProductCategories")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -34,6 +48,7 @@ namespace Projekt_Programistyczny.Controllers
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         public async Task<ActionResult<BrandDTO>> Create([FromBody] CreateProductCategoryDTO dto)
         {
@@ -45,6 +60,31 @@ namespace Projekt_Programistyczny.Controllers
             catch (NameAlreadyInUseException ex)
             {
                 return Conflict(new { message = ex.Message });
+            }
+            catch(NotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+        }
+
+        [HttpPut]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        public async Task<ActionResult<BrandDTO>> Update([FromBody] UpdateProductCategoryDTO dto)
+        {
+            try
+            {
+                var brand = await _productCategoryService.UpdateProductCategoryAsync(dto);
+                return Ok(brand);
+            }
+            catch (NameAlreadyInUseException ex)
+            {
+                return Conflict(new { message = ex.Message });
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
             }
         }
     }
