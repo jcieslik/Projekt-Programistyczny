@@ -11,8 +11,8 @@ namespace Application.Common.Interfaces.DataServiceInterfaces
     {
         Task<OrderDTO> CreateOrderAsync(CreateOrderDTO dto);
         Task<OrderDTO> CreateOrderAsync(UpdateOrderDTO dto);
-        Task<OrderDTO> GetOrderByIdAsync(Guid id);
-        Task<IEnumerable<OrderDTO>> GetOrdersFromOffer(Guid offerId);
-        Task<IEnumerable<OrderDTO>> GetOrdersFromUser(Guid userId);
+        Task<OrderDTO> GetOrderByIdAsync(long id);
+        Task<IEnumerable<OrderDTO>> GetOrdersFromOffer(long offerId);
+        Task<IEnumerable<OrderDTO>> GetOrdersFromUser(long userId);
     }
 }

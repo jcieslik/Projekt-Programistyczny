@@ -47,7 +47,6 @@ namespace Application.Services
             => await _context.Offers
                 .Include(x => x.Bids).ThenInclude(b => b.Bidder)
                 .Include(x => x.Brand)
-                .Include(x => x.Category)
                 .Include(x => x.City)
                 .Include(x => x.Province)
                 .Include(x => x.Seller)
@@ -63,18 +62,21 @@ namespace Application.Services
             var offers = _context.Offers
                 .Include(x => x.Bids)
                 .Include(x => x.Images)
-                .Include(x => x.Category).ThenInclude(x => x.ParentCategory)
+                .Include(x => x.Category)
                 .Include(x => x.City)
                 .Include(x => x.Province)
                 .Include(x => x.Brand)
-                .AsNoTracking()
-                .Where(x =>
-                    (x.Category.Id == filterModel.CategoryId || x.Category.HasAncestorCategory(filterModel.CategoryId))
-                    && x.OfferType == (OfferType)filterModel.OfferType
+                .AsNoTracking();
+
+
+            List<long> ids = GetChildrenCategoriesIds(filterModel.CategoryId);
+            ids.Add(filterModel.CategoryId);
+
+            offers = offers.Where(x => ids.Contains(x.Category.Id));
+            offers = offers.Where(x => x.OfferType == (OfferType)filterModel.OfferType
                     && x.ProductState == (ProductState)filterModel.ProductState
                     && x.State == (OfferState)filterModel.OfferState
                     );
-
             if (filterModel.BrandsIds.Count > 0)
             {
                 offers = offers.Where(x => filterModel.BrandsIds.Contains(x.Brand.Id));
@@ -95,7 +97,6 @@ namespace Application.Services
             {
                 offers = offers.Where(x => x.PriceForOneProduct >= filterModel.MinPrice.Value);
             }
-
             offers = paginationProperties.OrderBy switch
             {
                 "price_asc" => offers.OrderBy(x => x.PriceForOneProduct),
@@ -241,6 +242,21 @@ namespace Application.Services
 
             await _context.SaveChangesAsync();
             return _mapper.Map<OfferDTO>(offer);
+        }
+
+        private List<long> GetChildrenCategoriesIds(long parentId)
+        {
+            var childrenIds = _context.Categories
+                .AsNoTracking()
+                .Include(x => x.ParentCategory)
+                .Where(x => x.ParentCategory.Id == parentId).Select(x => x.Id).ToList();
+            List<long> result = new List<long>(childrenIds);
+            foreach(long id in childrenIds)
+            {
+                var ids = GetChildrenCategoriesIds(id);
+                result.AddRange(ids);
+            }
+            return result;
         }
     }
 }

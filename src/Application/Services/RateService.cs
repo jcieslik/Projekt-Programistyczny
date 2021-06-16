@@ -22,18 +22,13 @@ namespace Application.Services
         {
         }
 
-<<<<<<< HEAD
-        public async Task<ProductRateDTO> GetRateByIdAsync(Guid id)
+        public async Task<ProductRateDTO> GetRateByIdAsync(long id)
             => _mapper.Map<ProductRateDTO>(
                 await _context.Rates
                 .Include(x => x.Customer)
                 .Include(x => x.Offer)
                 .AsNoTracking()
                 .SingleOrDefaultAsync(x => x.Id == id));
-=======
-        public async Task<ProductRateDTO> GetRateByIdAsync(long id)
-            => _mapper.Map<ProductRateDTO>(await _context.Rates.FindAsync(id));
->>>>>>> 498944bc2f210c91fb13939836a43f93ac551954
 
         public async Task<IEnumerable<ProductRateDTO>> GetRatesFromUserAsync(long userId, bool onlyNotHidden = true)
         {

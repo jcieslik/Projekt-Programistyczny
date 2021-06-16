@@ -23,20 +23,13 @@ namespace Application.Services
         public MessageService(IApplicationDbContext context, IMapper mapper) : base(context, mapper)
         {
         }
-
-<<<<<<< HEAD
-        public async Task<MessageDTO> GetMessageByIdAsync(Guid id)
+        public async Task<MessageDTO> GetMessageByIdAsync(long id)
             => _mapper.Map<MessageDTO>(
                 await _context.Messages
                 .Include(x => x.Recipient)
                 .Include(x => x.Sender)
                 .SingleOrDefaultAsync(x => x.Id == id)
                 );
-=======
-        public async Task<MessageDTO> GetMessageByIdAsync(long id)
-            => _mapper.Map<MessageDTO>(await _context.Messages.FindAsync(id));
->>>>>>> 498944bc2f210c91fb13939836a43f93ac551954
-
         public async Task<PaginatedList<MessageDTO>> GetPaginatedMessagesFromUserAsync(long userId, PaginationProperties properties)
         {
             var messages = _context.Messages

@@ -22,8 +22,7 @@ namespace Application.Services
         {
         }
 
-<<<<<<< HEAD
-        public async Task<CommentDTO> GetCommentByIdAsync(Guid id)
+        public async Task<CommentDTO> GetCommentByIdAsync(long id)
             => _mapper.Map<CommentDTO>(
                 await _context.Comments
                 .Include(x => x.Offer)
@@ -31,10 +30,6 @@ namespace Application.Services
                 .AsNoTracking()
                 .SingleOrDefaultAsync(x => x.Id == id)
                 );
-=======
-        public async Task<CommentDTO> GetCommentByIdAsync(long id)
-            => _mapper.Map<CommentDTO>(await _context.Comments.FindAsync(id));
->>>>>>> 498944bc2f210c91fb13939836a43f93ac551954
 
         public async Task<IEnumerable<CommentDTO>> GetCommentsFromUserAsync(long userId, bool onlyNotHidden = true)
         {

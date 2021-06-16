@@ -1,6 +1,7 @@
 ﻿using Application.Common.Exceptions;
 using Application.Common.Interfaces.DataServiceInterfaces;
 using Application.DAL.DTO;
+using Application.DAL.DTO.CommandDTOs.Create;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -32,10 +33,9 @@ namespace Projekt_Programistyczny.Controllers
         }
 
         [HttpPost]
-        [Route("CreateProductCategory")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<ActionResult<BrandDTO>> Create([FromBody] ProductCategoryDTO dto)
+        public async Task<ActionResult<BrandDTO>> Create([FromBody] CreateProductCategoryDTO dto)
         {
             try
             {

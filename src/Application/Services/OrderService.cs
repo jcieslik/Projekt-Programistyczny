@@ -23,7 +23,7 @@ namespace Application.Services
         {
         }
 
-        public async Task<OrderDTO> GetOrderByIdAsync(Guid id)
+        public async Task<OrderDTO> GetOrderByIdAsync(long id)
         {
             return _mapper.Map<OrderDTO>(
                 await _context.Orders
@@ -33,7 +33,7 @@ namespace Application.Services
                 );
         }
 
-        public async Task<IEnumerable<OrderDTO>> GetOrdersFromUser(Guid userId)
+        public async Task<IEnumerable<OrderDTO>> GetOrdersFromUser(long userId)
         {
             var user = await _context.Users.FindAsync(userId);
             if (user == null)
@@ -48,7 +48,7 @@ namespace Application.Services
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<OrderDTO>> GetOrdersFromOffer(Guid offerId)
+        public async Task<IEnumerable<OrderDTO>> GetOrdersFromOffer(long offerId)
         {
             var offer = await _context.Offers.FindAsync(offerId);
             if (offer == null)

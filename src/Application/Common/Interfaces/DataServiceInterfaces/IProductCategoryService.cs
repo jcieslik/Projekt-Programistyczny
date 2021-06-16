@@ -1,4 +1,5 @@
 ﻿using Application.DAL.DTO;
+using Application.DAL.DTO.CommandDTOs.Create;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,6 @@ namespace Application.Common.Interfaces.DataServiceInterfaces
     public interface IProductCategoryService
     {
         Task<IEnumerable<ProductCategoryDTO>> GetProductCategoriesAsync();
-        Task<ProductCategoryDTO> CreateProductCategoryAsync(ProductCategoryDTO dto);
+        Task<ProductCategoryDTO> CreateProductCategoryAsync(CreateProductCategoryDTO dto);
     }
 }

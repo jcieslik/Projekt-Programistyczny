@@ -22,8 +22,7 @@ namespace Application.Services
         {
         }
 
-<<<<<<< HEAD
-        public async Task<BidDTO> GetBidByIdAsync(Guid id)
+        public async Task<BidDTO> GetBidByIdAsync(long id)
             => _mapper.Map<BidDTO>(
                 await _context.Bids
                 .Include(x => x.Offer)
@@ -31,10 +30,6 @@ namespace Application.Services
                 .AsNoTracking()
                 .SingleOrDefaultAsync(x => x.Id == id)
                 );
-=======
-        public async Task<BidDTO> GetBidByIdAsync(long id)
-            => _mapper.Map<BidDTO>(await _context.Bids.FindAsync(id));
->>>>>>> 498944bc2f210c91fb13939836a43f93ac551954
 
         public async Task<IEnumerable<BidDTO>> GetBidsFromOfferAsync(long offerId, bool onlyNotHidden)
         {

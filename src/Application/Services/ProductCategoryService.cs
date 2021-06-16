@@ -3,6 +3,7 @@ using Application.Common.Interfaces;
 using Application.Common.Interfaces.DataServiceInterfaces;
 using Application.Common.Services;
 using Application.DAL.DTO;
+using Application.DAL.DTO.CommandDTOs.Create;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Domain.Entities;
@@ -33,16 +34,26 @@ namespace Application.Services
                 .ToListAsync();
         }
 
-        public async Task<ProductCategoryDTO> CreateProductCategoryAsync(ProductCategoryDTO dto)
+        public async Task<ProductCategoryDTO> CreateProductCategoryAsync(CreateProductCategoryDTO dto)
         {
             var checkName = await _context.Categories.Where(x => x.Name == dto.Name).CountAsync();
             if (checkName > 0)
             {
                 throw new NameAlreadyInUseException(dto.Name);
             }
+            ProductCategory parent = null;
+            if (dto.ParentCategoryId.HasValue)
+            {
+                parent = await _context.Categories.FindAsync(dto.ParentCategoryId.Value);
+                if(parent == null)
+                {
+                    throw new NotFoundException(nameof(ProductCategory), dto.ParentCategoryId.Value);
+                }
+            }
             var entity = new ProductCategory
             {
-                Name = dto.Name
+                Name = dto.Name,
+                ParentCategory = parent
             };
             _context.Categories.Add(entity);
             await _context.SaveChangesAsync();
