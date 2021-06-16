@@ -9,8 +9,8 @@ namespace Application.DAL.DTO
     public class CommentDTO : EntityDTO, IMapFrom<Comment>
     {
         public string Content { get; set; }
-        public Guid OfferId { get; set; }
-        public Guid CustomerId { get; set; }
+        public long OfferId { get; set; }
+        public long CustomerId { get; set; }
 
         public void Mapping(Profile profile)
         {

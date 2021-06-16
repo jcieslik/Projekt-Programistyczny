@@ -3,6 +3,7 @@ using Application.Common.Interfaces.DataServiceInterfaces;
 using Application.DAL.DTO;
 using Application.DAL.DTO.CommandDTOs.Create;
 using Application.DAL.DTO.CommandDTOs.Update;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -23,10 +24,11 @@ namespace Projekt_Programistyczny.Controllers
             _bidService = bidService;
         }
 
-        [HttpGet("{id}")]
+        [HttpGet]
+        [Route("GetBidById")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<BidDTO>> GetBidById([FromRoute] Guid id)
+        public async Task<ActionResult<BidDTO>> GetBidById([FromQuery] long id)
         {
             var bid = await _bidService.GetBidByIdAsync(id);
             if(bid == null)
@@ -37,10 +39,10 @@ namespace Projekt_Programistyczny.Controllers
         }
 
         [HttpGet]
+        [Route("GetBidsFromOffer")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [Route("Offer/{id}")]
-        public async Task<ActionResult<IEnumerable<BidDTO>>> GetBidsFromOffer([FromRoute] Guid id, [FromQuery] bool onlyNotHidden = true)
+        public async Task<ActionResult<IEnumerable<BidDTO>>> GetBidsFromOffer([FromQuery] long id, [FromQuery] bool onlyNotHidden = true)
         {
             try
             {
@@ -54,10 +56,10 @@ namespace Projekt_Programistyczny.Controllers
         }
 
         [HttpGet]
+        [Route("GetBidsFromUser")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [Route("User/{id}")]
-        public async Task<ActionResult<IEnumerable<BidDTO>>> GetBidsFromUser([FromRoute] Guid id, [FromQuery] bool onlyNotHidden = true)
+        public async Task<ActionResult<IEnumerable<BidDTO>>> GetBidsFromUser([FromQuery] long id, [FromQuery] bool onlyNotHidden = true)
         {
             try
             {
@@ -71,6 +73,7 @@ namespace Projekt_Programistyczny.Controllers
         }
 
         [HttpPost]
+        [Route("CreateBid")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<BidDTO>> Create([FromBody] CreateBidDTO dto)
@@ -87,6 +90,7 @@ namespace Projekt_Programistyczny.Controllers
         }
 
         [HttpPut]
+        [Route("UpdateBid")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<BidDTO>> Update([FromBody] UpdateBidDTO dto)

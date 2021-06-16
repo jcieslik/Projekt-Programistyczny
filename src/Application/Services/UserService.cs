@@ -27,7 +27,7 @@ namespace Application.Services
             return _mapper.Map<UserDTO>(await _context.Users.Where(u => u.Username == login && u.Password == password).SingleOrDefaultAsync());
         }
             
-        public async Task<UserDTO> GetUserById(Guid Id)
+        public async Task<UserDTO> GetUserById(long Id)
         {
             return _mapper.Map<UserDTO>(await _context.Users.FindAsync(Id));
         }

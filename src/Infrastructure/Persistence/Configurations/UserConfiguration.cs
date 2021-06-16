@@ -40,7 +40,7 @@ namespace Infrastructure.Persistence.Configurations
             builder.HasData(
                     new User
                     {
-                        Id = Guid.NewGuid(),
+                        Id = 1,
                         Username = "admin",
                         IsActive = true,
                         Password = "admin",

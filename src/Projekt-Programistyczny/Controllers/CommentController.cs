@@ -3,6 +3,7 @@ using Application.Common.Interfaces.DataServiceInterfaces;
 using Application.DAL.DTO;
 using Application.DAL.DTO.CommandDTOs.Create;
 using Application.DAL.DTO.CommandDTOs.Update;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -22,10 +23,11 @@ namespace Projekt_Programistyczny.Controllers
             _commentService = commentService;
         }
 
-        [HttpGet("{id}")]
+        [HttpGet]
+        [Route("GetCommentById")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IEnumerable<CommentDTO>>> GetCommentById([FromRoute] Guid id)
+        public async Task<ActionResult<IEnumerable<CommentDTO>>> GetCommentById([FromQuery] long id)
         {
             var comment = await _commentService.GetCommentByIdAsync(id);
             if(comment == null)
@@ -36,10 +38,10 @@ namespace Projekt_Programistyczny.Controllers
         }
 
         [HttpGet]
+        [Route("GetCommentsFromOffer")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [Route("Offer/{id}")]
-        public async Task<ActionResult<IEnumerable<CommentDTO>>> GetCommentsFromOffer([FromRoute] Guid id, [FromQuery] bool onlyNotHidden = true)
+        public async Task<ActionResult<IEnumerable<CommentDTO>>> GetCommentsFromOffer([FromQuery] long id, [FromQuery] bool onlyNotHidden = true)
         {
             try
             {
@@ -53,11 +55,11 @@ namespace Projekt_Programistyczny.Controllers
         }
 
         [HttpGet]
+        [Route("GetCommentsFromUser")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [Route("User/{id}")]
-        public async Task<ActionResult<IEnumerable<CommentDTO>>> GetCommentsFromUser([FromRoute] Guid id, [FromQuery] bool onlyNotHidden = true)
+        public async Task<ActionResult<IEnumerable<CommentDTO>>> GetCommentsFromUser([FromQuery] long id, [FromQuery] bool onlyNotHidden = true)
         {
             try
             {
@@ -75,6 +77,7 @@ namespace Projekt_Programistyczny.Controllers
         }
 
         [HttpPost]
+        [Route("CreateComment")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -96,6 +99,7 @@ namespace Projekt_Programistyczny.Controllers
         }
 
         [HttpPut]
+        [Route("UpdateComment")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

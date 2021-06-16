@@ -16,14 +16,14 @@ namespace Application.DAL.DTO
         public string Description { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public Guid SellerId { get; set; }
-        public Guid CityId { get; set; }
-        public Guid ProvinceId { get; set; }
+        public long SellerId { get; set; }
+        public long CityId { get; set; }
+        public long ProvinceId { get; set; }
         public ProductState ProductState { get; set; }
         public OfferState State { get; set; }
         public OfferType OfferType { get; set; }
-        public Guid CategoryId { get; set; }
-        public Guid BrandId { get; set; }
+        public long CategoryId { get; set; }
+        public long BrandId { get; set; }
 
         public void Mapping(Profile profile)
         {

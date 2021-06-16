@@ -9,9 +9,9 @@ namespace Application.Common.Interfaces.DataServiceInterfaces
 {
     public interface IRateService
     {
-        Task<ProductRateDTO> GetRateByIdAsync(Guid id);
-        Task<IEnumerable<ProductRateDTO>> GetRatesFromUserAsync(Guid userId, bool onlyNotHidden = true);
-        Task<IEnumerable<ProductRateDTO>> GetRatesFromOfferAsync(Guid offerId, bool onlyNotHidden = true);
+        Task<ProductRateDTO> GetRateByIdAsync(long id);
+        Task<IEnumerable<ProductRateDTO>> GetRatesFromUserAsync(long userId, bool onlyNotHidden = true);
+        Task<IEnumerable<ProductRateDTO>> GetRatesFromOfferAsync(long offerId, bool onlyNotHidden = true);
         Task<ProductRateDTO> CreateRateAsync(CreateProductRateDTO dto);
         Task<ProductRateDTO> UpdateRateAsync(UpdateProductRateDTO dto);
     }

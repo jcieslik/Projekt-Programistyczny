@@ -13,6 +13,7 @@ using Domain.Entities;
 using Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -24,7 +25,7 @@ namespace Application.Services
         {
         }
 
-        public async Task<OfferDTO> GetOfferByIdAsync(Guid id)
+        public async Task<OfferDTO> GetOfferByIdAsync(long id)
         {
             var offer = await _context.Offers
                 .Include(x => x.Bids).ThenInclude(b => b.Bidder)
@@ -41,6 +42,21 @@ namespace Application.Services
 
             return _mapper.Map<OfferDTO>(offer);
         }
+
+        public async Task<IEnumerable<OfferWithBaseDataDTO>> GetOffersAsync()
+            => await _context.Offers
+                .Include(x => x.Bids).ThenInclude(b => b.Bidder)
+                .Include(x => x.Brand)
+                .Include(x => x.Category)
+                .Include(x => x.City)
+                .Include(x => x.Province)
+                .Include(x => x.Seller)
+                .Include(x => x.Comments).ThenInclude(c => c.Customer)
+                .Include(x => x.Rates).ThenInclude(r => r.Customer)
+                .Include(x => x.Images)
+                .AsNoTracking()
+                .ProjectTo<OfferWithBaseDataDTO>(_mapper.ConfigurationProvider)
+                .ToListAsync();
 
         public async Task<PaginatedList<OfferWithBaseDataDTO>> GetPaginatedOffersAsync(FilterModel filterModel, PaginationProperties paginationProperties)
         {
@@ -148,7 +164,6 @@ namespace Application.Services
                 {
                     Offer = entity,
                     ImageData = item.ImageData,
-                    ImageTitle = item.ImageTitle,
                     IsHidden = false,
                     IsMainProductImage = item.IsMainProductImage
                 };

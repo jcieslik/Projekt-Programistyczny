@@ -4,7 +4,7 @@ namespace Application.DAL.DTO.CommandDTOs.Update
 {
     public class UpdateBrandDTO
     {
-        public Guid Id { get; set; }
+        public long Id { get; set; }
         public string Name { get; set; }
     }
 }

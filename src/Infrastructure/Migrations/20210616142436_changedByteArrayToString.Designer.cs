@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210612195737_AddedMissingPropertyToOffer")]
-    partial class AddedMissingPropertyToOffer
+    [Migration("20210616142436_changedByteArrayToString")]
+    partial class changedByteArrayToString
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,11 +23,11 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("CartOffer", b =>
                 {
-                    b.Property<Guid>("CartsId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("CartsId")
+                        .HasColumnType("bigint");
 
-                    b.Property<Guid>("OffersId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("OffersId")
+                        .HasColumnType("bigint");
 
                     b.HasKey("CartsId", "OffersId");
 
@@ -38,18 +38,19 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.Bid", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<Guid?>("BidderId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long?>("BidderId")
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("CreatedBy")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("CreatedBy")
+                        .HasColumnType("bigint");
 
                     b.Property<bool>("IsHidden")
                         .HasColumnType("bit");
@@ -57,11 +58,11 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime?>("LastModified")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("ModifiedBy")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("ModifiedBy")
+                        .HasColumnType("bigint");
 
-                    b.Property<Guid?>("OfferId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long?>("OfferId")
+                        .HasColumnType("bigint");
 
                     b.Property<double>("Value")
                         .HasColumnType("float");
@@ -77,21 +78,22 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.Brand", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("CreatedBy")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("CreatedBy")
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime?>("LastModified")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("ModifiedBy")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("ModifiedBy")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -104,24 +106,25 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.Cart", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("CreatedBy")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("CreatedBy")
+                        .HasColumnType("bigint");
 
-                    b.Property<Guid>("CustomerId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("CustomerId")
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime?>("LastModified")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("ModifiedBy")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("ModifiedBy")
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
@@ -133,21 +136,22 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.City", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("CreatedBy")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("CreatedBy")
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime?>("LastModified")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("ModifiedBy")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("ModifiedBy")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -160,9 +164,10 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.Comment", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Content")
                         .IsRequired()
@@ -171,11 +176,11 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("CreatedBy")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("CreatedBy")
+                        .HasColumnType("bigint");
 
-                    b.Property<Guid?>("CustomerId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long?>("CustomerId")
+                        .HasColumnType("bigint");
 
                     b.Property<bool>("IsHidden")
                         .HasColumnType("bit");
@@ -183,11 +188,11 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime?>("LastModified")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("ModifiedBy")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("ModifiedBy")
+                        .HasColumnType("bigint");
 
-                    b.Property<Guid?>("OfferId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long?>("OfferId")
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
@@ -200,9 +205,10 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.Message", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Content")
                         .IsRequired()
@@ -211,8 +217,8 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("CreatedBy")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("CreatedBy")
+                        .HasColumnType("bigint");
 
                     b.Property<bool>("IsHidden")
                         .HasColumnType("bit");
@@ -223,17 +229,17 @@ namespace Infrastructure.Migrations
                     b.Property<int>("MailboxType")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("ModifiedBy")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("ModifiedBy")
+                        .HasColumnType("bigint");
 
-                    b.Property<Guid?>("RecipientId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long?>("RecipientId")
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime?>("SendDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid?>("SenderId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long?>("SenderId")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Topic")
                         .IsRequired()
@@ -250,24 +256,25 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.Offer", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<Guid?>("BrandId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long?>("BrandId")
+                        .HasColumnType("bigint");
 
-                    b.Property<Guid?>("CategoryId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long?>("CategoryId")
+                        .HasColumnType("bigint");
 
-                    b.Property<Guid?>("CityId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long?>("CityId")
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("CreatedBy")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("CreatedBy")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -282,8 +289,8 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime?>("LastModified")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("ModifiedBy")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("ModifiedBy")
+                        .HasColumnType("bigint");
 
                     b.Property<int>("OfferType")
                         .HasColumnType("int");
@@ -297,11 +304,11 @@ namespace Infrastructure.Migrations
                     b.Property<int>("ProductState")
                         .HasColumnType("int");
 
-                    b.Property<Guid?>("ProvinceId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long?>("ProvinceId")
+                        .HasColumnType("bigint");
 
-                    b.Property<Guid?>("SellerId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long?>("SellerId")
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
@@ -331,27 +338,28 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.Order", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("CreatedBy")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("CreatedBy")
+                        .HasColumnType("bigint");
 
-                    b.Property<Guid?>("CustomerId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long?>("CustomerId")
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime?>("LastModified")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("ModifiedBy")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("ModifiedBy")
+                        .HasColumnType("bigint");
 
-                    b.Property<Guid?>("OfferId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long?>("OfferId")
+                        .HasColumnType("bigint");
 
                     b.Property<int>("OrderStatus")
                         .HasColumnType("int");
@@ -367,28 +375,29 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.ProductCategory", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("CreatedBy")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("CreatedBy")
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime?>("LastModified")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("ModifiedBy")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("ModifiedBy")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("ParentCategoryId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long?>("ParentCategoryId")
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
@@ -399,20 +408,18 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.ProductImage", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("CreatedBy")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("CreatedBy")
+                        .HasColumnType("bigint");
 
-                    b.Property<byte[]>("ImageData")
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<string>("ImageTitle")
+                    b.Property<string>("ImageData")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsHidden")
@@ -424,11 +431,11 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime?>("LastModified")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("ModifiedBy")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("ModifiedBy")
+                        .HasColumnType("bigint");
 
-                    b.Property<Guid?>("OfferId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long?>("OfferId")
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
@@ -439,18 +446,19 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.ProductRate", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("CreatedBy")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("CreatedBy")
+                        .HasColumnType("bigint");
 
-                    b.Property<Guid?>("CustomerId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long?>("CustomerId")
+                        .HasColumnType("bigint");
 
                     b.Property<bool>("IsHidden")
                         .HasColumnType("bit");
@@ -458,11 +466,11 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime?>("LastModified")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("ModifiedBy")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("ModifiedBy")
+                        .HasColumnType("bigint");
 
-                    b.Property<Guid?>("OfferId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long?>("OfferId")
+                        .HasColumnType("bigint");
 
                     b.Property<double>("Value")
                         .HasColumnType("float");
@@ -478,21 +486,22 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.Province", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("CreatedBy")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("CreatedBy")
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime?>("LastModified")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("ModifiedBy")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("ModifiedBy")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -505,9 +514,10 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.User", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -542,7 +552,7 @@ namespace Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("6e050a22-12d6-47b4-bddc-f6d99a5b1a60"),
+                            Id = 1L,
                             Email = "example@example.com",
                             IsActive = true,
                             Name = "Jan",
@@ -555,18 +565,19 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.Wish", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("CreatedBy")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("CreatedBy")
+                        .HasColumnType("bigint");
 
-                    b.Property<Guid?>("CustomerId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long?>("CustomerId")
+                        .HasColumnType("bigint");
 
                     b.Property<bool>("IsHidden")
                         .HasColumnType("bit");
@@ -574,11 +585,11 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime?>("LastModified")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("ModifiedBy")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long>("ModifiedBy")
+                        .HasColumnType("bigint");
 
-                    b.Property<Guid?>("OfferId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<long?>("OfferId")
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 

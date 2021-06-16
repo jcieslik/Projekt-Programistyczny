@@ -22,14 +22,19 @@ namespace Application.Services
         {
         }
 
+<<<<<<< HEAD
         public async Task<ProductImageDTO> GetProductImageByIdAsync(Guid id)
             => _mapper.Map<ProductImageDTO>(
                 await _context.Images
                 .Include(x => x.Offer)
                 .AsNoTracking()
                 .SingleOrDefaultAsync(x => x.Id == id));
+=======
+        public async Task<ProductImageDTO> GetProductImageByIdAsync(long id)
+            => _mapper.Map<ProductImageDTO>(await _context.Images.FindAsync(id));
+>>>>>>> 498944bc2f210c91fb13939836a43f93ac551954
 
-        public async Task<IEnumerable<ProductImageDTO>> GetProductImagesFromOfferdAsync(Guid offerId, bool onlyNotHidden)
+        public async Task<IEnumerable<ProductImageDTO>> GetProductImagesFromOfferdAsync(long offerId, bool onlyNotHidden)
         {
             var images = _context.Images.Include(i => i.Offer)
             .AsNoTracking()
@@ -52,7 +57,6 @@ namespace Application.Services
             var entity = new ProductImage
             {
                 Offer = offer,
-                ImageTitle = dto.ImageTitle,
                 ImageData = dto.ImageData,
                 IsMainProductImage = dto.IsMainProductImage,
                 IsHidden = false
@@ -77,10 +81,6 @@ namespace Application.Services
                 image.ImageData = dto.ImageData;
             }
 
-            if (!string.IsNullOrEmpty(dto.ImageTitle))
-            {
-                image.ImageTitle = dto.ImageTitle;
-            }
 
             if (dto.IsMainProductImage.HasValue)
             {

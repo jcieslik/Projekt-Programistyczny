@@ -4,6 +4,7 @@ using Application.DAL.DTO;
 using Application.DAL.DTO.CommandDTOs.Create;
 using Application.DAL.DTO.CommandDTOs.Update;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -28,10 +29,11 @@ namespace Projekt_Programistyczny.Controllers
             _rateService = rateService;
         }
 
-        [HttpGet("{id}")]
+        [HttpGet]
+        [Route("GetRateById")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<ProductRateDTO>> GetRateById(Guid id)
+        public async Task<ActionResult<ProductRateDTO>> GetRateById([FromQuery] long id)
         {
             var rate = await _rateService.GetRateByIdAsync(id);
             if(rate == null)
@@ -42,10 +44,10 @@ namespace Projekt_Programistyczny.Controllers
         }
 
         [HttpGet]
-        [Route("Offer/{id}")]
+        [Route("GetRatesFromOffer")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IEnumerable<ProductRateDTO>>> GetRatesFromOffer([FromRoute] Guid id, [FromQuery] bool onlyNotHidden = true)
+        public async Task<ActionResult<IEnumerable<ProductRateDTO>>> GetRatesFromOffer([FromQuery] long id, [FromQuery] bool onlyNotHidden = true)
         {
             try
             {
@@ -59,10 +61,10 @@ namespace Projekt_Programistyczny.Controllers
         }
 
         [HttpGet]
-        [Route("User/{id}")]
+        [Route("GetRatesFromUser")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IEnumerable<ProductRateDTO>>> GetRatesFromUser([FromRoute] Guid id, [FromQuery] bool onlyNotHidden = true)
+        public async Task<ActionResult<IEnumerable<ProductRateDTO>>> GetRatesFromUser([FromQuery] long id, [FromQuery] bool onlyNotHidden = true)
         {
             try
             {

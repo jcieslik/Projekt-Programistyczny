@@ -24,6 +24,7 @@ namespace Application.Services
         {
         }
 
+<<<<<<< HEAD
         public async Task<MessageDTO> GetMessageByIdAsync(Guid id)
             => _mapper.Map<MessageDTO>(
                 await _context.Messages
@@ -31,8 +32,12 @@ namespace Application.Services
                 .Include(x => x.Sender)
                 .SingleOrDefaultAsync(x => x.Id == id)
                 );
+=======
+        public async Task<MessageDTO> GetMessageByIdAsync(long id)
+            => _mapper.Map<MessageDTO>(await _context.Messages.FindAsync(id));
+>>>>>>> 498944bc2f210c91fb13939836a43f93ac551954
 
-        public async Task<PaginatedList<MessageDTO>> GetPaginatedMessagesFromUserAsync(Guid userId, PaginationProperties properties)
+        public async Task<PaginatedList<MessageDTO>> GetPaginatedMessagesFromUserAsync(long userId, PaginationProperties properties)
         {
             var messages = _context.Messages
             .Include(m => m.Recipient).Include(m => m.Sender)
@@ -50,7 +55,7 @@ namespace Application.Services
             .PaginatedListAsync(properties.PageIndex, properties.PageSize);
         }
 
-        public async Task<Guid> CreateMessageAsync(CreateMessageDTO dto)
+        public async Task<long> CreateMessageAsync(CreateMessageDTO dto)
         {
             var sender = await _context.Users.FindAsync(dto.SenderId);
             if (sender == null)
@@ -81,7 +86,7 @@ namespace Application.Services
             return entity.Id;
         }
 
-        public async Task<Guid> UpdateMessageAsync(UpdateMessageDTO dto)
+        public async Task<long> UpdateMessageAsync(UpdateMessageDTO dto)
         {
             var message = await _context.Messages.FindAsync(dto.Id);
             if (message == null)

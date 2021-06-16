@@ -3,6 +3,7 @@ using Application.Common.Interfaces.DataServiceInterfaces;
 using Application.DAL.DTO;
 using Application.DAL.DTO.CommandDTOs.Create;
 using Application.DAL.DTO.CommandDTOs.Update;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -22,10 +23,11 @@ namespace Projekt_Programistyczny.Controllers
             _productImageService = productImageService;
         }
 
-        [HttpGet("{id}")]
+        [HttpGet]
+        [Route("GetImageById")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<ProductImageDTO>> GetImageById(Guid id)
+        public async Task<ActionResult<ProductImageDTO>> GetImageById([FromQuery] long id)
         {
             var image = await _productImageService.GetProductImageByIdAsync(id);
             if(image == null)
@@ -36,10 +38,10 @@ namespace Projekt_Programistyczny.Controllers
         }
 
         [HttpGet]
+        [Route("GetImagesFromOffer")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [Route("Offer/{id}")]
-        public async Task<ActionResult<IEnumerable<ProductImageDTO>>> GetImagesFromOffer([FromRoute] Guid id, [FromQuery] bool onlyNotHidden = true)
+        public async Task<ActionResult<IEnumerable<ProductImageDTO>>> GetImagesFromOffer([FromQuery] long id, [FromQuery] bool onlyNotHidden = true)
         {
             try
             {
@@ -53,6 +55,7 @@ namespace Projekt_Programistyczny.Controllers
         }
 
         [HttpPost]
+        [Route("CreateImage")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<ProductImageDTO>> Create([FromBody] CreateProductImageDTO dto)
@@ -69,6 +72,7 @@ namespace Projekt_Programistyczny.Controllers
         }
 
         [HttpPut]
+        [Route("UpdateImage")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

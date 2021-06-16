@@ -2,6 +2,7 @@
 using Application.Common.Interfaces.DataServiceInterfaces;
 using Application.DAL.DTO;
 using Application.DAL.DTO.CommandDTOs.Update;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -21,6 +22,7 @@ namespace Projekt_Programistyczny.Controllers
         }
 
         [HttpGet]
+        [Route("GetBrands")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<BrandDTO>>> GetBrands()
         {
@@ -28,10 +30,11 @@ namespace Projekt_Programistyczny.Controllers
             return Ok(brands);
         }
 
-        [HttpPost("{name}")]
+        [HttpPost]
+        [Route("CreateBrand")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<ActionResult<BrandDTO>> Create([FromRoute] string name)
+        public async Task<ActionResult<BrandDTO>> Create([FromQuery] string name)
         {
             try
             {
@@ -45,6 +48,7 @@ namespace Projekt_Programistyczny.Controllers
         }
 
         [HttpPut]
+        [Route("UpdateBrand")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]

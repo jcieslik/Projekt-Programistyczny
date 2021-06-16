@@ -1,4 +1,5 @@
 ﻿using Application.Common.Interfaces.DataServiceInterfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;

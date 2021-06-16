@@ -30,10 +30,10 @@ namespace Projekt_Programistyczny.Controllers
         }
 
         [HttpPost]
+        [Route("Authenticate")]
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [Route("Authenticate")]
         public async Task<ActionResult<UserDTO>> Authenticate(string login, string password)
         {
             var user = await userService.AuthenticateUser(login, password);
@@ -66,12 +66,13 @@ namespace Projekt_Programistyczny.Controllers
         public async Task<IActionResult> Deauthenticate()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            currentUserService.Id = Guid.Empty;
+            currentUserService.Id = 0;
             return Ok();
 
         }
 
         [HttpPost]
+        [Route("CreateUser")]
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -94,6 +95,7 @@ namespace Projekt_Programistyczny.Controllers
         }
 
         [HttpPut]
+        [Route("UpdateUser")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

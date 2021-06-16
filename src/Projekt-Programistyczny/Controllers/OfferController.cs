@@ -4,6 +4,7 @@ using Application.Common.Models;
 using Application.DAL.DTO;
 using Application.DAL.DTO.CommandDTOs.Create;
 using Application.DAL.DTO.CommandDTOs.Update;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Projekt_Programistyczny.Models;
@@ -25,10 +26,11 @@ namespace Projekt_Programistyczny.Controllers
             _offerService = offerService;
         }
 
-        [HttpGet("{id}")]
+        [HttpGet]
+        [Route("GetOfferById")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<OfferDTO>> GetOfferId(Guid id)
+        public async Task<ActionResult<OfferDTO>> GetOfferById([FromQuery] long id)
         {
             var offer = await _offerService.GetOfferByIdAsync(id);
             if(offer == null)
@@ -39,6 +41,16 @@ namespace Projekt_Programistyczny.Controllers
         }
 
         [HttpGet]
+        [Route("GetAllOffers")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<IEnumerable<OfferWithBaseDataDTO>>> GetAllOffers()
+        {
+            var offers = await _offerService.GetOffersAsync();
+            return Ok(offers);
+        }
+
+        [HttpPost]
+        [Route("GetOffers")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<PaginatedList<OfferWithBaseDataDTO>>> GetOffers([FromBody] SearchModel searchModel)
         {
@@ -67,6 +79,7 @@ namespace Projekt_Programistyczny.Controllers
         }
 
         [HttpPost]
+        [Route("CreateOffer")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<OfferDTO>> Create([FromBody] CreateOfferDTO dto)
@@ -83,6 +96,7 @@ namespace Projekt_Programistyczny.Controllers
         }
 
         [HttpPut]
+        [Route("UpdateOffer")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<OfferDTO>> Update([FromBody] UpdateOfferDTO dto)

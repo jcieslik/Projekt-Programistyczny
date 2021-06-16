@@ -9,7 +9,7 @@ namespace Application.Common.Interfaces.DataServiceInterfaces
     public interface IUserService
     {
         Task<UserDTO> AuthenticateUser(string login, string password);
-        Task<UserDTO> GetUserById(Guid Id);
+        Task<UserDTO> GetUserById(long Id);
         Task<UserDTO> CreateUserAsync(CreateUserDTO dto);
         Task<UserDTO> UpdateUserAsync(UpdateUserDTO dto);
     }

@@ -5,6 +5,6 @@ namespace Projekt_Programistyczny.Services
 {
     public class CurrentUserService : ICurrentUserService
     {
-        public Guid Id { get; set; }
+        public long Id { get; set; }
     }
 }
