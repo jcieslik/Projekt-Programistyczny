@@ -48,7 +48,6 @@ namespace Application.Services
             var entity = new ProductImage
             {
                 Offer = offer,
-                ImageTitle = dto.ImageTitle,
                 ImageData = dto.ImageData,
                 IsMainProductImage = dto.IsMainProductImage,
                 IsHidden = false
@@ -73,10 +72,6 @@ namespace Application.Services
                 image.ImageData = dto.ImageData;
             }
 
-            if (!string.IsNullOrEmpty(dto.ImageTitle))
-            {
-                image.ImageTitle = dto.ImageTitle;
-            }
 
             if (dto.IsMainProductImage.HasValue)
             {

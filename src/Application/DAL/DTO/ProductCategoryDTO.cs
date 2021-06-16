@@ -10,7 +10,7 @@ namespace Application.DAL.DTO
     public class ProductCategoryDTO : EntityDTO, IMapFrom<ProductCategory>
     {
         public string Name { get; set; }
-        public long ParentCategoryId { get; set; }
+        public long? ParentCategoryId { get; set; }
         public ICollection<ProductCategoryDTO> ChildrenCategories { get; set; }
 
         public void Mapping(Profile profile)

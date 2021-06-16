@@ -148,7 +148,6 @@ namespace Application.Services
                 {
                     Offer = entity,
                     ImageData = item.ImageData,
-                    ImageTitle = item.ImageTitle,
                     IsHidden = false,
                     IsMainProductImage = item.IsMainProductImage
                 };
