@@ -10,6 +10,6 @@ namespace Application.DAL.DTO.CommandDTOs.Update
         public string Password { get; set; }
         public string Name { get; set; }
         public string Surname { get; set; }
-        public bool? IsAsctive { get; set; }
+        public bool? IsActive { get; set; }
     }
 }
