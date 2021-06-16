@@ -41,6 +41,15 @@ namespace Projekt_Programistyczny.Controllers
         }
 
         [HttpGet]
+        [Route("GetAllOffers")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<IEnumerable<OfferWithBaseDataDTO>>> GetAllOffers()
+        {
+            var offers = await _offerService.GetOffersAsync();
+            return Ok(offers);
+        }
+
+        [HttpPost]
         [Route("GetOffers")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<PaginatedList<OfferWithBaseDataDTO>>> GetOffers([FromBody] SearchModel searchModel)
