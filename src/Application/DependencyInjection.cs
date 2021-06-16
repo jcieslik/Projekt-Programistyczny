@@ -19,6 +19,9 @@ namespace Application
             services.AddScoped<IMessageService, MessageService>();
             services.AddScoped<IBrandService, BrandService>();
             services.AddScoped<IOfferService, OfferService>();
+            services.AddScoped<IProductCategoryService, ProductCategoryService>();
+            services.AddScoped<ICityService, CityService>();
+            services.AddScoped<IProvinceService, ProvinceService>();
             return services;
         }
     }
