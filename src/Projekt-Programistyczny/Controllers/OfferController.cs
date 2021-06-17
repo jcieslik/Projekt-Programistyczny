@@ -49,6 +49,22 @@ namespace Projekt_Programistyczny.Controllers
             return Ok(offers);
         }
 
+        [HttpGet]
+        [Route("GetOffersFromUser")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<IEnumerable<OfferWithBaseDataDTO>>> GetOffersFromUser([FromQuery] long id)
+        {
+            try 
+            {
+                var offers = await _offerService.GetOffersFromUserAsync(id);
+                return Ok(offers);
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+        }
+
         [HttpPost]
         [Route("GetOffers")]
         [ProducesResponseType(StatusCodes.Status200OK)]

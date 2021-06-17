@@ -12,6 +12,8 @@ namespace Application.Common.Interfaces.DataServiceInterfaces
     {
         Task<OfferDTO> CreateOfferAsync(CreateOfferDTO dto);
         Task<OfferDTO> GetOfferByIdAsync(long id);
+
+        Task<IEnumerable<OfferWithBaseDataDTO>> GetOffersFromUserAsync(long id);
         Task<PaginatedList<OfferWithBaseDataDTO>> GetPaginatedOffersAsync(FilterModel filterModel, PaginationProperties paginationProperties);
         Task<OfferDTO> UpdateOfferAsync(UpdateOfferDTO dto);
         Task<IEnumerable<OfferWithBaseDataDTO>> GetOffersAsync();

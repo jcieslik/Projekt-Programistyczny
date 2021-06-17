@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <RootNamespace>Projekt_Programistyczny</RootNamespace>
+    <UserSecretsId>14eaa961-2eb8-4cd9-8aaf-b6dace8a4bb5</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

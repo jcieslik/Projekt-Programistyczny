@@ -57,6 +57,17 @@ namespace Application.Services
                 .ProjectTo<OfferWithBaseDataDTO>(_mapper.ConfigurationProvider)
                 .ToListAsync();
 
+        public async Task<IEnumerable<OfferWithBaseDataDTO>> GetOffersFromUserAsync(long userId)
+        {
+            var offers = _context.Offers
+                .Include(x => x.Seller)
+                .AsNoTracking()
+                .Where(x => x.Seller.Id == userId);
+
+            return await offers.ProjectTo<OfferWithBaseDataDTO>(_mapper.ConfigurationProvider)
+            .ToListAsync();
+        }
+
         public async Task<PaginatedList<OfferWithBaseDataDTO>> GetPaginatedOffersAsync(FilterModel filterModel, PaginationProperties paginationProperties)
         {
             var offers = _context.Offers

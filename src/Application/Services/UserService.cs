@@ -102,9 +102,9 @@ namespace Application.Services
                 user.Surname = dto.Surname;
             }
 
-            if (dto.IsAsctive.HasValue)
+            if (dto.IsActive.HasValue)
             {
-                user.IsActive = dto.IsAsctive.Value;
+                user.IsActive = dto.IsActive.Value;
             }
 
             await _context.SaveChangesAsync();
