@@ -1,6 +1,7 @@
 ﻿using Application.Common.Exceptions;
 using Application.Common.Interfaces.DataServiceInterfaces;
 using Application.DAL.DTO;
+using Application.DAL.DTO.CommandDTOs.Update;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -19,6 +20,19 @@ namespace Projekt_Programistyczny.Controllers
         public ProvinceController(IProvinceService provinceService)
         {
             _provinceService = provinceService;
+        }
+
+        [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<ProvinceDTO>> GetProvinceById(long id)
+        {
+            var province = await _provinceService.GetProvinceByIdAsync(id);
+            if(province == null)
+            {
+                return NotFound();
+            }
+            return Ok(province);
         }
 
         [HttpGet]
@@ -44,6 +58,27 @@ namespace Projekt_Programistyczny.Controllers
             catch (NameAlreadyInUseException ex)
             {
                 return Conflict(new { message = ex.Message });
+            }
+        }
+
+        [HttpPut]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        public async Task<ActionResult<BrandDTO>> UpdateProvince([FromQuery] UpdateProvinceDTO dto)
+        {
+            try
+            {
+                var brand = await _provinceService.UpdateProvinceAsync(dto);
+                return Ok(brand);
+            }
+            catch (NameAlreadyInUseException ex)
+            {
+                return Conflict(new { message = ex.Message });
+            }
+            catch(NotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
             }
         }
     }

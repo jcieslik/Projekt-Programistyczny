@@ -1,15 +1,16 @@
 ﻿using Application.DAL.DTO;
-using System;
+using Application.DAL.DTO.CommandDTOs.Create;
+using Application.DAL.DTO.CommandDTOs.Update;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Application.Common.Interfaces.DataServiceInterfaces
 {
     public interface IProductCategoryService
     {
+        Task<ProductCategoryDTO> GetProductCategoryByIdAsync(long id);
         Task<IEnumerable<ProductCategoryDTO>> GetProductCategoriesAsync();
-        Task<ProductCategoryDTO> CreateProductCategoryAsync(ProductCategoryDTO dto);
+        Task<ProductCategoryDTO> CreateProductCategoryAsync(CreateProductCategoryDTO dto);
+        Task<ProductCategoryDTO> UpdateProductCategoryAsync(UpdateProductCategoryDTO dto);
     }
 }

@@ -23,7 +23,13 @@ namespace Application.Services
         }
 
         public async Task<BidDTO> GetBidByIdAsync(long id)
-            => _mapper.Map<BidDTO>(await _context.Bids.FindAsync(id));
+            => _mapper.Map<BidDTO>(
+                await _context.Bids
+                .Include(x => x.Offer)
+                .Include(x => x.Bidder)
+                .AsNoTracking()
+                .SingleOrDefaultAsync(x => x.Id == id)
+                );
 
         public async Task<IEnumerable<BidDTO>> GetBidsFromOfferAsync(long offerId, bool onlyNotHidden)
         {

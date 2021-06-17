@@ -23,7 +23,12 @@ namespace Application.Services
         }
 
         public async Task<ProductRateDTO> GetRateByIdAsync(long id)
-            => _mapper.Map<ProductRateDTO>(await _context.Rates.FindAsync(id));
+            => _mapper.Map<ProductRateDTO>(
+                await _context.Rates
+                .Include(x => x.Customer)
+                .Include(x => x.Offer)
+                .AsNoTracking()
+                .SingleOrDefaultAsync(x => x.Id == id));
 
         public async Task<IEnumerable<ProductRateDTO>> GetRatesFromUserAsync(long userId, bool onlyNotHidden = true)
         {

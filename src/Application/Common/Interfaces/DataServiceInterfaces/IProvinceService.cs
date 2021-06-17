@@ -1,15 +1,15 @@
 ﻿using Application.DAL.DTO;
-using System;
+using Application.DAL.DTO.CommandDTOs.Update;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Application.Common.Interfaces.DataServiceInterfaces
 {
     public interface IProvinceService
     {
+        Task<ProvinceDTO> GetProvinceByIdAsync(long id);
         Task<ProvinceDTO> CreateProvinceAsync(string name);
         Task<IEnumerable<ProvinceDTO>> GetProvincesAsync();
+        Task<ProvinceDTO> UpdateProvinceAsync(UpdateProvinceDTO dto);
     }
 }
