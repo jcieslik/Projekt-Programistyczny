@@ -4,6 +4,7 @@ using AutoMapper;
 using Domain.Entities;
 using Domain.Enums;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Application.DAL.DTO
@@ -16,23 +17,24 @@ namespace Application.DAL.DTO
         public string Description { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public long SellerId { get; set; }
-        public long CityId { get; set; }
-        public long ProvinceId { get; set; }
+        public UserDTO Seller { get; set; }
+        public string City { get; set; }
+        public string Province { get; set; }
+        public string Category { get; set; }
+        public string Brand { get; set; }
         public ProductState ProductState { get; set; }
         public OfferState State { get; set; }
         public OfferType OfferType { get; set; }
-        public long CategoryId { get; set; }
-        public long BrandId { get; set; }
+        public IEnumerable<ProductImageDTO> Images { get; set; }
 
         public void Mapping(Profile profile)
         {
             profile.CreateMap<Offer, OfferDTO>()
-                .ForMember(dest => dest.SellerId, opt => opt.MapFrom(src => src.Seller.Id))
-                .ForMember(dest => dest.CategoryId, opt => opt.MapFrom(src => src.Category.Id))
-                .ForMember(dest => dest.BrandId, opt => opt.MapFrom(src => src.Brand.Id))
-                .ForMember(dest => dest.ProvinceId, opt => opt.MapFrom(src => src.Province.Id))
-                .ForMember(dest => dest.CityId, opt => opt.MapFrom(src => src.City.Id));
+                .ForMember(dest => dest.Seller, opt => opt.MapFrom(src => src.Seller))
+                .ForMember(dest => dest.Category, opt => opt.MapFrom(src => src.Category.Name))
+                .ForMember(dest => dest.Brand, opt => opt.MapFrom(src => src.Brand.Name))
+                .ForMember(dest => dest.Province, opt => opt.MapFrom(src => src.Province.Name))
+                .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.City.Name));
         }
     }
 }
