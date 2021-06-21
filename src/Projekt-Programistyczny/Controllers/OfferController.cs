@@ -2,6 +2,7 @@
 using Application.Common.Interfaces.DataServiceInterfaces;
 using Application.Common.Models;
 using Application.DAL.DTO;
+using Application.DAL.DTO.CommandDTOs.Add;
 using Application.DAL.DTO.CommandDTOs.Create;
 using Application.DAL.DTO.CommandDTOs.Update;
 using Microsoft.AspNetCore.Authorization;
@@ -65,6 +66,23 @@ namespace Projekt_Programistyczny.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("GetFromCart")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<IEnumerable<OfferWithBaseDataDTO>>> GetOffersFromCaer([FromQuery] long cartId)
+        {
+            try
+            {
+                var offers = await _offerService.GetOffersFromCartAsync(cartId);
+                return Ok(offers);
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+        }
+
         [HttpPost]
         [Route("GetOffers")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -106,6 +124,40 @@ namespace Projekt_Programistyczny.Controllers
                 return Ok(offer);
             }
             catch(NotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        [Route("AddToCart")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> AddOfferToCart([FromBody] AddOrRemoveOfferToCartDTO dto)
+        {
+            try
+            {
+                await _offerService.AddOfferToCartAsync(dto);
+                return Ok();
+            }
+            catch(NotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+        }
+
+        [HttpPut]
+        [Route("RemoveFromCart")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> RemoveOfferFromCart([FromBody] AddOrRemoveOfferToCartDTO dto)
+        {
+            try
+            {
+                await _offerService.RemoveOfferFromCartAsync(dto);
+                return Ok();
+            }
+            catch (NotFoundException ex)
             {
                 return NotFound(new { message = ex.Message });
             }

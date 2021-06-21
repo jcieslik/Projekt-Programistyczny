@@ -24,7 +24,10 @@ namespace Application.Services
 
         public async Task<UserDTO> AuthenticateUser(string login, string password)
         {
-            return _mapper.Map<UserDTO>(await _context.Users.Where(u => u.Username == login && u.Password == password).SingleOrDefaultAsync());
+            return _mapper.Map<UserDTO>(
+                await _context.Users.Include(x => x.Cart)
+                .Where(u => u.Username == login && u.Password == password)
+                .SingleOrDefaultAsync());
         }
             
         public async Task<UserDTO> GetUserById(long Id)
@@ -61,6 +64,15 @@ namespace Application.Services
 
             await _context.SaveChangesAsync();
 
+            var userCart = new Cart
+            {
+                CustomerId = user.Id
+            };
+
+            _context.Carts.Add(userCart);
+            await _context.SaveChangesAsync();
+
+            user.Cart = userCart;
             return _mapper.Map<UserDTO>(user);
         }
 
