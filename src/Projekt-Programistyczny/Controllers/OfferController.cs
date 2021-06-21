@@ -70,7 +70,7 @@ namespace Projekt_Programistyczny.Controllers
         [Route("GetFromCart")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IEnumerable<OfferWithBaseDataDTO>>> GetOffersFromCaer([FromQuery] long cartId)
+        public async Task<ActionResult<IEnumerable<OfferWithBaseDataDTO>>> GetOffersFromCart([FromQuery] long cartId)
         {
             try
             {
@@ -81,6 +81,26 @@ namespace Projekt_Programistyczny.Controllers
             {
                 return NotFound(new { message = ex.Message });
             }
+        }
+
+        [HttpGet]
+        [Route("GetFromUserWishes")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<PaginatedList<OfferWithBaseDataDTO>>> GetOffersFromActiveUserWishes(
+            [FromQuery] long userId,
+            [FromQuery] int pageIndex = 1,
+            [FromQuery] int pageSize = 15,
+            [FromQuery] string orderBy = "creation")
+        {
+            var properties = new PaginationProperties
+            {
+                PageSize = pageSize,
+                PageIndex = pageIndex,
+                OrderBy = orderBy
+            };
+            var offers = await _offerService.GetPaginatedOffersFromUserActiveWishesAsync(userId, properties);
+
+            return Ok(offers);
         }
 
         [HttpPost]

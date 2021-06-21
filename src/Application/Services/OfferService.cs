@@ -68,6 +68,30 @@ namespace Application.Services
             .ToListAsync();
         }
 
+        public async Task<PaginatedList<OfferWithBaseDataDTO>> GetPaginatedOffersFromUserActiveWishesAsync(long userId, PaginationProperties paginationProperties)
+        {
+            var offers = _context.Wishes
+                .Include(x => x.Customer)
+                .Include(x => x.Offer).ThenInclude(x => x.Seller)
+                .Include(x => x.Offer).ThenInclude(x => x.Images)
+                .Include(x => x.Offer).ThenInclude(x => x.Bids)
+                .AsNoTracking()
+                .Where(x => x.Customer.Id == userId && !x.IsHidden)
+                .Select(x => x.Offer);
+
+            offers = paginationProperties.OrderBy switch
+            {
+                "price_asc" => offers.OrderBy(x => x.PriceForOneProduct),
+                "price_desc" => offers.OrderByDescending(x => x.PriceForOneProduct),
+                "rate" => offers.OrderByDescending(x => x.Rates.Select(x => x.Value).Average()),
+                "creation" => offers.OrderBy(x => x.Created),
+                _ => offers.OrderBy(x => x.Created)
+            };
+
+            return await offers.ProjectTo<OfferWithBaseDataDTO>(_mapper.ConfigurationProvider)
+                .PaginatedListAsync<OfferWithBaseDataDTO>(paginationProperties.PageIndex, paginationProperties.PageSize);
+        }
+
         public async Task<PaginatedList<OfferWithBaseDataDTO>> GetPaginatedOffersAsync(FilterModel filterModel, PaginationProperties paginationProperties)
         {
             var offers = _context.Offers
