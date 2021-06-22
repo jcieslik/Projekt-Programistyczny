@@ -35,7 +35,7 @@ namespace Application.Services
             var messages = _context.Messages
             .Include(m => m.Recipient).Include(m => m.Sender)
             .AsNoTracking()
-            .Where(x => x.Sender.Id == userId || x.Recipient.Id == userId);
+            .Where(x => ( x.Sender.Id == userId || x.Recipient.Id == userId) && !x.IsHidden);
 
             messages = properties.OrderBy switch
             {

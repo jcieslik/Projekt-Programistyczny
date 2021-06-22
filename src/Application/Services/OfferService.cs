@@ -5,6 +5,7 @@ using Application.Common.Mappings;
 using Application.Common.Models;
 using Application.Common.Services;
 using Application.DAL.DTO;
+using Application.DAL.DTO.CommandDTOs.Add;
 using Application.DAL.DTO.CommandDTOs.Create;
 using Application.DAL.DTO.CommandDTOs.Update;
 using AutoMapper;
@@ -12,7 +13,6 @@ using AutoMapper.QueryableExtensions;
 using Domain.Entities;
 using Domain.Enums;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -66,6 +66,30 @@ namespace Application.Services
 
             return await offers.ProjectTo<OfferWithBaseDataDTO>(_mapper.ConfigurationProvider)
             .ToListAsync();
+        }
+
+        public async Task<PaginatedList<OfferWithBaseDataDTO>> GetPaginatedOffersFromUserActiveWishesAsync(long userId, PaginationProperties paginationProperties)
+        {
+            var offers = _context.Wishes
+                .Include(x => x.Customer)
+                .Include(x => x.Offer).ThenInclude(x => x.Seller)
+                .Include(x => x.Offer).ThenInclude(x => x.Images)
+                .Include(x => x.Offer).ThenInclude(x => x.Bids)
+                .AsNoTracking()
+                .Where(x => x.Customer.Id == userId && !x.IsHidden)
+                .Select(x => x.Offer);
+
+            offers = paginationProperties.OrderBy switch
+            {
+                "price_asc" => offers.OrderBy(x => x.PriceForOneProduct),
+                "price_desc" => offers.OrderByDescending(x => x.PriceForOneProduct),
+                "rate" => offers.OrderByDescending(x => x.Rates.Select(x => x.Value).Average()),
+                "creation" => offers.OrderBy(x => x.Created),
+                _ => offers.OrderBy(x => x.Created)
+            };
+
+            return await offers.ProjectTo<OfferWithBaseDataDTO>(_mapper.ConfigurationProvider)
+                .PaginatedListAsync<OfferWithBaseDataDTO>(paginationProperties.PageIndex, paginationProperties.PageSize);
         }
 
         public async Task<PaginatedList<OfferWithBaseDataDTO>> GetPaginatedOffersAsync(FilterModel filterModel, PaginationProperties paginationProperties)
@@ -268,6 +292,50 @@ namespace Application.Services
                 result.AddRange(ids);
             }
             return result;
+        }
+
+        public async Task<IEnumerable<OfferWithBaseDataDTO>> GetOffersFromCartAsync(long cartId)
+        {
+            return await _context.Carts
+                .Include(x => x.Offers).ThenInclude(x => x.Seller)
+                .Where(x => x.Id == cartId)
+                .Select(x => x.Offers)
+                .ProjectTo<OfferWithBaseDataDTO>(_mapper.ConfigurationProvider)
+            .ToListAsync();
+        }
+
+        public async Task AddOfferToCartAsync(AddOrRemoveOfferToCartDTO dto)
+        {
+            var offer = await _context.Offers.FindAsync(dto.OfferId);
+            var cart = await _context.Carts.FindAsync(dto.CartId);
+            if (offer == null)
+            {
+                throw new NotFoundException(nameof(Offer), dto.OfferId);
+            }
+            if (cart == null)
+            {
+                throw new NotFoundException(nameof(Cart), dto.CartId);
+            }
+
+            cart.Offers.Add(offer);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task RemoveOfferFromCartAsync(AddOrRemoveOfferToCartDTO dto)
+        {
+            var offer = await _context.Offers.FindAsync(dto.OfferId);
+            var cart = await _context.Carts.FindAsync(dto.CartId);
+            if (offer == null)
+            {
+                throw new NotFoundException(nameof(Offer), dto.OfferId);
+            }
+            if (cart == null)
+            {
+                throw new NotFoundException(nameof(Cart), dto.CartId);
+            }
+
+            cart.Offers.Remove(offer);
+            await _context.SaveChangesAsync();
         }
     }
 }
