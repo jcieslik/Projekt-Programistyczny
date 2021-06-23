@@ -110,12 +110,12 @@ namespace Projekt_Programistyczny.Controllers
         {
             var filterModel = new FilterModel
             {
-                BrandsIds = searchModel.BrandsIds,
+                Brands = searchModel.Brands,
                 OfferState = searchModel.OfferState,
                 OfferType = searchModel.OfferType,
                 ProductState = searchModel.ProductState,
                 CategoryId = searchModel.CategoryId,
-                CitiesIds = searchModel.CitiesIds,
+                Cities = searchModel.Cities,
                 ProvincesIds = searchModel.ProvincesIds,
                 MaxPrice = searchModel.MaxPrice,
                 MinPrice = searchModel.MinPrice

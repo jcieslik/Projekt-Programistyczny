@@ -27,10 +27,20 @@ namespace Domain.Entities
         [Required]
         public string Surname { get; set; }
 
+        public Province Province { get; set; }
+
+        [Required]
+        public string City { get; set; }
+
+        [Required]
+        public string Street { get; set; }
+
+        [Required]
+        public string PostCode { get; set; }
+
         public ICollection<Offer> SoldOffers { get; set; }
         public ICollection<Order> Orders { get; set; }
         public ICollection<Comment> Comments { get; set; }
-        public ICollection<ProductRate> Rates { get; set; }
         public ICollection<Bid> Bids { get; set; }
         public ICollection<Message> Messages { get; set; }
         public ICollection<Wish> Wishes { get; set; }

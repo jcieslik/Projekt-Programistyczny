@@ -50,12 +50,12 @@ namespace Projekt_Programistyczny.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<ActionResult<BrandDTO>> Create([FromBody] CreateProductCategoryDTO dto)
+        public async Task<ActionResult<ProductCategoryDTO>> Create([FromBody] CreateProductCategoryDTO dto)
         {
             try
             {
-                var brand = await _productCategoryService.CreateProductCategoryAsync(dto);
-                return Ok(brand);
+                var category = await _productCategoryService.CreateProductCategoryAsync(dto);
+                return Ok(category);
             }
             catch (NameAlreadyInUseException ex)
             {
@@ -71,12 +71,12 @@ namespace Projekt_Programistyczny.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<ActionResult<BrandDTO>> Update([FromBody] UpdateProductCategoryDTO dto)
+        public async Task<ActionResult<ProductCategoryDTO>> Update([FromBody] UpdateProductCategoryDTO dto)
         {
             try
             {
-                var brand = await _productCategoryService.UpdateProductCategoryAsync(dto);
-                return Ok(brand);
+                var category = await _productCategoryService.UpdateProductCategoryAsync(dto);
+                return Ok(category);
             }
             catch (NameAlreadyInUseException ex)
             {

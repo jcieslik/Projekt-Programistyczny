@@ -13,14 +13,11 @@ namespace Application
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ICommentService, CommentService>();
             services.AddScoped<IFilterService, FilterService>();
-            services.AddScoped<IRateService, RateService>();
             services.AddScoped<IProductImageService, ProductImageService>();
             services.AddScoped<IBidService, BidService>();
             services.AddScoped<IMessageService, MessageService>();
-            services.AddScoped<IBrandService, BrandService>();
             services.AddScoped<IOfferService, OfferService>();
             services.AddScoped<IProductCategoryService, ProductCategoryService>();
-            services.AddScoped<ICityService, CityService>();
             services.AddScoped<IProvinceService, ProvinceService>();
             return services;
         }

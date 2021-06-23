@@ -89,7 +89,7 @@ namespace Application.Services
             return _mapper.Map<OrderDTO>(entity);
         }
 
-        public async Task<OrderDTO> CreateOrderAsync(UpdateOrderDTO dto)
+        public async Task<OrderDTO> ChangeOrderStatus(UpdateOrderDTO dto)
         {
             var order = await _context.Orders.FindAsync(dto.Id);
             if (order == null)

@@ -8,8 +8,6 @@ namespace Application.Common.Interfaces.DataServiceInterfaces
 {
     public interface IFilterService
     {
-        Task<IEnumerable<BrandDTO>> GetBrandsAsync();
-        Task<IEnumerable<CityDTO>> GetCitiesAsync();
         Task<IEnumerable<ProvinceDTO>> GetProvincessAsync();
         Task<IEnumerable<OfferType>> GetOfferTypesAsync();
         Task<IEnumerable<ProductState>> GetProductStatesAsync();

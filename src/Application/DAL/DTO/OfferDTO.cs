@@ -32,9 +32,7 @@ namespace Application.DAL.DTO
             profile.CreateMap<Offer, OfferDTO>()
                 .ForMember(dest => dest.Seller, opt => opt.MapFrom(src => src.Seller))
                 .ForMember(dest => dest.Category, opt => opt.MapFrom(src => src.Category.Name))
-                .ForMember(dest => dest.Brand, opt => opt.MapFrom(src => src.Brand.Name))
-                .ForMember(dest => dest.Province, opt => opt.MapFrom(src => src.Province.Name))
-                .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.City.Name));
+                .ForMember(dest => dest.Province, opt => opt.MapFrom(src => src.Province.Name));
         }
     }
 }
