@@ -47,8 +47,11 @@ namespace Infrastructure.Persistence.Configurations
                         Email = "example@example.com",
                         Role = UserRole.Admin,
                         Name = "Jan",
-                        Surname = "Kowalski"
-                    }
+                        Surname = "Kowalski",
+                        City = "Brak",
+                        Street = "Brak",
+                        PostCode = "Brak"
+                        }
                 );
         }
     }
