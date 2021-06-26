@@ -21,9 +21,16 @@ namespace Projekt_Programistyczny.BackgroundServices
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                await _offerService.ChangeStatusOfOutdatedOffers();
+                try
+                {
+                    await _offerService.ChangeStatusOfOutdatedOffers();
+                    await Task.Delay(1000, stoppingToken);
+                }
+                catch (OperationCanceledException)
+                {
+                    return;
+                }
             }
-            throw new NotImplementedException();
         }
     }
 }
