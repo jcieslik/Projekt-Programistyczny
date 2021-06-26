@@ -20,16 +20,6 @@ namespace Application.Services
         {
         }
 
-        public async Task<IEnumerable<BrandDTO>> GetBrandsAsync()
-            => await _context.Brands.AsNoTracking()
-                    .ProjectTo<BrandDTO>(_mapper.ConfigurationProvider)
-                    .ToListAsync();
-
-        public async Task<IEnumerable<CityDTO>> GetCitiesAsync()
-            => await _context.Cities.AsNoTracking()
-                    .ProjectTo<CityDTO>(_mapper.ConfigurationProvider)
-                    .ToListAsync();
-
         public async Task<IEnumerable<ProvinceDTO>> GetProvincessAsync()
             => await _context.Provinces.AsNoTracking()
                     .ProjectTo<ProvinceDTO>(_mapper.ConfigurationProvider)
@@ -49,12 +39,6 @@ namespace Application.Services
         {
             var result = new FilterVm
             {
-                Brands = await _context.Brands.AsNoTracking()
-                    .ProjectTo<BrandDTO>(_mapper.ConfigurationProvider)
-                    .ToListAsync(),
-                Cities = await _context.Cities.AsNoTracking()
-                    .ProjectTo<CityDTO>(_mapper.ConfigurationProvider)
-                    .ToListAsync(),
                 Provinces = await _context.Provinces.AsNoTracking()
                     .ProjectTo<ProvinceDTO>(_mapper.ConfigurationProvider)
                     .ToListAsync(),

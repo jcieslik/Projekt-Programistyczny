@@ -49,6 +49,12 @@ namespace Application.Services
                 throw new NameAlreadyInUseException(dto.Username);
             }
 
+            var province = await _context.Provinces.FindAsync(dto.ProvinceId);
+            if (province == null)
+            {
+                throw new NotFoundException(nameof(Province), dto.ProvinceId);
+            }
+
             var user = new User
             {
                 Email = dto.Email,
@@ -57,6 +63,10 @@ namespace Application.Services
                 Name = dto.Name,
                 Surname = dto.Surname,
                 Role = (UserRole)dto.Role,
+                Province = province,
+                City = dto.City,
+                Street = dto.Street,
+                PostCode = dto.PostCode,
                 IsActive = true
             };
 
@@ -82,6 +92,15 @@ namespace Application.Services
             if(user == null)
             {
                 throw new NotFoundException(nameof(User), dto.Id);
+            }
+
+            if (dto.ProvinceId.HasValue)
+            {
+                var province = await _context.Provinces.FindAsync(dto.ProvinceId);
+                if (province == null)
+                {
+                    throw new NotFoundException(nameof(Province), dto.ProvinceId);
+                }
             }
 
             if (!string.IsNullOrEmpty(dto.Email)){
@@ -112,6 +131,21 @@ namespace Application.Services
 
             if (!string.IsNullOrEmpty(dto.Surname)){
                 user.Surname = dto.Surname;
+            }
+
+            if (!string.IsNullOrEmpty(dto.City))
+            {
+                user.City = dto.City;
+            }
+
+            if (!string.IsNullOrEmpty(dto.Street))
+            {
+                user.Street = dto.Street;
+            }
+
+            if (!string.IsNullOrEmpty(dto.PostCode))
+            {
+                user.PostCode = dto.PostCode;
             }
 
             if (dto.IsActive.HasValue)

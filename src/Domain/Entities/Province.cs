@@ -9,5 +9,6 @@ namespace Domain.Entities
         [Required]
         public string Name { get; set; }
         public ICollection<Offer> Offers { get; set; }
+        public ICollection<User> Users { get; set; }
     }
 }

@@ -27,10 +27,12 @@ namespace Domain.Entities
         [Required]
         public DateTime EndDate { get; set; }
 
+        [Required]
+        public string City { get; set; }
+
         public User Seller { get; set; }
         public ICollection<Order> Orders { get; set; }
 
-        public City City { get; set; }
         public Province Province { get; set; }
 
         [Required]
@@ -43,10 +45,11 @@ namespace Domain.Entities
         public OfferType OfferType { get; set; }
 
         public ProductCategory Category { get; set; }
-        public Brand Brand { get; set; }
+
+        [Required]
+        public string Brand { get; set; }
 
         public ICollection<ProductImage> Images { get; set; }
-        public ICollection<ProductRate> Rates { get; set; }
         public ICollection<Comment> Comments { get; set; }
         public ICollection<Bid> Bids { get; set; }
         public ICollection<Wish> Wishes { get; set; }

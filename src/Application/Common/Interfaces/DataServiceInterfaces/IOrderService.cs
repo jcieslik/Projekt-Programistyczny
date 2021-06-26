@@ -10,7 +10,7 @@ namespace Application.Common.Interfaces.DataServiceInterfaces
     public interface IOrderService
     {
         Task<OrderDTO> CreateOrderAsync(CreateOrderDTO dto);
-        Task<OrderDTO> CreateOrderAsync(UpdateOrderDTO dto);
+        Task<OrderDTO> ChangeOrderStatus(UpdateOrderDTO dto);
         Task<OrderDTO> GetOrderByIdAsync(long id);
         Task<IEnumerable<OrderDTO>> GetOrdersFromOffer(long offerId);
         Task<IEnumerable<OrderDTO>> GetOrdersFromUser(long userId);

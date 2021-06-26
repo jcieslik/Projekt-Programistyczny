@@ -48,12 +48,12 @@ namespace Projekt_Programistyczny.Controllers
         [Route("CreateProvince")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<ActionResult<BrandDTO>> CreateProvince([FromQuery] string name)
+        public async Task<ActionResult<ProvinceDTO>> CreateProvince([FromQuery] string name)
         {
             try
             {
-                var brand = await _provinceService.CreateProvinceAsync(name);
-                return Ok(brand);
+                var province = await _provinceService.CreateProvinceAsync(name);
+                return Ok(province);
             }
             catch (NameAlreadyInUseException ex)
             {
@@ -65,12 +65,12 @@ namespace Projekt_Programistyczny.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<ActionResult<BrandDTO>> UpdateProvince([FromQuery] UpdateProvinceDTO dto)
+        public async Task<ActionResult<ProvinceDTO>> UpdateProvince([FromQuery] UpdateProvinceDTO dto)
         {
             try
             {
-                var brand = await _provinceService.UpdateProvinceAsync(dto);
-                return Ok(brand);
+                var province = await _provinceService.UpdateProvinceAsync(dto);
+                return Ok(province);
             }
             catch (NameAlreadyInUseException ex)
             {
