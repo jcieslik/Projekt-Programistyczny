@@ -13,6 +13,7 @@ using AutoMapper.QueryableExtensions;
 using Domain.Entities;
 using Domain.Enums;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -321,6 +322,21 @@ namespace Application.Services
             }
 
             cart.Offers.Remove(offer);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task ChangeStatusOfOutdatedOffers()
+        {
+            var offers = await _context.Offers
+                .AsNoTracking()
+                .Where(x => x.State == OfferState.Awaiting && x.EndDate < DateTime.Now)
+                .ToListAsync();
+
+            foreach(var offer in offers)
+            {
+                offer.State = OfferState.Outdated;
+            }
+
             await _context.SaveChangesAsync();
         }
     }

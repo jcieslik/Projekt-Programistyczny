@@ -10,7 +10,6 @@ using AutoMapper.QueryableExtensions;
 using Domain.Entities;
 using Domain.Enums;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -84,6 +83,9 @@ namespace Application.Services
             };
 
             _context.Orders.Add(entity);
+
+            offer.ProductCount -= 1;
+
             await _context.SaveChangesAsync();
 
             return _mapper.Map<OrderDTO>(entity);
@@ -91,13 +93,16 @@ namespace Application.Services
 
         public async Task<OrderDTO> ChangeOrderStatus(UpdateOrderDTO dto)
         {
-            var order = await _context.Orders.FindAsync(dto.Id);
+            var order = await _context.Orders.Include(x => x.Offer).SingleOrDefaultAsync(x => x.Id == dto.Id);
             if (order == null)
             {
                 throw new NotFoundException(nameof(Order), dto.Id);
             }
             order.OrderStatus = (OrderStatus)dto.OrderStatus;
-
+            if(order.OrderStatus == OrderStatus.Canceled)
+            {
+                order.Offer.ProductCount += 1;
+            }
             await _context.SaveChangesAsync();
             return _mapper.Map<OrderDTO>(order);
         }
