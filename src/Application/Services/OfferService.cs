@@ -99,11 +99,14 @@ namespace Application.Services
                 .AsNoTracking()
                 .Where(x => !x.IsHidden && x.State == OfferState.Awaiting);
 
+            if (filterModel.CategoryId.HasValue)
+            {
+                List<long> ids = GetChildrenCategoriesIds(filterModel.CategoryId.Value);
+                ids.Add(filterModel.CategoryId.Value);
 
-            List<long> ids = GetChildrenCategoriesIds(filterModel.CategoryId);
-            ids.Add(filterModel.CategoryId);
-
-            offers = offers.Where(x => ids.Contains(x.Category.Id));
+                offers = offers.Where(x => ids.Contains(x.Category.Id));
+            }
+            
             offers = offers.Where(x => x.OfferType == (OfferType)filterModel.OfferType
                     && x.ProductState == (ProductState)filterModel.ProductState
                     && x.State == (OfferState)filterModel.OfferState
