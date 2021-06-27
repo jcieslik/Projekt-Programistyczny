@@ -4,6 +4,7 @@
     {
         AwaitingForPayment = 0,
         InDelivery = 1,
-        Delivered = 2
+        Delivered = 2,
+        Canceled = 3
     }
 }

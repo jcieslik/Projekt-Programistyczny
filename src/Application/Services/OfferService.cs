@@ -13,6 +13,7 @@ using AutoMapper.QueryableExtensions;
 using Domain.Entities;
 using Domain.Enums;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -45,20 +46,20 @@ namespace Application.Services
         public async Task<IEnumerable<OfferWithBaseDataDTO>> GetOffersAsync()
             => await _context.Offers
                 .Include(x => x.Bids).ThenInclude(b => b.Bidder)
-                .Include(x => x.Brand)
-                .Include(x => x.City)
                 .Include(x => x.Province)
                 .Include(x => x.Seller)
                 .Include(x => x.Comments).ThenInclude(c => c.Customer)
                 .Include(x => x.Images)
                 .AsNoTracking()
+                .Where(x => !x.IsHidden && x.State == OfferState.Awaiting)
                 .ProjectTo<OfferWithBaseDataDTO>(_mapper.ConfigurationProvider)
                 .ToListAsync();
 
         public async Task<IEnumerable<OfferWithBaseDataDTO>> GetOffersFromUserAsync(long userId)
         {
             var offers = _context.Offers
-                .Include(x => x.Seller)
+                .Include(x => x.Bids)
+                .Include(x => x.Images)
                 .AsNoTracking()
                 .Where(x => x.Seller.Id == userId);
 
@@ -96,10 +97,9 @@ namespace Application.Services
                 .Include(x => x.Bids)
                 .Include(x => x.Images)
                 .Include(x => x.Category)
-                .Include(x => x.City)
                 .Include(x => x.Province)
-                .Include(x => x.Brand)
-                .AsNoTracking();
+                .AsNoTracking()
+                .Where(x => !x.IsHidden && x.State == OfferState.Awaiting);
 
 
             List<long> ids = GetChildrenCategoriesIds(filterModel.CategoryId);
@@ -321,6 +321,21 @@ namespace Application.Services
             }
 
             cart.Offers.Remove(offer);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task ChangeStatusOfOutdatedOffers()
+        {
+            var offers = await _context.Offers
+                .AsNoTracking()
+                .Where(x => x.State == OfferState.Awaiting && x.EndDate < DateTime.Now)
+                .ToListAsync();
+
+            foreach(var offer in offers)
+            {
+                offer.State = OfferState.Outdated;
+            }
+
             await _context.SaveChangesAsync();
         }
     }

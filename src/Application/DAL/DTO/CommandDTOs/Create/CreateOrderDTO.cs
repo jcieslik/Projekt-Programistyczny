@@ -7,5 +7,6 @@ namespace Application.DAL.DTO.CommandDTOs.Create
         public Guid CustomerId { get; set; }
         public Guid OfferId { get; set; }
         public int OrderStatus { get; set; }
+        public DateTime? PaymentDate { get; set; }
     }
 }
