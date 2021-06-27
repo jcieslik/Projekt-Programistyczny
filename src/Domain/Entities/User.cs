@@ -38,6 +38,8 @@ namespace Domain.Entities
         [Required]
         public string PostCode { get; set; }
 
+        public string BankAccountNumber { get; set; }
+
         public ICollection<Offer> SoldOffers { get; set; }
         public ICollection<Order> Orders { get; set; }
         public ICollection<Comment> Comments { get; set; }

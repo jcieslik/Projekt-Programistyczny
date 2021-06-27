@@ -18,7 +18,7 @@ namespace Projekt_Programistyczny.Controllers
         [HttpPost]
         [Route("MakePayment")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> MakePayment([FromBody] PaymentRequestDTO paymentRequest)
         {
             StripeConfiguration.ApiKey = "sk_test_51J6t0pFBQwYWjNW6dpz7HqgexrbBGzvpDT9yeWARx0KUJNhiTX76XF8WZ9pGcamTDuZl4NkSuzr3Ms0QEkE7e1tc00s6Wr0tZd";
@@ -26,14 +26,21 @@ namespace Projekt_Programistyczny.Controllers
             var options = new ChargeCreateOptions
             {
                 Amount = paymentRequest.amount,
-                Currency = "pln",
                 Source = paymentRequest.tokenId,
+                Currency = "pln",
                 Description = "My First Test Charge (created for API docs)",
             };
             var service = new ChargeService();
-            service.Create(options);
 
-            return Ok();
+            try
+            {
+                service.Create(options);
+                return Ok();
+            }
+            catch (Exception)
+            {
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
         }
     }
 }
