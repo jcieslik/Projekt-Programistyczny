@@ -4,14 +4,16 @@ using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210627155430_added-bank-number")]
+    partial class addedbanknumber
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -153,36 +155,6 @@ namespace Infrastructure.Migrations
                     b.ToTable("Comments");
                 });
 
-            modelBuilder.Entity("Domain.Entities.DeliveryMethod", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<double>("BasePrice")
-                        .HasColumnType("float");
-
-                    b.Property<DateTime>("Created")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long>("CreatedBy")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("LastModified")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long>("ModifiedBy")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("DeliveryMethods");
-                });
-
             modelBuilder.Entity("Domain.Entities.Message", b =>
                 {
                     b.Property<long>("Id")
@@ -312,43 +284,6 @@ namespace Infrastructure.Migrations
                     b.HasIndex("SellerId");
 
                     b.ToTable("Offers");
-                });
-
-            modelBuilder.Entity("Domain.Entities.OfferAndDeliveryMethod", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<DateTime>("Created")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long>("CreatedBy")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("DeliveryMethodId")
-                        .HasColumnType("bigint");
-
-                    b.Property<double>("FullPrice")
-                        .HasColumnType("float");
-
-                    b.Property<DateTime?>("LastModified")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long>("ModifiedBy")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("OfferId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DeliveryMethodId");
-
-                    b.HasIndex("OfferId");
-
-                    b.ToTable("OffersAndDeliveryMethods");
                 });
 
             modelBuilder.Entity("Domain.Entities.Order", b =>
@@ -701,21 +636,6 @@ namespace Infrastructure.Migrations
                     b.Navigation("Seller");
                 });
 
-            modelBuilder.Entity("Domain.Entities.OfferAndDeliveryMethod", b =>
-                {
-                    b.HasOne("Domain.Entities.DeliveryMethod", "DeliveryMethod")
-                        .WithMany("Offers")
-                        .HasForeignKey("DeliveryMethodId");
-
-                    b.HasOne("Domain.Entities.Offer", "Offer")
-                        .WithMany("DeliveryMethods")
-                        .HasForeignKey("OfferId");
-
-                    b.Navigation("DeliveryMethod");
-
-                    b.Navigation("Offer");
-                });
-
             modelBuilder.Entity("Domain.Entities.Order", b =>
                 {
                     b.HasOne("Domain.Entities.User", "Customer")
@@ -775,18 +695,11 @@ namespace Infrastructure.Migrations
                     b.Navigation("Offer");
                 });
 
-            modelBuilder.Entity("Domain.Entities.DeliveryMethod", b =>
-                {
-                    b.Navigation("Offers");
-                });
-
             modelBuilder.Entity("Domain.Entities.Offer", b =>
                 {
                     b.Navigation("Bids");
 
                     b.Navigation("Comments");
-
-                    b.Navigation("DeliveryMethods");
 
                     b.Navigation("Images");
 
