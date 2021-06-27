@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Application.DAL.DTO;
+using Application.Common.Interfaces;
 
 namespace Projekt_Programistyczny.Controllers
 {
@@ -13,7 +14,12 @@ namespace Projekt_Programistyczny.Controllers
     [ApiController]
     public class PaymentController : ControllerBase
     {
-        public PaymentController() {}
+        private readonly IUserConfig userConfig;
+
+        public PaymentController(IUserConfig userConfig) 
+        {
+            this.userConfig = userConfig;
+        }
 
         [HttpPost]
         [Route("MakePayment")]
@@ -21,14 +27,14 @@ namespace Projekt_Programistyczny.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> MakePayment([FromBody] PaymentRequestDTO paymentRequest)
         {
-            StripeConfiguration.ApiKey = "sk_test_51J6t0pFBQwYWjNW6dpz7HqgexrbBGzvpDT9yeWARx0KUJNhiTX76XF8WZ9pGcamTDuZl4NkSuzr3Ms0QEkE7e1tc00s6Wr0tZd";
+            StripeConfiguration.ApiKey = userConfig.StripeSecret;
 
             var options = new ChargeCreateOptions
             {
                 Amount = paymentRequest.amount,
                 Source = paymentRequest.tokenId,
+                Description = paymentRequest.description,
                 Currency = "pln",
-                Description = "My First Test Charge (created for API docs)",
             };
             var service = new ChargeService();
 

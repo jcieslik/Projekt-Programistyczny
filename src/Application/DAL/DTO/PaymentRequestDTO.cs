@@ -9,6 +9,7 @@ namespace Application.DAL.DTO
     public class PaymentRequestDTO
     {
         public string tokenId { get; set; }
+        public string description { get; set; }
         public int amount { get; set; }
     }
 }
