@@ -5,13 +5,11 @@ using Application.DAL.DTO;
 using Application.DAL.DTO.CommandDTOs.Add;
 using Application.DAL.DTO.CommandDTOs.Create;
 using Application.DAL.DTO.CommandDTOs.Update;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Projekt_Programistyczny.Extensions;
 using Projekt_Programistyczny.Models;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Projekt_Programistyczny.Controllers
@@ -21,10 +19,12 @@ namespace Projekt_Programistyczny.Controllers
     public class OfferController : ControllerBase
     {
         private readonly IOfferService _offerService;
+        private readonly IUserService _userService;
 
-        public OfferController(IOfferService offerService)
+        public OfferController(IOfferService offerService, IUserService userService)
         {
             _offerService = offerService;
+            _userService = userService;
         }
 
         [HttpGet]
@@ -153,11 +153,14 @@ namespace Projekt_Programistyczny.Controllers
         [Route("AddToCart")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> AddOfferToCart([FromBody] AddOrRemoveOfferToCartDTO dto)
-        {
+        public async Task<IActionResult> AddOfferToCart(long offerId)
+        { 
+            var user = _userService.GetUserById(HttpContext.User.GetUserId()).Result;
+
             try
             {
-                await _offerService.AddOfferToCartAsync(dto);
+                AddOrRemoveOfferToCartDTO parameters = new() { CartId = user.CartId, OfferId = offerId };
+                await _offerService.AddOfferToCartAsync(parameters);
                 return Ok();
             }
             catch(NotFoundException ex)
