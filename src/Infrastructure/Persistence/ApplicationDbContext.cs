@@ -23,6 +23,8 @@ namespace Infrastructure.Persistence
         public DbSet<User> Users { get; set; }
         public DbSet<Wish> Wishes { get; set; }
         public DbSet<Cart> Carts { get; set; }
+        public DbSet<OfferAndDeliveryMethod> OffersAndDeliveryMethods { get; set; }
+        public DbSet<DeliveryMethod> DeliveryMethods { get; set; }
         public ApplicationDbContext(
             DbContextOptions<ApplicationDbContext> options,
             IDateTimeService dateTimeService,

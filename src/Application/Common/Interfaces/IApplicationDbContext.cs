@@ -18,6 +18,8 @@ namespace Application.Common.Interfaces
         DbSet<User> Users { get; set; }
         DbSet<Wish> Wishes { get; set; }
         DbSet<Cart> Carts { get; set; }
+        DbSet<OfferAndDeliveryMethod> OffersAndDeliveryMethods { get; set; }
+        DbSet<DeliveryMethod> DeliveryMethods { get; set; }
 
         DbSet<TEntity> Set<TEntity>() where TEntity : class;
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);

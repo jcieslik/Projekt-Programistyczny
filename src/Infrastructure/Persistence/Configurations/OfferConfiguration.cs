@@ -37,6 +37,9 @@ namespace Infrastructure.Persistence.Configurations
             builder.HasOne(o => o.Seller)
                 .WithMany(s => s.SoldOffers);
 
+            builder.HasMany(x => x.DeliveryMethods)
+                .WithOne(x => x.Offer);
+
         }
     }
 }

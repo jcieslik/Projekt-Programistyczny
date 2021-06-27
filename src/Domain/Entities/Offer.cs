@@ -54,5 +54,6 @@ namespace Domain.Entities
         public ICollection<Bid> Bids { get; set; }
         public ICollection<Wish> Wishes { get; set; }
         public ICollection<Cart> Carts { get; set; }
+        public ICollection<OfferAndDeliveryMethod> DeliveryMethods { get; set; }
     }
 }
