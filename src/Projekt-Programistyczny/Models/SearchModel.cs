@@ -10,7 +10,7 @@ namespace Projekt_Programistyczny.Models
         public ICollection<string> Cities { get; set; }
         public ICollection<long> ProvincesIds { get; set; }
         public ICollection<string> Brands { get; set; }
-        public long CategoryId { get; set; }
+        public long? CategoryId { get; set; }
         public int OfferType { get; set; }
         public int ProductState { get; set; }
         public int OfferState { get; set; }
