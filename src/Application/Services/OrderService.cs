@@ -79,7 +79,8 @@ namespace Application.Services
             {
                 OrderStatus = (OrderStatus)dto.OrderStatus,
                 Customer = user,
-                Offer = offer
+                Offer = offer,
+                PaymentDate = dto.PaymentDate
             };
 
             _context.Orders.Add(entity);
@@ -91,18 +92,27 @@ namespace Application.Services
             return _mapper.Map<OrderDTO>(entity);
         }
 
-        public async Task<OrderDTO> ChangeOrderStatus(UpdateOrderDTO dto)
+        public async Task<OrderDTO> UpdateOrder(UpdateOrderDTO dto)
         {
             var order = await _context.Orders.Include(x => x.Offer).SingleOrDefaultAsync(x => x.Id == dto.Id);
             if (order == null)
             {
                 throw new NotFoundException(nameof(Order), dto.Id);
             }
-            order.OrderStatus = (OrderStatus)dto.OrderStatus;
-            if(order.OrderStatus == OrderStatus.Canceled)
+            if (dto.OrderStatus.HasValue)
             {
-                order.Offer.ProductCount += 1;
+                order.OrderStatus = (OrderStatus)dto.OrderStatus.Value;
+                if(order.OrderStatus == OrderStatus.Canceled)
+                {
+                    order.Offer.ProductCount += 1;
+                }
             }
+
+            if (dto.PaymentDate.HasValue)
+            {
+                order.PaymentDate = dto.PaymentDate;
+            }
+            
             await _context.SaveChangesAsync();
             return _mapper.Map<OrderDTO>(order);
         }

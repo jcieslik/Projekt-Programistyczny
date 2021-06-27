@@ -46,7 +46,7 @@ namespace Projekt_Programistyczny.Controllers
         {
             try
             {
-                var order = await _orderService.ChangeOrderStatus(dto);
+                var order = await _orderService.UpdateOrder(dto);
                 return Ok(order);
             }
             catch (NotFoundException ex)

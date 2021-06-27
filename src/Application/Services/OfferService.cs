@@ -46,20 +46,20 @@ namespace Application.Services
         public async Task<IEnumerable<OfferWithBaseDataDTO>> GetOffersAsync()
             => await _context.Offers
                 .Include(x => x.Bids).ThenInclude(b => b.Bidder)
-                .Include(x => x.Brand)
-                .Include(x => x.City)
                 .Include(x => x.Province)
                 .Include(x => x.Seller)
                 .Include(x => x.Comments).ThenInclude(c => c.Customer)
                 .Include(x => x.Images)
                 .AsNoTracking()
+                .Where(x => !x.IsHidden && x.State == OfferState.Awaiting)
                 .ProjectTo<OfferWithBaseDataDTO>(_mapper.ConfigurationProvider)
                 .ToListAsync();
 
         public async Task<IEnumerable<OfferWithBaseDataDTO>> GetOffersFromUserAsync(long userId)
         {
             var offers = _context.Offers
-                .Include(x => x.Seller)
+                .Include(x => x.Bids)
+                .Include(x => x.Images)
                 .AsNoTracking()
                 .Where(x => x.Seller.Id == userId);
 
@@ -97,10 +97,9 @@ namespace Application.Services
                 .Include(x => x.Bids)
                 .Include(x => x.Images)
                 .Include(x => x.Category)
-                .Include(x => x.City)
                 .Include(x => x.Province)
-                .Include(x => x.Brand)
-                .AsNoTracking();
+                .AsNoTracking()
+                .Where(x => !x.IsHidden && x.State == OfferState.Awaiting);
 
 
             List<long> ids = GetChildrenCategoriesIds(filterModel.CategoryId);
