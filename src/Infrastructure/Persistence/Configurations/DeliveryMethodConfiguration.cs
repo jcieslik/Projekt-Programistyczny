@@ -9,7 +9,8 @@ namespace Infrastructure.Persistence.Configurations
         public void Configure(EntityTypeBuilder<DeliveryMethod> builder)
         {
             builder.HasMany(x => x.Offers)
-                .WithOne(r => r.DeliveryMethod);
+                .WithOne(r => r.DeliveryMethod)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
