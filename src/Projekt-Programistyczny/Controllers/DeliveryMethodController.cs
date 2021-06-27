@@ -41,7 +41,7 @@ namespace Projekt_Programistyczny.Controllers
         [HttpGet]
         [Route("GetDeliveryMethods")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<DeliveryDTO>>> GetCommentsFromOffer()
+        public async Task<ActionResult<IEnumerable<DeliveryDTO>>> GetDeliveryMethods()
         {
             var methods = await _deliveryService.GetDeliveryMethodsAsync();
             return Ok(methods);
