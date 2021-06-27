@@ -30,9 +30,7 @@ namespace Application.Services
         {
             var offer = await _context.Offers
                 .Include(x => x.Bids).ThenInclude(b => b.Bidder)
-                .Include(x => x.Brand)
                 .Include(x => x.Category)
-                .Include(x => x.City)
                 .Include(x => x.Province)
                 .Include(x => x.Seller)
                 .Include(x => x.Comments).ThenInclude(c => c.Customer)
