@@ -11,12 +11,12 @@ namespace Application.DAL.DTO.CommandDTOs.Update
         public string Description { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
-        public long? CityId { get; set; }
+        public string City { get; set; }
         public long? ProvinceId { get; set; }
         public int? ProductState { get; set; }
         public int? State { get; set; }
         public int? OfferType { get; set; }
         public long? CategoryId { get; set; }
-        public long? BrandId { get; set; }
+        public string Brand { get; set; }
     }
 }

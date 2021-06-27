@@ -14,10 +14,6 @@ namespace Infrastructure.Persistence.Configurations
                 .WithOne(c => c.Customer)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.HasMany(u => u.Rates)
-                .WithOne(r => r.Customer)
-                .OnDelete(DeleteBehavior.Cascade);
-
             builder.HasMany(u => u.Orders)
                 .WithOne(o => o.Customer);
 
@@ -37,6 +33,10 @@ namespace Infrastructure.Persistence.Configurations
                 .WithOne(c => c.Customer)
                 .HasForeignKey<Cart>(c => c.CustomerId);
 
+            builder.HasOne(u => u.Province)
+                .WithMany(x => x.Users)
+                .OnDelete(DeleteBehavior.Restrict);
+
             builder.HasData(
                     new User
                     {
@@ -47,8 +47,11 @@ namespace Infrastructure.Persistence.Configurations
                         Email = "example@example.com",
                         Role = UserRole.Admin,
                         Name = "Jan",
-                        Surname = "Kowalski"
-                    }
+                        Surname = "Kowalski",
+                        City = "Brak",
+                        Street = "Brak",
+                        PostCode = "Brak"
+                        }
                 );
         }
     }

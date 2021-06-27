@@ -13,6 +13,10 @@ namespace Application.DAL.DTO
         public string Email { get; set; }
         public string Name { get; set; }
         public string Surname { get; set; }
+        public long ProvinceId { get; set; }
+        public string City { get; set; }
+        public string Street { get; set; }
+        public string PostCode { get; set; }
         public long CartId { get; set; }
 
         public void Mapping(Profile profile)

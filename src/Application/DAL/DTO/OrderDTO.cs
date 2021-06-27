@@ -12,6 +12,7 @@ namespace Application.DAL.DTO
         public long CustomerId { get; set; }
         public long OfferId { get; set; }
         public OrderStatus OrderStatus { get; set; }
+        public DateTime? PaymentDate { get; set; }
 
         public void Mapping(Profile profile)
         {

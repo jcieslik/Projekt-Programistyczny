@@ -13,15 +13,12 @@ namespace Infrastructure.Persistence
         private readonly ICurrentUserService _currentUserService;
 
         public DbSet<Bid> Bids { get; set; }
-        public DbSet<Brand> Brands { get; set; }
-        public DbSet<City> Cities { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Message> Messages { get; set; }
         public DbSet<Offer> Offers { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<ProductCategory> Categories { get; set; }
         public DbSet<ProductImage> Images { get; set; }
-        public DbSet<ProductRate> Rates { get; set; }
         public DbSet<Province> Provinces { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Wish> Wishes { get; set; }

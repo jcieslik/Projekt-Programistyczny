@@ -61,12 +61,16 @@ namespace Application.Services
 
         public async Task<CommentDTO> CreateCommentAsync(CreateCommentDTO dto)
         {
-            var user = await _context.Users.FindAsync(dto.UserId);
-            if(user == null)
+            var customer = await _context.Users.FindAsync(dto.CustomerId);
+            var seller = await _context.Users.FindAsync(dto.SellerId);
+            if (customer == null)
             {
-                throw new NotFoundException(nameof(User), dto.UserId);
+                throw new NotFoundException(nameof(User), dto.CustomerId);
             }
-
+            if (seller == null)
+            {
+                throw new NotFoundException(nameof(User), dto.SellerId);
+            }
             var offer = await _context.Offers.FindAsync(dto.OfferId);
             if (offer == null)
             {
@@ -76,8 +80,10 @@ namespace Application.Services
             var entity = new Comment
             {
                 Offer = offer,
-                Customer = user,
+                Customer = customer,
                 Content = dto.Content,
+                RateValue = dto.RateValue,
+                Seller = seller,
                 IsHidden = false
             };
 
@@ -99,6 +105,12 @@ namespace Application.Services
             {
                 comment.Content = dto.Content;
             }
+
+            if (dto.RateValue.HasValue)
+            {
+                comment.RateValue = dto.RateValue.Value;
+            }
+
             if (dto.IsHidden.HasValue)
             {
                 comment.IsHidden = dto.IsHidden.Value;
