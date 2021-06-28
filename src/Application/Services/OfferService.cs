@@ -182,7 +182,7 @@ namespace Application.Services
             };
 
             _context.Offers.Add(entity);
-            await _context.SaveChangesAsync();
+
             foreach(var item in dto.Images)
             {
                 var image = new ProductImage
@@ -194,6 +194,18 @@ namespace Application.Services
                 };
                 _context.Images.Add(image);
             }
+
+            foreach(var item in dto.DeliveryMethods)
+            {
+                var deliveryMethod = new OfferAndDeliveryMethod
+                {
+                    Offer = entity,
+                    DeliveryMethod = await _context.DeliveryMethods.FindAsync(item.DeliveryMethodId),
+                    FullPrice = item.FullPrice
+                };
+                _context.OffersAndDeliveryMethods.Add(deliveryMethod);
+            }
+
             await _context.SaveChangesAsync();
             return _mapper.Map<OfferDTO>(entity);
         }

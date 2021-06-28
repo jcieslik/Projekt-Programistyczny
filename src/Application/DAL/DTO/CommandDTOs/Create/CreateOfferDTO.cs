@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Application.DAL.DTO.CommandDTOs.AddOrRemove;
+using System;
 using System.Collections.Generic;
 
 namespace Application.DAL.DTO.CommandDTOs.Create
@@ -20,5 +21,6 @@ namespace Application.DAL.DTO.CommandDTOs.Create
         public long CategoryId { get; set; }
         public string Brand { get; set; }
         public IEnumerable<ProductImageDTO> Images { get; set; }
+        public IEnumerable<AddDeliveryMethodWihOfferRelationDTO> DeliveryMethods { get; set; }
     }
 }

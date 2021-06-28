@@ -4,6 +4,6 @@
     {
         public long DeliveryMethodId { get; set; }
         public long OfferId { get; set; }
-        public long FullPrice { get; set; }
+        public double FullPrice { get; set; }
     }
 }
