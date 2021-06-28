@@ -99,11 +99,14 @@ namespace Application.Services
                 .AsNoTracking()
                 .Where(x => !x.IsHidden && x.State == OfferState.Awaiting);
 
+            if (filterModel.CategoryId.HasValue)
+            {
+                List<long> ids = GetChildrenCategoriesIds(filterModel.CategoryId.Value);
+                ids.Add(filterModel.CategoryId.Value);
 
-            List<long> ids = GetChildrenCategoriesIds(filterModel.CategoryId);
-            ids.Add(filterModel.CategoryId);
-
-            offers = offers.Where(x => ids.Contains(x.Category.Id));
+                offers = offers.Where(x => ids.Contains(x.Category.Id));
+            }
+            
             offers = offers.Where(x => x.OfferType == (OfferType)filterModel.OfferType
                     && x.ProductState == (ProductState)filterModel.ProductState
                     && x.State == (OfferState)filterModel.OfferState
@@ -179,7 +182,7 @@ namespace Application.Services
             };
 
             _context.Offers.Add(entity);
-            await _context.SaveChangesAsync();
+
             foreach(var item in dto.Images)
             {
                 var image = new ProductImage
@@ -191,6 +194,18 @@ namespace Application.Services
                 };
                 _context.Images.Add(image);
             }
+
+            foreach(var item in dto.DeliveryMethods)
+            {
+                var deliveryMethod = new OfferAndDeliveryMethod
+                {
+                    Offer = entity,
+                    DeliveryMethod = await _context.DeliveryMethods.FindAsync(item.DeliveryMethodId),
+                    FullPrice = item.FullPrice
+                };
+                _context.OffersAndDeliveryMethods.Add(deliveryMethod);
+            }
+
             await _context.SaveChangesAsync();
             return _mapper.Map<OfferDTO>(entity);
         }

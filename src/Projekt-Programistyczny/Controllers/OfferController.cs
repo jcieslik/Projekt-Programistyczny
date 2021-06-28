@@ -136,7 +136,7 @@ namespace Projekt_Programistyczny.Controllers
         [Route("CreateOffer")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<OfferDTO>> Create([FromBody] CreateOfferDTO dto)
+        public async Task<ActionResult<OfferDTO>> CreateOffer([FromBody] CreateOfferDTO dto)
         {
             try
             {
@@ -190,7 +190,7 @@ namespace Projekt_Programistyczny.Controllers
         [Route("UpdateOffer")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<OfferDTO>> Update([FromBody] UpdateOfferDTO dto)
+        public async Task<ActionResult<OfferDTO>> UpdateOffer([FromBody] UpdateOfferDTO dto)
         {
             try
             {

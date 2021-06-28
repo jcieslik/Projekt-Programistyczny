@@ -13,7 +13,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using Projekt_Programistyczny.Configuration;
 using Projekt_Programistyczny.Extensions;
 using Projekt_Programistyczny.Services;
 using System;
@@ -80,6 +82,13 @@ namespace Projekt_Programistyczny
                 };
             });
 
+            services.AddSingleton<IUserConfig, UserConfig>(options =>
+            {
+                UserConfig opt = new UserConfig();
+                opt.StripeSecret = Configuration.GetValue<string>("secret");
+
+                return opt;
+            });
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
