@@ -70,11 +70,11 @@ namespace Projekt_Programistyczny.Controllers
         [Route("GetFromCart")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IEnumerable<OfferWithBaseDataDTO>>> GetOffersFromCart([FromQuery] long cartId)
+        public async Task<ActionResult<IEnumerable<OfferWithBaseDataDTO>>> GetOffersFromCart([FromQuery] long id)
         {
             try
             {
-                var offers = await _offerService.GetOffersFromCartAsync(cartId);
+                var offers = await _offerService.GetOffersFromCartAsync(id);
                 return Ok(offers);
             }
             catch (NotFoundException ex)
@@ -153,7 +153,7 @@ namespace Projekt_Programistyczny.Controllers
         [Route("AddToCart")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> AddOfferToCart(long offerId)
+        public async Task<IActionResult> AddOfferToCart([FromQuery] long offerId)
         {
             var id = HttpContext.User.GetUserId();
             var user = await _userService.GetUserById(id);
@@ -174,11 +174,11 @@ namespace Projekt_Programistyczny.Controllers
         [Route("RemoveFromCart")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> RemoveOfferFromCart([FromBody] AddOrRemoveOfferToCartDTO dto)
+        public async Task<IActionResult> RemoveOfferFromCart([FromQuery] long id)
         {
             try
             {
-                await _offerService.RemoveOfferFromCartAsync(dto);
+                //await _offerService.RemoveOfferFromCartAsync(dto);
                 return Ok();
             }
             catch (NotFoundException ex)
