@@ -20,6 +20,7 @@ namespace Application
             services.AddScoped<IProductCategoryService, ProductCategoryService>();
             services.AddScoped<IProvinceService, ProvinceService>();
             services.AddScoped<IDeliveryService, DeliveryService>();
+            services.AddScoped<ICartService, CartService>();
             return services;
         }
     }

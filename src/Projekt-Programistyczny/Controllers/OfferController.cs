@@ -67,23 +67,6 @@ namespace Projekt_Programistyczny.Controllers
         }
 
         [HttpGet]
-        [Route("GetFromCart")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IEnumerable<OfferWithBaseDataDTO>>> GetOffersFromCart([FromQuery] long id)
-        {
-            try
-            {
-                var offers = await _offerService.GetOffersFromCartAsync(id);
-                return Ok(offers);
-            }
-            catch (NotFoundException ex)
-            {
-                return NotFound(new { message = ex.Message });
-            }
-        }
-
-        [HttpGet]
         [Route("GetFromUserWishes")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<PaginatedList<OfferWithBaseDataDTO>>> GetOffersFromActiveUserWishes(
@@ -144,44 +127,6 @@ namespace Projekt_Programistyczny.Controllers
                 return Ok(offer);
             }
             catch(NotFoundException ex)
-            {
-                return NotFound(new { message = ex.Message });
-            }
-        }
-
-        [HttpPost]
-        [Route("AddToCart")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> AddOfferToCart([FromQuery] long offerId)
-        {
-            var id = HttpContext.User.GetUserId();
-            var user = await _userService.GetUserById(id);
-
-            try
-            {
-                AddOrRemoveOfferToCartDTO parameters = new() { CartId = user.CartId, OfferId = offerId };
-                await _offerService.AddOfferToCartAsync(parameters);
-                return Ok();
-            }
-            catch(NotFoundException ex)
-            {
-                return NotFound(new { message = ex.Message });
-            }
-        }
-
-        [HttpPut]
-        [Route("RemoveFromCart")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> RemoveOfferFromCart([FromQuery] long id)
-        {
-            try
-            {
-                //await _offerService.RemoveOfferFromCartAsync(dto);
-                return Ok();
-            }
-            catch (NotFoundException ex)
             {
                 return NotFound(new { message = ex.Message });
             }

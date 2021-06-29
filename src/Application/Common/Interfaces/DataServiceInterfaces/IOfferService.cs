@@ -17,9 +17,6 @@ namespace Application.Common.Interfaces.DataServiceInterfaces
         Task<PaginatedList<OfferWithBaseDataDTO>> GetPaginatedOffersAsync(FilterModel filterModel, PaginationProperties paginationProperties);
         Task<OfferDTO> UpdateOfferAsync(UpdateOfferDTO dto);
         Task<IEnumerable<OfferWithBaseDataDTO>> GetOffersAsync();
-        Task<IEnumerable<OfferWithBaseDataDTO>> GetOffersFromCartAsync(long cartId);
-        Task AddOfferToCartAsync(AddOrRemoveOfferToCartDTO dto);
-        Task RemoveOfferFromCartAsync(AddOrRemoveOfferToCartDTO dto);
         Task ChangeStatusOfOutdatedOffers();
     }
 }

@@ -284,57 +284,13 @@ namespace Application.Services
                 .AsNoTracking()
                 .Include(x => x.ParentCategory)
                 .Where(x => x.ParentCategory.Id == parentId).Select(x => x.Id).ToList();
-            List<long> result = new ();
-            foreach(long id in childrenIds)
+            List<long> result = new();
+            foreach (long id in childrenIds)
             {
                 var ids = GetChildrenCategoriesIds(id);
                 result.AddRange(ids);
             }
             return result;
-        }
-
-        public async Task<IEnumerable<OfferWithBaseDataDTO>> GetOffersFromCartAsync(long cartId)
-        {
-            return await _context.Carts
-                .Include(x => x.Offers).ThenInclude(x => x.Seller)
-                .Where(x => x.Id == cartId)
-                .Select(x => x.Offers)
-                .ProjectTo<OfferWithBaseDataDTO>(_mapper.ConfigurationProvider)
-            .ToListAsync();
-        }
-
-        public async Task AddOfferToCartAsync(AddOrRemoveOfferToCartDTO dto)
-        {
-            var offer = await _context.Offers.FindAsync(dto.OfferId);
-            var cart = await _context.Carts.FindAsync(dto.CartId);
-            if (offer == null)
-            {
-                throw new NotFoundException(nameof(Offer), dto.OfferId);
-            }
-            if (cart == null)
-            {
-                throw new NotFoundException(nameof(Cart), dto.CartId);
-            }
-
-            cart.Offers.Add(offer);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task RemoveOfferFromCartAsync(AddOrRemoveOfferToCartDTO dto)
-        {
-            var offer = await _context.Offers.FindAsync(dto.OfferId);
-            var cart = await _context.Carts.FindAsync(dto.CartId);
-            if (offer == null)
-            {
-                throw new NotFoundException(nameof(Offer), dto.OfferId);
-            }
-            if (cart == null)
-            {
-                throw new NotFoundException(nameof(Cart), dto.CartId);
-            }
-
-            cart.Offers.Remove(offer);
-            await _context.SaveChangesAsync();
         }
 
         public async Task ChangeStatusOfOutdatedOffers()
