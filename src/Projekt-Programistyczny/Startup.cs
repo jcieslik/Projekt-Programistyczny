@@ -15,9 +15,14 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using Projekt_Programistyczny.BackgroundServices;
 using Projekt_Programistyczny.Configuration;
+using Projekt_Programistyczny.CronServices;
 using Projekt_Programistyczny.Extensions;
 using Projekt_Programistyczny.Services;
+using Quartz;
+using Quartz.Impl;
+using Quartz.Spi;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -98,6 +103,15 @@ namespace Projekt_Programistyczny
             services.AddSingleton<ICurrentUserService, CurrentUserService>();
             services.AddInfrastructure(Configuration);
             services.AddApplication();
+
+            services.AddSingleton<IJobFactory, SingletonJobFactory>();
+            services.AddSingleton<ISchedulerFactory, StdSchedulerFactory>();
+
+            services.AddHostedService<QuartzBackgroundService>();
+            services.AddSingleton<OfferStatusChangeJob>();
+            services.AddSingleton(new JobSchedule(
+                jobType: typeof(OfferStatusChangeJob),
+                cronExpression: "0 * * ? * * *")); //Runs at begining of every minute
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
