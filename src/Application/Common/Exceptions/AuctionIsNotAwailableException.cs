@@ -2,7 +2,7 @@
 
 namespace Application.Common.Exceptions
 {
-    public class AuctionIsAlreadyFinishedException : Exception
+    public class AuctionIsNotAwailableException : Exception
     {
     }
 }
