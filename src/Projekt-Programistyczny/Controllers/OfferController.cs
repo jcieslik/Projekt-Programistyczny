@@ -154,8 +154,9 @@ namespace Projekt_Programistyczny.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> AddOfferToCart(long offerId)
-        { 
-            var user = await _userService.GetUserById(HttpContext.User.GetUserId());
+        {
+            var id = HttpContext.User.GetUserId();
+            var user = await _userService.GetUserById(id);
 
             try
             {
