@@ -337,14 +337,22 @@ namespace Application.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task ChangeStatusOfOutdatedOffers()
+        public async Task ChangeStatusOfOffersAfterEndDate()
         {
             var offers = _context.Offers
+                .Include(x => x.Bids)
                 .Where(x => x.State == OfferState.Awaiting && x.EndDate < DateTime.Now);
 
             foreach(var offer in offers)
             {
-                offer.State = OfferState.Outdated;
+                if(offer.OfferType == OfferType.Auction && offer.Bids.Count > 0)
+                {
+                    offer.State = OfferState.Finished;
+                }
+                else
+                {
+                    offer.State = OfferState.Outdated;
+                }
             }
 
             await _context.SaveChangesAsync();

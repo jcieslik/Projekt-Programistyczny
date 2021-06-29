@@ -8,6 +8,7 @@ using Application.DAL.DTO.CommandDTOs.Update;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Domain.Entities;
+using Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -66,6 +67,17 @@ namespace Application.Services
             if (offer == null)
             {
                 throw new NotFoundException(nameof(Offer), dto.OfferId);
+            }
+
+            if(offer.OfferType != OfferType.Auction)
+            {
+                throw new OfferIsNotAnAuctionException();
+            }
+
+
+            if(offer.State != OfferState.Awaiting)
+            {
+                throw new AuctionIsNotAwailableException();
             }
 
             var entity = new Bid
