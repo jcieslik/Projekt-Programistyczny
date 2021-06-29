@@ -151,8 +151,7 @@ namespace Application.Services
                 .Include(x => x.Offer)
                 .Include(x => x.DeliveryMethod)
                 .Where(x => x.Offer.Id == offerId)
-                .Select(x => x.DeliveryMethod)
-                .ProjectTo<DeliveryDTO>(_mapper.ConfigurationProvider)
+                .Select(x => new DeliveryDTO { Id = x.DeliveryMethod.Id, Name = x.DeliveryMethod.Name, Price = x.FullPrice})
                 .ToListAsync();
         }
     }

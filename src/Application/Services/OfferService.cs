@@ -339,10 +339,8 @@ namespace Application.Services
 
         public async Task ChangeStatusOfOutdatedOffers()
         {
-            var offers = await _context.Offers
-                .AsNoTracking()
-                .Where(x => x.State == OfferState.Awaiting && x.EndDate < DateTime.Now)
-                .ToListAsync();
+            var offers = _context.Offers
+                .Where(x => x.State == OfferState.Awaiting && x.EndDate < DateTime.Now);
 
             foreach(var offer in offers)
             {
