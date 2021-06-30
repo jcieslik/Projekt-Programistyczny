@@ -5,6 +5,7 @@ namespace Projekt_Programistyczny.Models
 {
     public class SearchModel
     {
+        public long? SellerId { get; set; }
         public double? MinPrice { get; set; }
         public double? MaxPrice { get; set; }
         public ICollection<string> Cities { get; set; }

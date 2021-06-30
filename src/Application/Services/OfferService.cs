@@ -131,6 +131,10 @@ namespace Application.Services
             {
                 offers = offers.Where(x => x.PriceForOneProduct >= filterModel.MinPrice.Value);
             }
+            if (filterModel.SellerId.HasValue)
+            {
+                offers = offers.Where(x => x.Seller.Id == filterModel.SellerId);
+            }
             offers = paginationProperties.OrderBy switch
             {
                 "price_asc" => offers.OrderBy(x => x.PriceForOneProduct),
