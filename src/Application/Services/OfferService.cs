@@ -297,6 +297,8 @@ namespace Application.Services
         {
             return await _context.Carts
                 .Include(x => x.Offers).ThenInclude(x => x.Seller)
+                .Include(x => x.Offers).ThenInclude(x => x.Bids)
+                .Include(x => x.Offers).ThenInclude(x => x.Images)
                 .Where(x => x.Id == cartId)
                 .Select(x => x.Offers)
                 .ProjectTo<OfferWithBaseDataDTO>(_mapper.ConfigurationProvider)
