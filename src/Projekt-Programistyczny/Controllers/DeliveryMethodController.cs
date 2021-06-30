@@ -90,7 +90,7 @@ namespace Projekt_Programistyczny.Controllers
             {
                 return NotFound(new { message = ex.Message });
             }
-            catch (RelationAlreadyExistException ex)
+            catch (RelationAlreadyExistException)
             {
                 return Conflict();
             }
