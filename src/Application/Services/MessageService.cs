@@ -108,7 +108,6 @@ namespace Application.Services
                 Sender = sender,
                 Recipient = recipient,
                 Message = message,
-                Status = (TransmissionStatus)dto.Status,
                 MailboxType = (MailboxType)dto.MailboxType,
                 IsHidden = false
             };
@@ -146,9 +145,9 @@ namespace Application.Services
                 transmission.IsHidden = dto.IsHidden.Value;
             }
 
-            if (dto.Status.HasValue)
+            if (dto.MailboxType.HasValue)
             {
-                transmission.Status = (TransmissionStatus)dto.Status.Value;
+                transmission.MailboxType = (MailboxType)dto.MailboxType.Value;
             }
 
             await _context.SaveChangesAsync();

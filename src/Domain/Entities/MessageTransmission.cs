@@ -12,7 +12,5 @@ namespace Domain.Entities
         public Message Message { get; set; }
         [Required]
         public MailboxType MailboxType { get; set; }
-        [Required]
-        public TransmissionStatus Status { get; set; }
     }
 }
