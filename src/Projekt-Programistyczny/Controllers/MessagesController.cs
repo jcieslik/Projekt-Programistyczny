@@ -25,7 +25,7 @@ namespace Projekt_Programistyczny.Controllers
         [Route("GetMessageById")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<MessageDTO>> GetOfferById([FromQuery] long id)
+        public async Task<ActionResult<BaseMessageDTO>> GetMessageById([FromQuery] long id)
         {
             var message = await _messageService.GetMessageByIdAsync(id);
             if (message == null)
@@ -35,15 +35,33 @@ namespace Projekt_Programistyczny.Controllers
             return Ok(message);
         }
 
-        [HttpPost]
-        [Route("GetMessageFromUser/{userId}")]
+        [HttpGet]
+        [Route("GetTransmissionById")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<PaginatedList<MessageDTO>>> GetPaginatedMessagesFromUser([FromBody]PaginationProperties properties, [FromRoute]long userId)
+        public async Task<ActionResult<MessageDTO>> GetMessageTransmissionById([FromQuery] long id)
+        {
+            var transmission = await _messageService.GetMessageTransmissionByIdAsync(id);
+            if (transmission == null)
+            {
+                return NotFound();
+            }
+            return Ok(transmission);
+        }
+
+        [HttpPost]
+        [Route("GetMessageFromUser/user/{userId}/type/{mailboxType}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<PaginatedList<MessageDTO>>> GetPaginatedMessagesFromUser(
+            [FromBody] PaginationProperties properties,
+            [FromRoute] long userId,
+            [FromRoute] int mailboxType
+            )
         {
             try
             {
-                var messages = await _messageService.GetPaginatedMessagesFromUserAsync(userId, properties);
+                var messages = await _messageService.GetPaginatedMessagesFromUserAsync(userId, mailboxType, properties);
                 return Ok(messages);
             }
             catch(NotFoundException ex)
@@ -56,7 +74,7 @@ namespace Projekt_Programistyczny.Controllers
         [Route("CreateMessage")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<MessageDTO>> CreateMessage([FromBody] CreateMessageDTO dto)
+        public async Task<ActionResult<BaseMessageDTO>> CreateMessage([FromBody] CreateMessageDTO dto)
         {
             try
             {
@@ -69,15 +87,49 @@ namespace Projekt_Programistyczny.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("CreateTransmission")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<MessageDTO>> CreateTransmission([FromBody] CreateTransmissionDTO dto)
+        {
+            try
+            {
+                var transmission = await _messageService.CreateTransmissionAsync(dto);
+                return Ok(transmission);
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+        }
+
         [HttpPut]
         [Route("UpdateMessage")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<MessageDTO>> UpdateMessage([FromBody] UpdateMessageDTO dto)
+        public async Task<ActionResult<BaseMessageDTO>> UpdateMessage([FromBody] UpdateMessageDTO dto)
         {
             try
             {
                 var message = await _messageService.UpdateMessageAsync(dto);
+                return Ok(message);
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+        }
+
+        [HttpPut]
+        [Route("UpdateTransmission")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<MessageDTO>> UpdateTransmission([FromBody] UpdateTransmissionDTO dto)
+        {
+            try
+            {
+                var message = await _messageService.UpdateTransmissionAsync(dto);
                 return Ok(message);
             }
             catch (NotFoundException ex)

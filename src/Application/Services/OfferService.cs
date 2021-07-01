@@ -302,9 +302,9 @@ namespace Application.Services
                 .Where(x => x.Id == cartId)
                 .SingleOrDefaultAsync();
                 
-                return cart.Offers.AsQueryable()
+            return cart.Offers.AsQueryable()
                 .ProjectTo<OfferWithBaseDataDTO>(_mapper.ConfigurationProvider)
-            .ToList();
+                .ToList();
         }
 
         public async Task AddOfferToCartAsync(AddOrRemoveOfferToCartDTO dto)
