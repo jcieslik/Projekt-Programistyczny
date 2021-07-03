@@ -20,7 +20,7 @@ namespace Projekt_Programistyczny.CronServices
         {
             using var scope = _serviceProvider.CreateScope();
             var offerService = scope.ServiceProvider.GetService<IOfferService>();
-            await offerService.ChangeStatusOfOutdatedOffers();
+            await offerService.ChangeStatusOfOffersAfterEndDate();
         }
     }
 }

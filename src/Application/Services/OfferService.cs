@@ -299,12 +299,16 @@ namespace Application.Services
 
         public async Task<IEnumerable<OfferWithBaseDataDTO>> GetOffersFromCartAsync(long cartId)
         {
-            return await _context.Carts
+            var cart = await _context.Carts
                 .Include(x => x.Offers).ThenInclude(x => x.Seller)
+                .Include(x => x.Offers).ThenInclude(x => x.Bids)
+                .Include(x => x.Offers).ThenInclude(x => x.Images)
                 .Where(x => x.Id == cartId)
-                .Select(x => x.Offers)
+                .SingleOrDefaultAsync();
+                
+            return cart.Offers.AsQueryable()
                 .ProjectTo<OfferWithBaseDataDTO>(_mapper.ConfigurationProvider)
-            .ToListAsync();
+                .ToList();
         }
 
         public async Task AddOfferToCartAsync(AddOrRemoveOfferToCartDTO dto)
@@ -341,14 +345,22 @@ namespace Application.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task ChangeStatusOfOutdatedOffers()
+        public async Task ChangeStatusOfOffersAfterEndDate()
         {
             var offers = _context.Offers
+                .Include(x => x.Bids)
                 .Where(x => x.State == OfferState.Awaiting && x.EndDate < DateTime.Now);
 
             foreach(var offer in offers)
             {
-                offer.State = OfferState.Outdated;
+                if(offer.OfferType == OfferType.Auction && offer.Bids.Count > 0)
+                {
+                    offer.State = OfferState.Finished;
+                }
+                else
+                {
+                    offer.State = OfferState.Outdated;
+                }
             }
 
             await _context.SaveChangesAsync();

@@ -20,6 +20,6 @@ namespace Application.Common.Interfaces.DataServiceInterfaces
         Task<IEnumerable<OfferWithBaseDataDTO>> GetOffersFromCartAsync(long cartId);
         Task AddOfferToCartAsync(AddOrRemoveOfferToCartDTO dto);
         Task RemoveOfferFromCartAsync(AddOrRemoveOfferToCartDTO dto);
-        Task ChangeStatusOfOutdatedOffers();
+        Task ChangeStatusOfOffersAfterEndDate();
     }
 }

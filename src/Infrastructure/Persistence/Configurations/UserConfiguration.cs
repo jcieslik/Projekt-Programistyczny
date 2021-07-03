@@ -24,7 +24,7 @@ namespace Infrastructure.Persistence.Configurations
                 .WithOne(b => b.Bidder);
 
             builder.HasMany(u => u.Messages)
-                .WithOne(m => m.Recipient);
+                .WithOne(m => m.MailboxOwner);
 
             builder.HasMany(u => u.Wishes)
                 .WithOne(w => w.Customer);
