@@ -75,7 +75,9 @@ namespace Projekt_Programistyczny.Controllers
         [HttpPost]
         [Route("CreateBid")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
         public async Task<ActionResult<BidDTO>> Create([FromBody] CreateBidDTO dto)
         {
             try
@@ -86,6 +88,14 @@ namespace Projekt_Programistyczny.Controllers
             catch(NotFoundException ex)
             {
                 return NotFound(new { message = ex.Message });
+            }
+            catch(OfferIsNotAnAuctionException)
+            {
+                return Conflict();
+            }
+            catch (AuctionIsNotAwailableException)
+            {
+                return Forbid();
             }
         }
 

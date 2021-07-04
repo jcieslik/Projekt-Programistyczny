@@ -18,9 +18,13 @@ namespace Application.DAL.DTO
 
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<Message, MessageDTO>()
+            profile.CreateMap<MessageTransmission, MessageDTO>()
                 .ForMember(dest => dest.SenderId, opt => opt.MapFrom(src => src.Sender.Id))
-                .ForMember(dest => dest.RecipientId, opt => opt.MapFrom(src => src.Recipient.Id));
+                .ForMember(dest => dest.RecipientId, opt => opt.MapFrom(src => src.Recipient.Id))
+                .ForMember(dest => dest.Topic, opt => opt.MapFrom(src => src.Message.Topic))
+                .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.Message.Content))
+                .ForMember(dest => dest.SendDate, opt => opt.MapFrom(src => src.Message.SendDate))
+                .ForMember(dest => dest.MailboxType, opt => opt.MapFrom(src => src.MailboxType));
         }
     }
 }

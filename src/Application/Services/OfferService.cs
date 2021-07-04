@@ -131,6 +131,10 @@ namespace Application.Services
             {
                 offers = offers.Where(x => x.PriceForOneProduct >= filterModel.MinPrice.Value);
             }
+            if (filterModel.SellerId.HasValue)
+            {
+                offers = offers.Where(x => x.Seller.Id == filterModel.SellerId);
+            }
             offers = paginationProperties.OrderBy switch
             {
                 "price_asc" => offers.OrderBy(x => x.PriceForOneProduct),
@@ -293,14 +297,70 @@ namespace Application.Services
             return result;
         }
 
-        public async Task ChangeStatusOfOutdatedOffers()
+        public async Task<IEnumerable<OfferWithBaseDataDTO>> GetOffersFromCartAsync(long cartId)
+        {
+            var cart = await _context.Carts
+                .Include(x => x.Offers).ThenInclude(x => x.Seller)
+                .Include(x => x.Offers).ThenInclude(x => x.Bids)
+                .Include(x => x.Offers).ThenInclude(x => x.Images)
+                .Where(x => x.Id == cartId)
+                .SingleOrDefaultAsync();
+                
+            return cart.Offers.AsQueryable()
+                .ProjectTo<OfferWithBaseDataDTO>(_mapper.ConfigurationProvider)
+                .ToList();
+        }
+
+        public async Task AddOfferToCartAsync(AddOrRemoveOfferToCartDTO dto)
+        {
+            var offer = await _context.Offers.FindAsync(dto.OfferId);
+            var cart = await _context.Carts.FindAsync(dto.CartId);
+            if (offer == null)
+            {
+                throw new NotFoundException(nameof(Offer), dto.OfferId);
+            }
+            if (cart == null)
+            {
+                throw new NotFoundException(nameof(Cart), dto.CartId);
+            }
+
+            cart.Offers.Add(offer);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task RemoveOfferFromCartAsync(AddOrRemoveOfferToCartDTO dto)
+        {
+            var offer = await _context.Offers.FindAsync(dto.OfferId);
+            var cart = await _context.Carts.FindAsync(dto.CartId);
+            if (offer == null)
+            {
+                throw new NotFoundException(nameof(Offer), dto.OfferId);
+            }
+            if (cart == null)
+            {
+                throw new NotFoundException(nameof(Cart), dto.CartId);
+            }
+
+            cart.Offers.Remove(offer);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task ChangeStatusOfOffersAfterEndDate()
         {
             var offers = _context.Offers
+                .Include(x => x.Bids)
                 .Where(x => x.State == OfferState.Awaiting && x.EndDate < DateTime.Now);
 
             foreach(var offer in offers)
             {
-                offer.State = OfferState.Outdated;
+                if(offer.OfferType == OfferType.Auction && offer.Bids.Count > 0)
+                {
+                    offer.State = OfferState.Finished;
+                }
+                else
+                {
+                    offer.State = OfferState.Outdated;
+                }
             }
 
             await _context.SaveChangesAsync();
