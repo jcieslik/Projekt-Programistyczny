@@ -23,6 +23,7 @@ namespace Projekt_Programistyczny.Controllers
         }
 
         [HttpPost]
+        [Route("CreateWish")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<WishDTO>> CreateWish(CreateWishDto dto)
@@ -39,6 +40,7 @@ namespace Projekt_Programistyczny.Controllers
         }
 
         [HttpPatch]
+        [Route("HideWish")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> HideWish([FromQuery] long id)

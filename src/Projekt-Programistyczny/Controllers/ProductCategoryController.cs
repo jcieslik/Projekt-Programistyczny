@@ -23,7 +23,7 @@ namespace Projekt_Programistyczny.Controllers
             _productCategoryService = productCategoryService;
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("GetProductById")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<IEnumerable<ProductCategoryDTO>>> GetProductById(long id)
@@ -47,10 +47,11 @@ namespace Projekt_Programistyczny.Controllers
         }
 
         [HttpPost]
+        [Route("CreateProductCategory")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<ActionResult<ProductCategoryDTO>> Create([FromBody] CreateProductCategoryDTO dto)
+        public async Task<ActionResult<ProductCategoryDTO>> CreateProductCategory([FromBody] CreateProductCategoryDTO dto)
         {
             try
             {
@@ -68,10 +69,11 @@ namespace Projekt_Programistyczny.Controllers
         }
 
         [HttpPut]
+        [Route("UpdateProductCategory")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<ActionResult<ProductCategoryDTO>> Update([FromBody] UpdateProductCategoryDTO dto)
+        public async Task<ActionResult<ProductCategoryDTO>> UpdateProductCategory([FromBody] UpdateProductCategoryDTO dto)
         {
             try
             {

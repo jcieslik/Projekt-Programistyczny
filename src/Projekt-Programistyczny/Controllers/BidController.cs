@@ -78,7 +78,7 @@ namespace Projekt_Programistyczny.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<ActionResult<BidDTO>> Create([FromBody] CreateBidDTO dto)
+        public async Task<ActionResult<BidDTO>> CreateBid([FromBody] CreateBidDTO dto)
         {
             try
             {
@@ -103,7 +103,7 @@ namespace Projekt_Programistyczny.Controllers
         [Route("UpdateBid")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<BidDTO>> Update([FromBody] UpdateBidDTO dto)
+        public async Task<ActionResult<BidDTO>> UpdateBid([FromBody] UpdateBidDTO dto)
         {
             try
             {

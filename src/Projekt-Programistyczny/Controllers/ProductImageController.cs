@@ -58,7 +58,7 @@ namespace Projekt_Programistyczny.Controllers
         [Route("CreateImage")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<ProductImageDTO>> Create([FromBody] CreateProductImageDTO dto)
+        public async Task<ActionResult<ProductImageDTO>> CreateImage([FromBody] CreateProductImageDTO dto)
         {
             try
             {
@@ -76,7 +76,7 @@ namespace Projekt_Programistyczny.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<ProductImageDTO>> Update([FromBody] UpdateProductImageDTO dto)
+        public async Task<ActionResult<ProductImageDTO>> UpdateImage([FromBody] UpdateProductImageDTO dto)
         {
             try
             {
