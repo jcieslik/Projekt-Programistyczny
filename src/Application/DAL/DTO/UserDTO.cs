@@ -17,6 +17,7 @@ namespace Application.DAL.DTO
         public string City { get; set; }
         public string Street { get; set; }
         public string PostCode { get; set; }
+        public string BankAccountNumber { get; set; }
         public long CartId { get; set; }
 
         public void Mapping(Profile profile)
