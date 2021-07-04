@@ -41,18 +41,6 @@ namespace Application.Services
             return _mapper.Map<OfferDTO>(offer);
         }
 
-        public async Task<IEnumerable<OfferWithBaseDataDTO>> GetOffersAsync()
-            => await _context.Offers
-                .Include(x => x.Bids).ThenInclude(b => b.Bidder)
-                .Include(x => x.Province)
-                .Include(x => x.Seller)
-                .Include(x => x.Comments).ThenInclude(c => c.Customer)
-                .Include(x => x.Images)
-                .AsNoTracking()
-                .Where(x => !x.IsHidden && x.State == OfferState.Awaiting)
-                .ProjectTo<OfferWithBaseDataDTO>(_mapper.ConfigurationProvider)
-                .ToListAsync();
-
         public async Task<IEnumerable<OfferWithBaseDataDTO>> GetOffersFromUserAsync(long userId)
         {
             var offers = _context.Offers

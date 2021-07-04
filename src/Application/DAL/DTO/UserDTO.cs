@@ -13,16 +13,18 @@ namespace Application.DAL.DTO
         public string Email { get; set; }
         public string Name { get; set; }
         public string Surname { get; set; }
-        public long ProvinceId { get; set; }
+        public string Province { get; set; }
         public string City { get; set; }
         public string Street { get; set; }
         public string PostCode { get; set; }
+        public string BankAccountNumber { get; set; }
         public long CartId { get; set; }
 
         public void Mapping(Profile profile)
         {
             profile.CreateMap<User, UserDTO>()
-                .ForMember(dest => dest.CartId, opt => opt.MapFrom(src => src.Cart.Id));
+                .ForMember(dest => dest.CartId, opt => opt.MapFrom(src => src.Cart.Id))
+                .ForMember(dest => dest.Province, opt => opt.MapFrom(src => src.Province.Name));
         }
     }
 }

@@ -36,7 +36,7 @@ namespace Application.Services
             var comments = _context.Comments
                 .Include(c => c.Customer).Include(c => c.Offer)
                 .AsNoTracking()
-                .Where(c => c.Customer.Id == userId);
+                .Where(c => c.Seller.Id == userId);
 
             comments = onlyNotHidden ? comments.Where(x => !x.IsHidden) : comments;
 

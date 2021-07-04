@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Projekt_Programistyczny.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Security.Claims;
@@ -122,29 +123,19 @@ namespace Projekt_Programistyczny.Controllers
         }
 
         [HttpGet]
-        [Route("AccountDetails")]
+        [Route("GetUserInfo")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<ActionResult<UserDTO>> GetAccountDetails()
+        public async Task<ActionResult<UserDTO>> GetUserInfo([FromQuery] long userId)
         {
             try
             {
-                var user = await userService.GetUserById(currentUserService.Id);
+                var user = await userService.GetUserById(userId);
                 return Ok(user);
             }
             catch (NotFoundException ex)
             {
                 return NotFound(new { message = ex.Message });
-            }
-            catch (EmailAlreadyInUseException ex)
-            {
-                return Conflict(new { message = ex.Message });
-            }
-            catch (NameAlreadyInUseException ex)
-            {
-                return Conflict(new { message = ex.Message });
             }
         }
     }
