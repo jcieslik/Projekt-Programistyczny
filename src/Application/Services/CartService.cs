@@ -25,15 +25,17 @@ namespace Application.Services
         public async Task<IEnumerable<OfferWithBaseDataDTO>> GetOffersFromCartAsync(long userId)
         {
             var cartId = (await GetCartByUser(userId)).Id;
-            return await _context.Carts
+            var offers = _context.Carts
                 .Include(x => x.Offers).ThenInclude(x => x.Seller)
                 .Include(x => x.Offers).ThenInclude(x => x.Images)
                 .Include(x => x.Offers).ThenInclude(x => x.Bids)
                 .AsNoTracking()
-                .Where(x => x.Id == cartId)
-                .Select(x => x.Offers)
-                .ProjectTo<OfferWithBaseDataDTO>(_mapper.ConfigurationProvider)
-            .ToListAsync();
+                .First(x => x.Id == cartId)
+                .Offers.ToList();
+                //.Select(x => x.Offers.ToList());
+                //.ProjectTo<OfferWithBaseDataDTO>(_mapper.ConfigurationProvider)
+                
+            return null; 
         }
 
         public async Task AddOfferToCartAsync(long offerId, long userId)
