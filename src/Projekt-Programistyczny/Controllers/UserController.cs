@@ -138,32 +138,5 @@ namespace Projekt_Programistyczny.Controllers
                 return NotFound(new { message = ex.Message });
             }
         }
-
-        [HttpGet]
-        [Route("AccountDetails")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<ActionResult<UserDTO>> GetAccountDetails()
-        {
-            try
-            {
-                var user = await userService.GetUserById(HttpContext.User.GetUserId());
-                return Ok(user);
-            }
-            catch (NotFoundException ex)
-            {
-                return NotFound(new { message = ex.Message });
-            }
-            catch (EmailAlreadyInUseException ex)
-            {
-                return Conflict(new { message = ex.Message });
-            }
-            catch (NameAlreadyInUseException ex)
-            {
-                return Conflict(new { message = ex.Message });
-            }
-        }
     }
 }
