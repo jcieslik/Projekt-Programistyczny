@@ -122,6 +122,23 @@ namespace Projekt_Programistyczny.Controllers
         }
 
         [HttpGet]
+        [Route("GetUserInfo")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<UserDTO>> GetUserInfo([FromQuery] long userId)
+        {
+            try
+            {
+                var user = await userService.GetUserById(userId);
+                return Ok(user);
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+        }
+
+        [HttpGet]
         [Route("AccountDetails")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
