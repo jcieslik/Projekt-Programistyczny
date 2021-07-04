@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Projekt_Programistyczny.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Security.Claims;
@@ -148,7 +149,7 @@ namespace Projekt_Programistyczny.Controllers
         {
             try
             {
-                var user = await userService.GetUserById(currentUserService.Id);
+                var user = await userService.GetUserById(HttpContext.User.GetUserId());
                 return Ok(user);
             }
             catch (NotFoundException ex)
