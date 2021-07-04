@@ -24,9 +24,10 @@ namespace Projekt_Programistyczny.Controllers
         }
 
         [HttpPost]
+        [Route("CreateOrder")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<OrderDTO>> Create([FromBody] CreateOrderDTO dto)
+        public async Task<ActionResult<OrderDTO>> CreateOrder([FromBody] CreateOrderDTO dto)
         {
             try
             {
@@ -40,6 +41,7 @@ namespace Projekt_Programistyczny.Controllers
         }
 
         [HttpPatch]
+        [Route("ChangeStatus")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<OrderDTO>> ChangeStatus([FromBody] UpdateOrderDTO dto)
