@@ -33,24 +33,36 @@ namespace Application.Services
                 .ToListAsync();
         }
 
-        public async Task AddOfferToCartAsync(AddOfferToCartDTO dto)
+        public async Task<Cart> GetCartByUser(long userId)
         {
-            var offer = await _context.Offers.FindAsync(dto.OfferId);
-            var cart = await _context.Carts.FindAsync(dto.CartId);
+            var user = await _context.Users.Include(e => e.Cart).AsNoTracking().Where(e => e.Id == userId).FirstOrDefaultAsync(); // ZROBIC INCLUDE TEGO JEBANEGO CARTA I DO NIEGO INCLUDE OFERT
+
+            if (user.Cart == null)
+            {
+                await Create(user.Id);
+            }
+
+            return await _context.Carts.Include(e => e.Offers).Include(e => e.Customer).AsNoTracking().Where(e => e.CustomerId == user.Id).FirstOrDefaultAsync();
+        }
+
+        public async Task AddOfferToCartAsync(long offerId, long userId)
+        {
+            var offer = await _context.Offers.FindAsync(offerId);
+            var cart = await GetCartByUser(userId);//_context.Carts.FindAsync(dto.CartId);
             if (offer == null)
             {
-                throw new NotFoundException(nameof(Offer), dto.OfferId);
+                throw new NotFoundException(nameof(Offer), offerId);
             }
             if (cart == null)
             {
-                throw new NotFoundException(nameof(Cart), dto.CartId);
+                throw new NotFoundException(nameof(Cart), userId);
             }
 
             var entity = new CartOffer
             {
                 Cart = cart,
                 Offer = offer,
-                ProductsCount = dto.ProductsCount
+                ProductsCount = 1
             };
 
             _context.CartOffer.Add(entity);

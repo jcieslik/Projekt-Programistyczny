@@ -7,7 +7,7 @@ namespace Application.Common.Interfaces.DataServiceInterfaces
 {
     public interface ICartService
     {
-        Task AddOfferToCartAsync(AddOfferToCartDTO dto);
+        Task AddOfferToCartAsync(long offerId, long userId);
         Task<IEnumerable<CartOfferDTO>> GetOffersFromCartAsync(long cartId);
         Task RemoveOfferFromCartAsync(long relationId);
         Task<long> Create(long userId);
