@@ -1,18 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Domain.Common;
 
 namespace Domain.Entities
 {
-    public class CartOffer
+    public class CartOffer : AuditableEntity
     {
-        [Key, Column(Order = 1)]
-        public long CartId { get; set; }
-        //[Key, Column(Order = 2)]
-        public long OfferId { get; set; }
+        public Offer Offer { get; set; }
+        public Cart Cart { get; set; }
+        public int ProductsCount { get; set; }
     }
 }

@@ -26,7 +26,7 @@ namespace Application.Services
         {
             return _mapper.Map<OrderDTO>(
                 await _context.Orders
-                .Include(x => x.Offer)
+                .Include(x => x.OfferWithDelivery)
                 .Include(x => x.Customer)
                 .SingleOrDefaultAsync(x => x.Id == id)
                 );
@@ -40,7 +40,7 @@ namespace Application.Services
                 throw new NotFoundException(nameof(User), userId);
             }
             return await _context.Orders
-                .Include(x => x.Customer).Include(x => x.Offer)
+                .Include(x => x.Customer).Include(x => x.OfferWithDelivery)
                 .AsNoTracking()
                 .Where(x => x.Customer.Id == userId)
                 .ProjectTo<OrderDTO>(_mapper.ConfigurationProvider)
@@ -55,9 +55,10 @@ namespace Application.Services
                 throw new NotFoundException(nameof(Offer), offerId);
             }
             return await _context.Orders
-                .Include(x => x.Customer).Include(x => x.Offer)
+                .Include(x => x.Customer)
+                .Include(x => x.OfferWithDelivery).ThenInclude(x => x.Offer)
                 .AsNoTracking()
-                .Where(x => x.Offer.Id == offerId)
+                .Where(x => x.OfferWithDelivery.Offer.Id == offerId)
                 .ProjectTo<OrderDTO>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
@@ -65,27 +66,29 @@ namespace Application.Services
         public async Task<OrderDTO> CreateOrderAsync(CreateOrderDTO dto)
         {
             var user = await _context.Users.FindAsync(dto.CustomerId);
-            var offer = await _context.Offers.FindAsync(dto.OfferId);
+            var offerWithDelivery = await _context.OffersAndDeliveryMethods
+                .Include(x => x.Offer)
+                .SingleOrDefaultAsync(x => x.Id == dto.OfferAndDeliveryId);
             if (user == null)
             {
                 throw new NotFoundException(nameof(User), dto.CustomerId);
             }
-            if (offer == null)
+            if (offerWithDelivery == null)
             {
-                throw new NotFoundException(nameof(Offer), dto.OfferId);
+                throw new NotFoundException(nameof(OfferAndDeliveryMethod), dto.OfferAndDeliveryId);
             }
 
             var entity = new Order
             {
                 OrderStatus = (OrderStatus)dto.OrderStatus,
                 Customer = user,
-                Offer = offer,
+                OfferWithDelivery = offerWithDelivery,
                 PaymentDate = dto.PaymentDate
             };
 
             _context.Orders.Add(entity);
 
-            offer.ProductCount -= 1;
+            offerWithDelivery.Offer.ProductCount -= 1;
 
             await _context.SaveChangesAsync();
 
@@ -94,7 +97,9 @@ namespace Application.Services
 
         public async Task<OrderDTO> UpdateOrder(UpdateOrderDTO dto)
         {
-            var order = await _context.Orders.Include(x => x.Offer).SingleOrDefaultAsync(x => x.Id == dto.Id);
+            var order = await _context.Orders
+                .Include(x => x.OfferWithDelivery).ThenInclude(x => x.Offer)
+                .SingleOrDefaultAsync(x => x.Id == dto.Id);
             if (order == null)
             {
                 throw new NotFoundException(nameof(Order), dto.Id);
@@ -104,7 +109,7 @@ namespace Application.Services
                 order.OrderStatus = (OrderStatus)dto.OrderStatus.Value;
                 if(order.OrderStatus == OrderStatus.Canceled)
                 {
-                    order.Offer.ProductCount += 1;
+                    order.OfferWithDelivery.Offer.ProductCount += 1;
                 }
             }
 

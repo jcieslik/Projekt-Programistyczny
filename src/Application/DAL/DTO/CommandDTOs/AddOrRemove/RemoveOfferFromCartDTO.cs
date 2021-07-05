@@ -1,6 +1,6 @@
-﻿namespace Application.DAL.DTO.CommandDTOs.Add
+﻿namespace Application.DAL.DTO.CommandDTOs.AddOrRemove
 {
-    public class AddOrRemoveOfferToCartDTO
+    public class RemoveOfferFromCartDTO
     {
         public long OfferId { get; set; }
         public long CartId { get; set; }

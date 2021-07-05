@@ -5,7 +5,6 @@ using Application.Common.Mappings;
 using Application.Common.Models;
 using Application.Common.Services;
 using Application.DAL.DTO;
-using Application.DAL.DTO.CommandDTOs.Add;
 using Application.DAL.DTO.CommandDTOs.Create;
 using Application.DAL.DTO.CommandDTOs.Update;
 using AutoMapper;
@@ -193,7 +192,7 @@ namespace Application.Services
                 {
                     Offer = entity,
                     DeliveryMethod = await _context.DeliveryMethods.FindAsync(item.DeliveryMethodId),
-                    FullPrice = item.FullPrice
+                    DeliveryFullPrice = item.FullPrice
                 };
                 _context.OffersAndDeliveryMethods.Add(deliveryMethod);
             }
@@ -285,52 +284,14 @@ namespace Application.Services
             return result;
         }
 
-        public async Task<IEnumerable<OfferWithBaseDataDTO>> GetOffersFromCartAsync(long cartId)
+        public async Task<IEnumerable<CartOfferDTO>> GetOffersFromCartAsync(long cartId)
         {
-            var cart = await _context.Carts
-                .Include(x => x.Offers).ThenInclude(x => x.Seller)
-                .Include(x => x.Offers).ThenInclude(x => x.Bids)
-                .Include(x => x.Offers).ThenInclude(x => x.Images)
-                .Where(x => x.Id == cartId)
-                .SingleOrDefaultAsync();
-                
-            return cart.Offers.AsQueryable()
-                .ProjectTo<OfferWithBaseDataDTO>(_mapper.ConfigurationProvider)
-                .ToList();
-        }
-
-        public async Task AddOfferToCartAsync(AddOrRemoveOfferToCartDTO dto)
-        {
-            var offer = await _context.Offers.FindAsync(dto.OfferId);
-            var cart = await _context.Carts.FindAsync(dto.CartId);
-            if (offer == null)
-            {
-                throw new NotFoundException(nameof(Offer), dto.OfferId);
-            }
-            if (cart == null)
-            {
-                throw new NotFoundException(nameof(Cart), dto.CartId);
-            }
-
-            cart.Offers.Add(offer);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task RemoveOfferFromCartAsync(AddOrRemoveOfferToCartDTO dto)
-        {
-            var offer = await _context.Offers.FindAsync(dto.OfferId);
-            var cart = await _context.Carts.FindAsync(dto.CartId);
-            if (offer == null)
-            {
-                throw new NotFoundException(nameof(Offer), dto.OfferId);
-            }
-            if (cart == null)
-            {
-                throw new NotFoundException(nameof(Cart), dto.CartId);
-            }
-
-            cart.Offers.Remove(offer);
-            await _context.SaveChangesAsync();
+            return await _context.CartOffer
+                .Include(x => x.Offer).ThenInclude(x => x.Images)
+                .Include(x => x.Cart)
+                .Where(x => x.Cart.Id == cartId)
+                .ProjectTo<CartOfferDTO>(_mapper.ConfigurationProvider)
+                .ToListAsync();
         }
 
         public async Task ChangeStatusOfOffersAfterEndDate()

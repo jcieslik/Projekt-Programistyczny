@@ -113,7 +113,7 @@ namespace Application.Services
             {
                 DeliveryMethod = method,
                 Offer = offer,
-                FullPrice = dto.FullPrice
+                DeliveryFullPrice = dto.FullPrice
             };
 
             _context.OffersAndDeliveryMethods.Add(entity);
@@ -151,7 +151,7 @@ namespace Application.Services
                 .Include(x => x.Offer)
                 .Include(x => x.DeliveryMethod)
                 .Where(x => x.Offer.Id == offerId)
-                .Select(x => new DeliveryDTO { Id = x.DeliveryMethod.Id, Name = x.DeliveryMethod.Name, Price = x.FullPrice})
+                .Select(x => new DeliveryDTO { Id = x.DeliveryMethod.Id, Name = x.DeliveryMethod.Name, Price = x.DeliveryFullPrice})
                 .ToListAsync();
         }
     }

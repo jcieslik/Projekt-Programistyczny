@@ -25,8 +25,9 @@ namespace Infrastructure.Persistence
         public DbSet<Cart> Carts { get; set; }
         public DbSet<OfferAndDeliveryMethod> OffersAndDeliveryMethods { get; set; }
         public DbSet<DeliveryMethod> DeliveryMethods { get; set; }
-        //public DbSet<MessageTransmission> MessageTransmissions { get; set; }
+        public DbSet<MessageTransmission> MessageTransmissions { get; set; }
         public DbSet<CartOffer> CartOffer { get; set; }
+
 
         public ApplicationDbContext(
             DbContextOptions<ApplicationDbContext> options,

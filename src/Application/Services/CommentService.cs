@@ -1,10 +1,13 @@
 ﻿using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using Application.Common.Interfaces.DataServiceInterfaces;
+using Application.Common.Mappings;
+using Application.Common.Models;
 using Application.Common.Services;
 using Application.DAL.DTO;
 using Application.DAL.DTO.CommandDTOs.Create;
 using Application.DAL.DTO.CommandDTOs.Update;
+using Application.DAL.Models;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Domain.Entities;
@@ -43,6 +46,49 @@ namespace Application.Services
             return await comments
                 .ProjectTo<CommentDTO>(_mapper.ConfigurationProvider)
                 .ToListAsync();
+        }
+
+        public async Task<PaginatedList<CommentDTO>> GetPaginatedCommentsFromUserAsync(SearchCommentsVM vm)
+        {
+            var comments = _context.Comments
+                .Include(c => c.Customer).Include(c => c.Offer)
+                .AsNoTracking()
+                .Where(c => c.Seller.Id == vm.SubjectId);
+
+            comments = vm.OnlyNotHidden ? comments.Where(x => !x.IsHidden) : comments;
+
+            comments = vm.Properties.OrderBy switch
+            {
+                "rate_asc" => comments.OrderBy(x => x.RateValue),
+                "rate_desc" => comments.OrderByDescending(x => x.RateValue),
+                "creation" => comments.OrderBy(x => x.Created),
+                _ => comments.OrderBy(x => x.Created)
+            };
+
+            return await comments.ProjectTo<CommentDTO>(_mapper.ConfigurationProvider)
+                .PaginatedListAsync(vm.Properties.PageIndex, vm.Properties.PageSize);
+        }
+
+        public async Task<PaginatedList<CommentDTO>> GetPaginatedCommentsFromOfferAsync(SearchCommentsVM vm)
+        {
+            var comments = _context.Comments
+                .Include(c => c.Customer)
+                .Include(c => c.Offer)
+                .AsNoTracking()
+                .Where(c => c.Offer.Id == vm.SubjectId);
+
+            comments = vm.OnlyNotHidden ? comments.Where(x => !x.IsHidden) : comments;
+
+            comments = vm.Properties.OrderBy switch
+            {
+                "rate_asc" => comments.OrderBy(x => x.RateValue),
+                "rate_desc" => comments.OrderByDescending(x => x.RateValue),
+                "creation" => comments.OrderBy(x => x.Created),
+                _ => comments.OrderBy(x => x.Created)
+            };
+
+            return await comments.ProjectTo<CommentDTO>(_mapper.ConfigurationProvider)
+                .PaginatedListAsync(vm.Properties.PageIndex, vm.Properties.PageSize);
         }
 
         public async Task<IEnumerable<CommentDTO>> GetCommentsFromOfferAsync(long offerId, bool onlyNotHidden = true)

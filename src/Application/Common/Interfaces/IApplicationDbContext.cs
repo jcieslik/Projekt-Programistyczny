@@ -21,7 +21,7 @@ namespace Application.Common.Interfaces
         DbSet<OfferAndDeliveryMethod> OffersAndDeliveryMethods { get; set; }
         DbSet<DeliveryMethod> DeliveryMethods { get; set; }
         DbSet<MessageTransmission> MessageTransmissions { get; set; }
-
+        DbSet<CartOffer> CartOffer { get; set; }
         DbSet<TEntity> Set<TEntity>() where TEntity : class;
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }

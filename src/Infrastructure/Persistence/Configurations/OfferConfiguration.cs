@@ -16,9 +16,6 @@ namespace Infrastructure.Persistence.Configurations
                 .WithOne(i => i.Offer)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.HasMany(o => o.Orders)
-                .WithOne(order => order.Offer);
-
             builder.HasMany(o => o.Bids)
                 .WithOne(b => b.Offer);
 
@@ -26,7 +23,7 @@ namespace Infrastructure.Persistence.Configurations
                 .WithOne(w => w.Offer);
 
             builder.HasMany(o => o.Carts)
-                .WithMany(c => c.Offers);
+                .WithOne(c => c.Offer);
 
             builder.HasOne(o => o.Category)
                 .WithMany(c => c.Offers);

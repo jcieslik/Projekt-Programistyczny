@@ -1,8 +1,10 @@
 ﻿using Application.Common.Exceptions;
 using Application.Common.Interfaces.DataServiceInterfaces;
+using Application.Common.Models;
 using Application.DAL.DTO;
 using Application.DAL.DTO.CommandDTOs.Create;
 using Application.DAL.DTO.CommandDTOs.Update;
+using Application.DAL.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -74,6 +76,28 @@ namespace Projekt_Programistyczny.Controllers
             {
                 return BadRequest(new { message = ex.Message });
             }
+        }
+
+        [HttpPost]
+        [Route("UserComments")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<PaginatedList<CommentDTO>>> GetPaginatedCommentsFromUser(
+            [FromBody] SearchCommentsVM vm
+            )
+        {
+            var comments = await _commentService.GetPaginatedCommentsFromUserAsync(vm);
+            return Ok(comments);
+        }
+
+        [HttpPost]
+        [Route("OfferComments")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<PaginatedList<CommentDTO>>> GetPaginatedCommentsFromOffer(
+            [FromBody] SearchCommentsVM vm
+            )
+        {
+            var comments = await _commentService.GetPaginatedCommentsFromOfferAsync(vm);
+            return Ok(comments);
         }
 
         [HttpPost]

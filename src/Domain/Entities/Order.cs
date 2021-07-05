@@ -8,7 +8,8 @@ namespace Domain.Entities
     public class Order : AuditableEntity
     {
         public User Customer { get; set; }
-        public Offer Offer { get; set; }
+        public int ProductCount { get; set; }
+        public OfferAndDeliveryMethod OfferWithDelivery { get; set; }
 
         [Required]
         public OrderStatus OrderStatus { get; set; }

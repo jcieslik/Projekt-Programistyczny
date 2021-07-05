@@ -49,11 +49,13 @@ namespace Domain.Entities
         [Required]
         public string Brand { get; set; }
 
+        public double? MinimalBid { get; set; }
+
         public ICollection<ProductImage> Images { get; set; }
         public ICollection<Comment> Comments { get; set; }
         public ICollection<Bid> Bids { get; set; }
         public ICollection<Wish> Wishes { get; set; }
-        public ICollection<Cart> Carts { get; set; }
+        public ICollection<CartOffer> Carts { get; set; }
         public ICollection<OfferAndDeliveryMethod> DeliveryMethods { get; set; }
     }
 }

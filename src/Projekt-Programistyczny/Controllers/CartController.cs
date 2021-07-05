@@ -18,18 +18,16 @@ namespace Projekt_Programistyczny.Controllers
     public class CartController : ControllerBase
     {
         private readonly ICartService _cartService;
-        private readonly IUserService _userService;
-        public CartController(ICartService cartService, IUserService userService)
+        public CartController(ICartService cartService)
         {
             _cartService = cartService;
-            _userService = userService;
         }
 
         [HttpGet]
         [Route("GetOffersFromCart")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IEnumerable<OfferWithBaseDataDTO>>> GetOffersFromCart([FromQuery] long userId)
+        public async Task<ActionResult<IEnumerable<CartOfferDTO>>> GetOffersFromCart([FromQuery] long userId)
         {
             try
             {
@@ -43,15 +41,32 @@ namespace Projekt_Programistyczny.Controllers
         }
 
         [HttpPost]
+        [Route("Create")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<long>> Create([FromQuery] long userId)
+        {
+            try
+            {
+                var id = await _cartService.Create(userId);
+                return Ok(id);
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+        }
+
+        [HttpPost]
         [Route("AddOfferToCart")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> AddOfferToCart([FromQuery] long offerId)
+        public async Task<IActionResult> AddOfferToCart([FromBody] AddOfferToCartDTO dto)
         {
             try
             {
                 var userId = HttpContext.User.GetUserId();
-                await _cartService.AddOfferToCartAsync(offerId, userId);
+                await _cartService.AddOfferToCartAsync(dto);
                 return Ok();
             }
             catch (NotFoundException ex)
@@ -64,12 +79,12 @@ namespace Projekt_Programistyczny.Controllers
         [Route("RemoveOfferFromCart")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> RemoveOfferFromCart([FromQuery] long offerId)
+        public async Task<IActionResult> RemoveOfferFromCart([FromQuery] long relationId)
         {
             try
             {
                 var userId = HttpContext.User.GetUserId();
-                await _cartService.RemoveOfferFromCartAsync(offerId, userId);
+                await _cartService.RemoveOfferFromCartAsync(relationId);
                 return Ok();
             }
             catch (NotFoundException ex)

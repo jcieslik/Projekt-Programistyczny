@@ -4,6 +4,7 @@ using Application.Common.Interfaces.DataServiceInterfaces;
 using Application.Common.Services;
 using Application.DAL.DTO;
 using Application.DAL.DTO.CommandDTOs.Add;
+using Application.DAL.DTO.CommandDTOs.AddOrRemove;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Domain.Entities;
@@ -22,70 +23,62 @@ namespace Application.Services
         {
         }
 
-        public async Task<IEnumerable<OfferWithBaseDataDTO>> GetOffersFromCartAsync(long userId)
+        public async Task<IEnumerable<CartOfferDTO>> GetOffersFromCartAsync(long cartId)
         {
-            var cartId = (await GetCartByUser(userId)).Id;
-            var offers = _context.Carts
-                .Include(x => x.Offers).ThenInclude(x => x.Seller)
-                .Include(x => x.Offers).ThenInclude(x => x.Images)
-                .Include(x => x.Offers).ThenInclude(x => x.Bids)
-                .AsNoTracking()
-                .First(x => x.Id == cartId)
-                .Offers.ToList();
-                //.Select(x => x.Offers.ToList());
-                //.ProjectTo<OfferWithBaseDataDTO>(_mapper.ConfigurationProvider)
-                
-            return null; 
+            return await _context.CartOffer
+                .Include(x => x.Offer).ThenInclude(x => x.Images)
+                .Include(x => x.Cart)
+                .Where(x => x.Cart.Id == cartId)
+                .ProjectTo<CartOfferDTO>(_mapper.ConfigurationProvider)
+                .ToListAsync();
         }
 
-        public async Task AddOfferToCartAsync(long offerId, long userId)
+        public async Task AddOfferToCartAsync(AddOfferToCartDTO dto)
         {
-            var offer = await _context.Offers.FindAsync(offerId);
-            var cart = await GetCartByUser(userId);
+            var offer = await _context.Offers.FindAsync(dto.OfferId);
+            var cart = await _context.Carts.FindAsync(dto.CartId);
             if (offer == null)
             {
-                throw new NotFoundException(nameof(Offer), offerId);
+                throw new NotFoundException(nameof(Offer), dto.OfferId);
+            }
+            if (cart == null)
+            {
+                throw new NotFoundException(nameof(Cart), dto.CartId);
             }
 
-            cart.Offers.Add(offer);
+            var entity = new CartOffer
+            {
+                Cart = cart,
+                Offer = offer,
+                ProductsCount = dto.ProductsCount
+            };
+
+            _context.CartOffer.Add(entity);
             await _context.SaveChangesAsync();
         }
 
-        public async Task RemoveOfferFromCartAsync(long offerId, long userId)
+        public async Task RemoveOfferFromCartAsync(long relationId)
         {
-            var offer = await _context.Offers.FindAsync(offerId);
-            var cart = await GetCartByUser(userId);
-            if (offer == null)
-            {
-                throw new NotFoundException(nameof(Offer), offerId);
-            }
-
-            cart.Offers.Remove(offer);
+            var relation = await _context.CartOffer.FindAsync(relationId);
+            _context.CartOffer.Remove(relation);
             await _context.SaveChangesAsync();
-        }
-
-        public async Task<Cart> GetCartByUser(long userId) 
-        {
-            var user = await _context.Users.Include(e => e.Cart).AsNoTracking().Where(e => e.Id == userId).FirstOrDefaultAsync(); // ZROBIC INCLUDE TEGO JEBANEGO CARTA I DO NIEGO INCLUDE OFERT
-
-            if(user.Cart == null)
-            {
-                await Create(user.Id);
-            }
-
-            return await _context.Carts.Include(e => e.Offers).Include(e => e.Customer).AsNoTracking().Where(e => e.CustomerId == user.Id).FirstOrDefaultAsync();
         }
 
         public async Task<long> Create(long userId)
         {
+            var user = await _context.Users.FindAsync(userId);
+            if (user == null)
+            {
+                throw new NotFoundException(nameof(User), userId);
+            }
+
             var entity = new Cart
             {
-                CustomerId = userId
+                CustomerId = user.Id
             };
 
             _context.Carts.Add(entity);
             await _context.SaveChangesAsync();
-
             return entity.Id;
         }
     }

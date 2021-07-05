@@ -1,4 +1,5 @@
 ﻿using Domain.Common;
+using System.Collections.Generic;
 
 namespace Domain.Entities
 {
@@ -6,6 +7,7 @@ namespace Domain.Entities
     {
         public Offer Offer { get; set; }
         public DeliveryMethod DeliveryMethod { get; set; }
-        public double FullPrice { get; set; }
+        public double DeliveryFullPrice { get; set; }
+        public ICollection<Order> Orders { get; set; }
     }
 }
