@@ -23,12 +23,17 @@ namespace Application.Services
         {
         }
 
-        public async Task<IEnumerable<CartOfferDTO>> GetOffersFromCartAsync(long cartId)
+        public async Task<IEnumerable<CartOfferDTO>> GetOffersFromCartAsync(long userId)
         {
+            var user = await _context.Users
+                .Include(e => e.Cart)
+                .AsNoTracking()
+                .Where(e => e.Id == userId).FirstOrDefaultAsync(); // ZROBIC INCLUDE TEGO JEBANEGO CARTA I DO NIEGO INCLUDE OFERT
+
             return await _context.CartOffer
                 .Include(x => x.Offer).ThenInclude(x => x.Images)
                 .Include(x => x.Cart)
-                .Where(x => x.Cart.Id == cartId)
+                .Where(x => x.Cart.Id == user.Cart.Id)
                 .ProjectTo<CartOfferDTO>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
@@ -48,7 +53,8 @@ namespace Application.Services
         public async Task AddOfferToCartAsync(long offerId, long userId)
         {
             var offer = await _context.Offers.FindAsync(offerId);
-            var cart = await GetCartByUser(userId);//_context.Carts.FindAsync(dto.CartId);
+            var user = await _context.Users.Include(e => e.Cart).AsNoTracking().Where(e => e.Id == userId).FirstOrDefaultAsync();
+            var cart = await _context.Carts.FindAsync(user.Cart.Id); // await GetCartByUser(userId);//
             if (offer == null)
             {
                 throw new NotFoundException(nameof(Offer), offerId);
