@@ -2,6 +2,7 @@
 using Application.Common.Interfaces.DataServiceInterfaces;
 using Application.DAL.DTO;
 using Application.DAL.DTO.CommandDTOs.Create;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -12,6 +13,7 @@ using System.Threading.Tasks;
 namespace Projekt_Programistyczny.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize(Policy = "CustomerOnly")]
     [ApiController]
     public class WishController : ControllerBase
     {

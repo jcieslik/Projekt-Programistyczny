@@ -7,10 +7,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Application.DAL.DTO;
 using Application.Common.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Projekt_Programistyczny.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize(Policy = "CustomerOnly")]
     [ApiController]
     public class PaymentController : ControllerBase
     {

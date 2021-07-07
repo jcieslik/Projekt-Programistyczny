@@ -4,8 +4,10 @@ using Application.Common.Models;
 using Application.DAL.DTO;
 using Application.DAL.DTO.CommandDTOs.Create;
 using Application.DAL.DTO.CommandDTOs.Update;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Projekt_Programistyczny.Extensions;
 using System.Threading.Tasks;
 
 namespace Projekt_Programistyczny.Controllers
@@ -50,18 +52,15 @@ namespace Projekt_Programistyczny.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "CustomerOnly")]
         [Route("GetMessageFromUser/user/{userId}/type/{mailboxType}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<PaginatedList<MessageDTO>>> GetPaginatedMessagesFromUser(
-            [FromBody] PaginationProperties properties,
-            [FromRoute] long userId,
-            [FromRoute] int mailboxType
-            )
+        public async Task<ActionResult<PaginatedList<MessageDTO>>> GetPaginatedMessagesFromUser([FromBody] PaginationProperties properties, [FromRoute] int mailboxType)
         {
             try
             {
-                var messages = await _messageService.GetPaginatedMessagesFromUserAsync(userId, mailboxType, properties);
+                var messages = await _messageService.GetPaginatedMessagesFromUserAsync(HttpContext.User.GetUserId(), mailboxType, properties);
                 return Ok(messages);
             }
             catch(NotFoundException ex)
@@ -71,6 +70,7 @@ namespace Projekt_Programistyczny.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "CustomerOnly")]
         [Route("CreateMessage")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -88,6 +88,7 @@ namespace Projekt_Programistyczny.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "CustomerOnly")]
         [Route("CreateTransmission")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -105,6 +106,7 @@ namespace Projekt_Programistyczny.Controllers
         }
 
         [HttpPut]
+        [Authorize]
         [Route("UpdateMessage")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -122,6 +124,7 @@ namespace Projekt_Programistyczny.Controllers
         }
 
         [HttpPut]
+        [Authorize]
         [Route("UpdateTransmission")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

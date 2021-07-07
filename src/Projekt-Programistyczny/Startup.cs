@@ -87,6 +87,11 @@ namespace Projekt_Programistyczny
                 };
             });
 
+            services.AddAuthorization(options => {
+                options.AddPolicy("AdminOnly", policy => policy.RequireClaim("IsAdmin"));
+                options.AddPolicy("CustomerOnly", policy => policy.RequireClaim("IsCustomer"));
+            });
+
             services.AddSingleton<IUserConfig, UserConfig>(options =>
             {
                 UserConfig opt = new UserConfig();

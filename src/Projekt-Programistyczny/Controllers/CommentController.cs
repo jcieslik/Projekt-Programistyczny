@@ -79,28 +79,25 @@ namespace Projekt_Programistyczny.Controllers
         }
 
         [HttpPost]
-        [Route("UserComments")]
+        [Route("GetPaginatedCommentsFromUser")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<PaginatedList<CommentDTO>>> GetPaginatedCommentsFromUser(
-            [FromBody] SearchCommentsVM vm
-            )
+        public async Task<ActionResult<PaginatedList<CommentDTO>>> GetPaginatedCommentsFromUser([FromBody] SearchCommentsVM vm)
         {
             var comments = await _commentService.GetPaginatedCommentsFromUserAsync(vm);
             return Ok(comments);
         }
 
         [HttpPost]
-        [Route("OfferComments")]
+        [Route("GetPaginatedCommentsFromOffer")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<PaginatedList<CommentDTO>>> GetPaginatedCommentsFromOffer(
-            [FromBody] SearchCommentsVM vm
-            )
+        public async Task<ActionResult<PaginatedList<CommentDTO>>> GetPaginatedCommentsFromOffer([FromBody] SearchCommentsVM vm)
         {
             var comments = await _commentService.GetPaginatedCommentsFromOfferAsync(vm);
             return Ok(comments);
         }
 
         [HttpPost]
+        [Authorize(Policy = "CustomerOnly")]
         [Route("CreateComment")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -123,6 +120,7 @@ namespace Projekt_Programistyczny.Controllers
         }
 
         [HttpPut]
+        [Authorize]
         [Route("UpdateComment")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
