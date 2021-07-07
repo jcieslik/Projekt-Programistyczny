@@ -140,5 +140,25 @@ namespace Projekt_Programistyczny.Controllers
                 return NotFound(new { message = ex.Message });
             }
         }
+
+        [HttpGet]
+        [Route("DecrementOfferProductCount")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<bool>> DecrementOfferProductCount([FromBody] long offerId, int count)
+        {
+            try
+            {   if (count > 0)
+                {
+                    var offer = await _offerService.GetOfferByIdAsync(offerId);
+                    return Ok(offer.ProductCount > 1);
+                }
+                return Ok(false);
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+        }
     }
 }

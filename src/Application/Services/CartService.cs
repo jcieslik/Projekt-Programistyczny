@@ -67,7 +67,10 @@ namespace Application.Services
             var cartOffer = _context.CartOffer.Where(e => e.Offer == offer && e.Cart == cart).FirstOrDefault();
             if (cartOffer != default)
             {
-                cartOffer.ProductsCount++;
+                if (offer.ProductCount > 1)
+                {
+                    cartOffer.ProductsCount++;
+                }
             }
             else
             {
@@ -112,7 +115,7 @@ namespace Application.Services
         {
             var offer = await _context.Offers.FindAsync(offerId);
             var user = await _context.Users.Include(e => e.Cart).AsNoTracking().Where(e => e.Id == userId).FirstOrDefaultAsync();
-            var cart = await _context.Carts.FindAsync(user.Cart.Id); // await GetCartByUser(userId);//
+            var cart = await _context.Carts.FindAsync(user.Cart.Id);
             if (offer == null)
             {
                 throw new NotFoundException(nameof(Offer), offerId);
@@ -139,7 +142,6 @@ namespace Application.Services
             {
                 throw new NotFoundException(("There is no connection between cart with id {0} and offer with id {1}!", cart.Id, offer.Id).ToString());
             }
-
         }
     }
 }

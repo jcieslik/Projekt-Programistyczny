@@ -13,6 +13,7 @@ namespace Application.DAL.DTO
         public string Title { get; set; }
         public ProductImageDTO Image { get; set; }
         public int ProductsCount { get; set; }
+        public int AvailableProducts { get; set; }
         public long CartId { get; set; }
         public long OfferId { get; set; }
         public OfferState OfferState { get; set; }
@@ -24,6 +25,7 @@ namespace Application.DAL.DTO
                 .ForMember(dest => dest.Image, opt => opt.MapFrom(src => src.Offer.Images.Where(x => x.IsMainProductImage).SingleOrDefault()))
                 .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Offer.Title))
                 .ForMember(dest => dest.PriceForOneProduct, opt => opt.MapFrom(src => src.Offer.PriceForOneProduct))
+                .ForMember(dest => dest.AvailableProducts, opt => opt.MapFrom(src => src.Offer.ProductCount))
                 .ForMember(dest => dest.OfferState, opt => opt.MapFrom(src => src.Offer.State))
                 .ForMember(dest => dest.CartId, opt => opt.MapFrom(src => src.Cart.Id));
         }
