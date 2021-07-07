@@ -3,6 +3,7 @@ using Application.Common.Interfaces.DataServiceInterfaces;
 using Application.DAL.DTO;
 using Application.DAL.DTO.CommandDTOs.Create;
 using Application.DAL.DTO.CommandDTOs.Update;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -47,6 +48,7 @@ namespace Projekt_Programistyczny.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "AdminOnly")]
         [Route("CreateProductCategory")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -69,6 +71,7 @@ namespace Projekt_Programistyczny.Controllers
         }
 
         [HttpPut]
+        [Authorize(Policy = "AdminOnly")]
         [Route("UpdateProductCategory")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

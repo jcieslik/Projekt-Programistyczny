@@ -55,6 +55,7 @@ namespace Projekt_Programistyczny.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "CustomerOnly")]
         [Route("CreateImage")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -72,6 +73,7 @@ namespace Projekt_Programistyczny.Controllers
         }
 
         [HttpPut]
+        [Authorize(Policy = "CustomerOnly")]
         [Route("UpdateImage")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

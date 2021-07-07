@@ -1,19 +1,17 @@
 ﻿using Application.Common.Exceptions;
 using Application.Common.Interfaces.DataServiceInterfaces;
-using Application.Common.Models;
 using Application.DAL.DTO;
 using Application.DAL.DTO.CommandDTOs.Add;
-using Application.DAL.DTO.CommandDTOs.Create;
-using Application.DAL.DTO.CommandDTOs.Update;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Projekt_Programistyczny.Extensions;
-using Projekt_Programistyczny.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 namespace Projekt_Programistyczny.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize(Policy = "CustomerOnly")]
     [ApiController]
     public class CartController : ControllerBase
     {
