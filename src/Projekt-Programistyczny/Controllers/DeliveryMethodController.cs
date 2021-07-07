@@ -4,6 +4,7 @@ using Application.DAL.DTO;
 using Application.DAL.DTO.CommandDTOs.AddOrRemove;
 using Application.DAL.DTO.CommandDTOs.Create;
 using Application.DAL.DTO.CommandDTOs.Update;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -66,6 +67,7 @@ namespace Projekt_Programistyczny.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "AdminOnly")]
         [Route("CreateDeliveryMethod")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<DeliveryDTO>> CreateDeliveryMethod([FromBody] CreateDeliveryMethodDTO dto)
@@ -75,6 +77,7 @@ namespace Projekt_Programistyczny.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "CustomerOnly")]
         [Route("AddDeliveryMethodToOffer")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -97,6 +100,7 @@ namespace Projekt_Programistyczny.Controllers
         }
 
         [HttpPut]
+        [Authorize]
         [Route("UpdateDeliveryMethod")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -114,6 +118,7 @@ namespace Projekt_Programistyczny.Controllers
         }
 
         [HttpDelete]
+        [Authorize(Policy = "AdminOnly")]
         [Route("DeleteDeliveryMethod/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

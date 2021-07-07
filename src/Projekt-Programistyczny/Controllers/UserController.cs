@@ -4,6 +4,7 @@ using Application.Common.Interfaces.DataServiceInterfaces;
 using Application.DAL.DTO;
 using Application.DAL.DTO.CommandDTOs.Create;
 using Application.DAL.DTO.CommandDTOs.Update;
+using Domain.Enums;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
@@ -49,6 +50,15 @@ namespace Projekt_Programistyczny.Controllers
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
             };
 
+            if(user.Role == UserRole.Admin)
+            {
+                claims.Add(new Claim(type: "IsAdmin", value: "true"));
+            }
+            else
+            {
+                claims.Add(new Claim(type: "IsCustomer", value: "true"));
+            }
+
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var authProperties = new AuthenticationProperties
             {
@@ -62,6 +72,7 @@ namespace Projekt_Programistyczny.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         [Route("Deauthenticate")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> Deauthenticate()
@@ -96,6 +107,7 @@ namespace Projekt_Programistyczny.Controllers
         }
 
         [HttpPut]
+        [Authorize]
         [Route("UpdateUser")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -124,6 +136,7 @@ namespace Projekt_Programistyczny.Controllers
 
         [HttpGet]
         [Route("GetUserInfo")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<UserDTO>> GetUserInfo([FromQuery] long userId)
