@@ -59,12 +59,12 @@ namespace Projekt_Programistyczny.Controllers
         [Route("AddOfferToCart")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> AddOfferToCart([FromBody] AddOfferToCartDTO dto)
+        public async Task<IActionResult> AddOfferToCart([FromQuery] long offerId)
         {
             try
             {
                 var userId = HttpContext.User.GetUserId();
-                await _cartService.AddOfferToCartAsync(dto);
+                await _cartService.AddOfferToCartAsync(offerId, userId);
                 return Ok();
             }
             catch (NotFoundException ex)
