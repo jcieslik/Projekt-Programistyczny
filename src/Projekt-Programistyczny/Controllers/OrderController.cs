@@ -1,11 +1,13 @@
 ﻿using Application.Common.Exceptions;
 using Application.Common.Interfaces.DataServiceInterfaces;
+using Application.Common.Models;
 using Application.DAL.DTO;
 using Application.DAL.DTO.CommandDTOs.Create;
 using Application.DAL.DTO.CommandDTOs.Update;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Projekt_Programistyczny.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -60,6 +62,15 @@ namespace Projekt_Programistyczny.Controllers
             }
         }
 
+        [HttpPost]
+        [Authorize(Policy = "CustomerOnly")]
+        [Route("GetOrdersFromUser")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<PaginatedList<OrderDTO>>> GetOrdersFromUser([FromBody] PaginationProperties pagination)
+        {
+            var orders = await _orderService.GetPaginatedOrdersFromUser(HttpContext.User.GetUserId(), pagination);
+            return Ok(orders);
+        }
 
     }
 }

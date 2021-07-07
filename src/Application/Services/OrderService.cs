@@ -1,6 +1,8 @@
 ﻿using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using Application.Common.Interfaces.DataServiceInterfaces;
+using Application.Common.Mappings;
+using Application.Common.Models;
 using Application.Common.Services;
 using Application.DAL.DTO;
 using Application.DAL.DTO.CommandDTOs.Create;
@@ -107,7 +109,7 @@ namespace Application.Services
             if (dto.OrderStatus.HasValue)
             {
                 order.OrderStatus = (OrderStatus)dto.OrderStatus.Value;
-                if(order.OrderStatus == OrderStatus.Canceled)
+                if (order.OrderStatus == OrderStatus.Canceled)
                 {
                     order.OfferWithDelivery.Offer.ProductCount += 1;
                 }
@@ -117,9 +119,25 @@ namespace Application.Services
             {
                 order.PaymentDate = dto.PaymentDate;
             }
-            
+
             await _context.SaveChangesAsync();
             return _mapper.Map<OrderDTO>(order);
+        }
+
+        public async Task<PaginatedList<OrderDTO>> GetPaginatedOrdersFromUser(long userId, PaginationProperties pagination)
+        {
+            var user = await _context.Users.FindAsync(userId);
+            if (user == null)
+            {
+                throw new NotFoundException(nameof(User), userId);
+            }
+            var orders = _context.Orders
+                .Include(x => x.Customer).Include(x => x.OfferWithDelivery)
+                .AsNoTracking()
+                .Where(x => x.Customer.Id == userId);
+
+            return await orders.ProjectTo<OrderDTO>(_mapper.ConfigurationProvider)
+                .PaginatedListAsync(pagination.PageIndex, pagination.PageSize);
         }
     }
 }

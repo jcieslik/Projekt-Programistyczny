@@ -1,4 +1,5 @@
-﻿using Application.DAL.DTO;
+﻿using Application.Common.Models;
+using Application.DAL.DTO;
 using Application.DAL.DTO.CommandDTOs.Create;
 using Application.DAL.DTO.CommandDTOs.Update;
 using System;
@@ -14,5 +15,6 @@ namespace Application.Common.Interfaces.DataServiceInterfaces
         Task<OrderDTO> GetOrderByIdAsync(long id);
         Task<IEnumerable<OrderDTO>> GetOrdersFromOffer(long offerId);
         Task<IEnumerable<OrderDTO>> GetOrdersFromUser(long userId);
+        Task<PaginatedList<OrderDTO>> GetPaginatedOrdersFromUser(long userId, PaginationProperties pagination);
     }
 }
