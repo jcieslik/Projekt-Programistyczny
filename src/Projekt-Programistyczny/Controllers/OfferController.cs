@@ -83,6 +83,7 @@ namespace Projekt_Programistyczny.Controllers
         {
             var filterModel = new FilterModel
             {
+                SearchText = searchModel.SearchText,
                 SellerId = searchModel.SellerId,
                 Brands = searchModel.Brands,
                 OfferState = searchModel.OfferState,

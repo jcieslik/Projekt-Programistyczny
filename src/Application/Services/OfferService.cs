@@ -122,6 +122,14 @@ namespace Application.Services
             {
                 offers = offers.Where(x => x.Seller.Id == filterModel.SellerId);
             }
+            if (filterModel.SearchText.Length > 0)
+            {
+                List<string> words = filterModel.SearchText.Split(' ').ToList();
+                foreach (string word in words)
+                {
+                    offers = offers.Where(x => x.Description.Contains(word) || x.Title.Contains(word));
+                }
+            }
             offers = paginationProperties.OrderBy switch
             {
                 "price_asc" => offers.OrderBy(x => x.PriceForOneProduct),
