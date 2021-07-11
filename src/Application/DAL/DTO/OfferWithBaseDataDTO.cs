@@ -11,6 +11,7 @@ namespace Application.DAL.DTO
     {
         public long Id { get; set; }
         public double PriceForOneProduct { get; set; }
+        public int ProductCount { get; set; }
         public string Title { get; set; }
         public OfferType OfferType { get; set; }
         public ProductState ProductState { get; set; }

@@ -7,6 +7,7 @@ using Application.DAL.DTO.CommandDTOs.Update;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Projekt_Programistyczny.Extensions;
 using System.Threading.Tasks;
 
 namespace Projekt_Programistyczny.Controllers
@@ -55,15 +56,11 @@ namespace Projekt_Programistyczny.Controllers
         [Route("GetMessageFromUser/user/{userId}/type/{mailboxType}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<PaginatedList<MessageDTO>>> GetPaginatedMessagesFromUser(
-            [FromBody] PaginationProperties properties,
-            [FromRoute] long userId,
-            [FromRoute] int mailboxType
-            )
+        public async Task<ActionResult<PaginatedList<MessageDTO>>> GetPaginatedMessagesFromUser([FromBody] PaginationProperties properties, [FromRoute] int mailboxType)
         {
             try
             {
-                var messages = await _messageService.GetPaginatedMessagesFromUserAsync(userId, mailboxType, properties);
+                var messages = await _messageService.GetPaginatedMessagesFromUserAsync(HttpContext.User.GetUserId(), mailboxType, properties);
                 return Ok(messages);
             }
             catch(NotFoundException ex)

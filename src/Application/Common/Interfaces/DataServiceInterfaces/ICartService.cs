@@ -11,5 +11,6 @@ namespace Application.Common.Interfaces.DataServiceInterfaces
         Task<IEnumerable<CartOfferDTO>> GetOffersFromCartAsync(long cartId);
         Task RemoveOfferFromCartAsync(long relationId);
         Task<long> Create(long userId);
+        Task DecrementOfferCountInCart(long userId, long offerId);
     }
 }

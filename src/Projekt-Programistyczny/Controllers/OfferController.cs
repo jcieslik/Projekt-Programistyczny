@@ -59,23 +59,19 @@ namespace Projekt_Programistyczny.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpPost]
         [Authorize(Policy = "CustomerOnly")]
-        [Route("GetFromUserWishes")]
+        [Route("GetOffersFromActiveUserWishes")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<PaginatedList<OfferWithBaseDataDTO>>> GetOffersFromActiveUserWishes(
-            [FromQuery] long userId,
-            [FromQuery] int pageIndex = 1,
-            [FromQuery] int pageSize = 15,
-            [FromQuery] string orderBy = "creation")
+        public async Task<ActionResult<PaginatedList<OfferWithBaseDataDTO>>> GetOffersFromActiveUserWishes([FromBody] PaginationProperties pagination)
         {
             var properties = new PaginationProperties
             {
-                PageSize = pageSize,
-                PageIndex = pageIndex,
-                OrderBy = orderBy
+                PageSize = pagination.PageSize,
+                PageIndex = pagination.PageIndex,
+                OrderBy = pagination.OrderBy
             };
-            var offers = await _offerService.GetPaginatedOffersFromUserActiveWishesAsync(userId, properties);
+            var offers = await _offerService.GetPaginatedOffersFromUserActiveWishesAsync(HttpContext.User.GetUserId(), properties);
 
             return Ok(offers);
         }
@@ -87,6 +83,7 @@ namespace Projekt_Programistyczny.Controllers
         {
             var filterModel = new FilterModel
             {
+                SearchText = searchModel.SearchText,
                 SellerId = searchModel.SellerId,
                 Brands = searchModel.Brands,
                 OfferState = searchModel.OfferState,
@@ -139,6 +136,26 @@ namespace Projekt_Programistyczny.Controllers
             {
                 var offer = await _offerService.UpdateOfferAsync(dto);
                 return Ok(offer);
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+        }
+
+        [HttpGet]
+        [Route("DecrementOfferProductCount")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<bool>> DecrementOfferProductCount([FromBody] long offerId, int count)
+        {
+            try
+            {   if (count > 0)
+                {
+                    var offer = await _offerService.GetOfferByIdAsync(offerId);
+                    return Ok(offer.ProductCount > 1);
+                }
+                return Ok(false);
             }
             catch (NotFoundException ex)
             {

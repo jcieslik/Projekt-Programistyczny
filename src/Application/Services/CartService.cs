@@ -64,14 +64,25 @@ namespace Application.Services
                 throw new NotFoundException(nameof(Cart), userId);
             }
 
-            var entity = new CartOffer
+            var cartOffer = _context.CartOffer.Where(e => e.Offer == offer && e.Cart == cart).FirstOrDefault();
+            if (cartOffer != default)
             {
-                Cart = cart,
-                Offer = offer,
-                ProductsCount = 1
-            };
+                if (offer.ProductCount > 1)
+                {
+                    cartOffer.ProductsCount++;
+                }
+            }
+            else
+            {
+                var entity = new CartOffer
+                {
+                    Cart = cart,
+                    Offer = offer,
+                    ProductsCount = 1
+                };
 
-            _context.CartOffer.Add(entity);
+                _context.CartOffer.Add(entity);
+            }
             await _context.SaveChangesAsync();
         }
 
@@ -98,6 +109,39 @@ namespace Application.Services
             _context.Carts.Add(entity);
             await _context.SaveChangesAsync();
             return entity.Id;
+        }
+
+        public async Task DecrementOfferCountInCart(long userId, long offerId)
+        {
+            var offer = await _context.Offers.FindAsync(offerId);
+            var user = await _context.Users.Include(e => e.Cart).AsNoTracking().Where(e => e.Id == userId).FirstOrDefaultAsync();
+            var cart = await _context.Carts.FindAsync(user.Cart.Id);
+            if (offer == null)
+            {
+                throw new NotFoundException(nameof(Offer), offerId);
+            }
+            if (cart == null)
+            {
+                throw new NotFoundException(nameof(Cart), userId);
+            }
+
+            var cartOffer = _context.CartOffer.Where(e => e.Offer == offer && e.Cart == cart).FirstOrDefault();
+            if (cartOffer != default)
+            {
+                if (cartOffer.ProductsCount > 1)
+                {
+                    cartOffer.ProductsCount--;
+                }
+                else
+                {
+                    _context.CartOffer.Remove(cartOffer);
+                }
+                await _context.SaveChangesAsync();
+            }
+            else
+            {
+                throw new NotFoundException(("There is no connection between cart with id {0} and offer with id {1}!", cart.Id, offer.Id).ToString());
+            }
         }
     }
 }

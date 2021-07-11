@@ -25,10 +25,11 @@ namespace Projekt_Programistyczny.Controllers
         [Route("GetOffersFromCart")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IEnumerable<CartOfferDTO>>> GetOffersFromCart([FromQuery] long userId)
+        public async Task<ActionResult<IEnumerable<CartOfferDTO>>> GetOffersFromCart()
         {
             try
             {
+                var userId = HttpContext.User.GetUserId();
                 var offers = await _cartService.GetOffersFromCartAsync(userId);
                 return Ok(offers);
             }
@@ -42,10 +43,11 @@ namespace Projekt_Programistyczny.Controllers
         [Route("Create")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<long>> Create([FromQuery] long userId)
+        public async Task<ActionResult<long>> Create()
         {
             try
             {
+                var userId = HttpContext.User.GetUserId();
                 var id = await _cartService.Create(userId);
                 return Ok(id);
             }
@@ -77,12 +79,30 @@ namespace Projekt_Programistyczny.Controllers
         [Route("RemoveOfferFromCart")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> RemoveOfferFromCart([FromQuery] long relationId)
+        public async Task<IActionResult> RemoveOfferFromCart([FromQuery] long offerId)
         {
             try
             {
                 var userId = HttpContext.User.GetUserId();
-                await _cartService.RemoveOfferFromCartAsync(relationId);
+                await _cartService.RemoveOfferFromCartAsync(offerId);
+                return Ok();
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+        }
+
+        [HttpPut]
+        [Route("DecrementOfferCountInCart")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> DecrementOfferCountInCart([FromQuery] long offerId)
+        {
+            try
+            {
+                var userId = HttpContext.User.GetUserId();
+                await _cartService.DecrementOfferCountInCart(userId, offerId);
                 return Ok();
             }
             catch (NotFoundException ex)

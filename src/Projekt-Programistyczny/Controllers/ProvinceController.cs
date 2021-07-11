@@ -23,7 +23,7 @@ namespace Projekt_Programistyczny.Controllers
             _provinceService = provinceService;
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("GetProvinceById")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<ProvinceDTO>> GetProvinceById(long id)

@@ -79,22 +79,18 @@ namespace Projekt_Programistyczny.Controllers
         }
 
         [HttpPost]
-        [Route("UserComments")]
+        [Route("GetPaginatedCommentsFromUser")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<PaginatedList<CommentDTO>>> GetPaginatedCommentsFromUser(
-            [FromBody] SearchCommentsVM vm
-            )
+        public async Task<ActionResult<PaginatedList<CommentDTO>>> GetPaginatedCommentsFromUser([FromBody] SearchCommentsVM vm)
         {
             var comments = await _commentService.GetPaginatedCommentsFromUserAsync(vm);
             return Ok(comments);
         }
 
         [HttpPost]
-        [Route("OfferComments")]
+        [Route("GetPaginatedCommentsFromOffer")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<PaginatedList<CommentDTO>>> GetPaginatedCommentsFromOffer(
-            [FromBody] SearchCommentsVM vm
-            )
+        public async Task<ActionResult<PaginatedList<CommentDTO>>> GetPaginatedCommentsFromOffer([FromBody] SearchCommentsVM vm)
         {
             var comments = await _commentService.GetPaginatedCommentsFromOfferAsync(vm);
             return Ok(comments);
