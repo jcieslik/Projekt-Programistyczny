@@ -59,23 +59,19 @@ namespace Projekt_Programistyczny.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpPost]
         [Authorize(Policy = "CustomerOnly")]
-        [Route("GetFromUserWishes")]
+        [Route("GetOffersFromActiveUserWishes")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<PaginatedList<OfferWithBaseDataDTO>>> GetOffersFromActiveUserWishes(
-            [FromQuery] long userId,
-            [FromQuery] int pageIndex = 1,
-            [FromQuery] int pageSize = 15,
-            [FromQuery] string orderBy = "creation")
+        public async Task<ActionResult<PaginatedList<OfferWithBaseDataDTO>>> GetOffersFromActiveUserWishes([FromBody] PaginationProperties pagination)
         {
             var properties = new PaginationProperties
             {
-                PageSize = pageSize,
-                PageIndex = pageIndex,
-                OrderBy = orderBy
+                PageSize = pagination.PageSize,
+                PageIndex = pagination.PageIndex,
+                OrderBy = pagination.OrderBy
             };
-            var offers = await _offerService.GetPaginatedOffersFromUserActiveWishesAsync(userId, properties);
+            var offers = await _offerService.GetPaginatedOffersFromUserActiveWishesAsync(HttpContext.User.GetUserId(), properties);
 
             return Ok(offers);
         }
