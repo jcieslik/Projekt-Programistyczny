@@ -67,8 +67,10 @@ namespace Application.Services
             {
                 "price_asc" => offers.OrderBy(x => x.PriceForOneProduct),
                 "price_desc" => offers.OrderByDescending(x => x.PriceForOneProduct),
-                "rate" => offers.OrderByDescending(x => x.Comments.Select(x => x.RateValue).Average()),
-                "creation" => offers.OrderBy(x => x.Created),
+                "end_date_asc" => offers.OrderBy(x => x.EndDate),
+                "end_date_desc" => offers.OrderByDescending(x => x.EndDate),
+                "creation_asc" => offers.OrderBy(x => x.Created),
+                "creation_desc" => offers.OrderByDescending(x => x.Created),
                 _ => offers.OrderBy(x => x.Created)
             };
 
@@ -134,8 +136,10 @@ namespace Application.Services
             {
                 "price_asc" => offers.OrderBy(x => x.PriceForOneProduct),
                 "price_desc" => offers.OrderByDescending(x => x.PriceForOneProduct),
-                "rate" => offers.OrderByDescending(x => x.Comments.Select(x => x.RateValue).Average()),
-                "creation" => offers.OrderBy(x => x.Created),
+                "end_date_asc" => offers.OrderBy(x => x.EndDate),
+                "end_date_desc" => offers.OrderByDescending(x => x.EndDate),
+                "creation_asc" => offers.OrderBy(x => x.Created),
+                "creation_desc" => offers.OrderByDescending(x => x.Created),
                 _ => offers.OrderBy(x => x.Created)
             };
 
