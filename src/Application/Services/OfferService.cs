@@ -122,7 +122,7 @@ namespace Application.Services
             {
                 offers = offers.Where(x => x.Seller.Id == filterModel.SellerId);
             }
-            if (filterModel.SearchText && filterModel.SearchText.Length > 0)
+            if (filterModel.SearchText != null && filterModel.SearchText.Length > 0)
             {
                 List<string> words = filterModel.SearchText.Split(' ').ToList();
                 foreach (string word in words)
