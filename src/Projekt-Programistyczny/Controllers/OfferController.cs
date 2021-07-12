@@ -63,15 +63,21 @@ namespace Projekt_Programistyczny.Controllers
         [Authorize(Policy = "CustomerOnly")]
         [Route("GetOffersFromActiveUserWishes")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<PaginatedList<OfferWithBaseDataDTO>>> GetOffersFromActiveUserWishes([FromBody] PaginationProperties pagination)
+        public async Task<ActionResult<PaginatedList<OfferWithBaseDataDTO>>> GetOffersFromActiveUserWishes([FromBody] SearchModel searchModel)
         {
+            var filterModel = new FilterModel
+            {
+                SearchText = searchModel.SearchText,
+                CategoryId = searchModel.CategoryId,
+            };
+
             var properties = new PaginationProperties
             {
-                PageSize = pagination.PageSize,
-                PageIndex = pagination.PageIndex,
-                OrderBy = pagination.OrderBy
+                PageSize = searchModel.PageSize,
+                PageIndex = searchModel.PageIndex,
+                OrderBy = searchModel.OrderBy
             };
-            var offers = await _offerService.GetPaginatedOffersFromUserActiveWishesAsync(HttpContext.User.GetUserId(), properties);
+            var offers = await _offerService.GetPaginatedOffersFromUserActiveWishesAsync(HttpContext.User.GetUserId(), filterModel, properties);
 
             return Ok(offers);
         }

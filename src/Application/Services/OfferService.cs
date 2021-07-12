@@ -52,7 +52,7 @@ namespace Application.Services
             .ToListAsync();
         }
 
-        public async Task<PaginatedList<OfferWithBaseDataDTO>> GetPaginatedOffersFromUserActiveWishesAsync(long userId, PaginationProperties paginationProperties)
+        public async Task<PaginatedList<OfferWithBaseDataDTO>> GetPaginatedOffersFromUserActiveWishesAsync(long userId, FilterModel filterModel, PaginationProperties paginationProperties)
         {
             var offers = _context.Wishes
                 .Include(x => x.Customer)
@@ -62,6 +62,19 @@ namespace Application.Services
                 .AsNoTracking()
                 .Where(x => x.Customer.Id == userId && !x.IsHidden)
                 .Select(x => x.Offer);
+
+            if (filterModel.CategoryId.HasValue)
+            {
+                offers = offers.Where(x => x.Category.Id == filterModel.CategoryId);
+            }
+            if (filterModel.SearchText != null && filterModel.SearchText.Length > 0)
+            {
+                List<string> words = filterModel.SearchText.Split(' ').ToList();
+                foreach (string word in words)
+                {
+                    offers = offers.Where(x => x.Description.Contains(word) || x.Title.Contains(word));
+                }
+            }
 
             offers = paginationProperties.OrderBy switch
             {
