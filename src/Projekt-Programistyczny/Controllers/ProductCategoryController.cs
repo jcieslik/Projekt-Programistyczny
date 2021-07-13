@@ -47,11 +47,11 @@ namespace Projekt_Programistyczny.Controllers
             return Ok(categories);
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("GetProductCategoriesByIds")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IEnumerable<ProductCategoryDTO>>> GetProductCategoriesByIds(List<long> ids)
+        public async Task<ActionResult<IEnumerable<ProductCategoryDTO>>> GetProductCategoriesByIds([FromBody] List<long> ids)
         {
             var categories = await _productCategoryService.GetProductCategoriesByIdsAsync(ids);
             return Ok(categories);
