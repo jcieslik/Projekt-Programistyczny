@@ -24,17 +24,17 @@ namespace Projekt_Programistyczny.Controllers
             _productCategoryService = productCategoryService;
         }
 
-        [HttpGet("GetProductById")]
+        [HttpGet("GetProductCategoryById")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IEnumerable<ProductCategoryDTO>>> GetProductById(long id)
+        public async Task<ActionResult<IEnumerable<ProductCategoryDTO>>> GetProductCategoryById(long id)
         {
-            var brand = await _productCategoryService.GetProductCategoryByIdAsync(id);
-            if(brand == null)
+            var category = await _productCategoryService.GetProductCategoryByIdAsync(id);
+            if(category == null)
             {
                 return NotFound();
             }
-            return Ok(brand);
+            return Ok(category);
         }
 
         [HttpGet]
@@ -43,9 +43,20 @@ namespace Projekt_Programistyczny.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<IEnumerable<ProductCategoryDTO>>> GetProductCategories()
         {
-            var brands = await _productCategoryService.GetProductCategoriesAsync();
-            return Ok(brands);
+            var categories = await _productCategoryService.GetProductCategoriesAsync();
+            return Ok(categories);
         }
+
+        [HttpGet]
+        [Route("GetProductCategoriesByIds")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<IEnumerable<ProductCategoryDTO>>> GetProductCategoriesByIds(List<long> ids)
+        {
+            var categories = await _productCategoryService.GetProductCategoriesByIdsAsync(ids);
+            return Ok(categories);
+        }
+
 
         [HttpPost]
         [Authorize(Policy = "AdminOnly")]

@@ -44,6 +44,19 @@ namespace Application.Services
                 .ToListAsync();
         }
 
+        public async Task<IEnumerable<ProductCategoryDTO>> GetProductCategoriesByIdsAsync(List<long> ids)
+        {
+            var categories = _context.Categories
+                .Include(i => i.Offers)
+                .Include(i => i.ParentCategory)
+                .Include(i => i.ChildrenCategories)
+                .Where(i => ids.Contains(i.Id))
+                .AsNoTracking();
+
+            return await categories.ProjectTo<ProductCategoryDTO>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+        }
+
         public async Task<ProductCategoryDTO> CreateProductCategoryAsync(CreateProductCategoryDTO dto)
         {
             var checkName = await _context.Categories.Where(x => x.Name == dto.Name).CountAsync();
