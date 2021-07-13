@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Projekt_Programistyczny.Extensions;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Projekt_Programistyczny.Controllers
@@ -83,5 +84,15 @@ namespace Projekt_Programistyczny.Controllers
                 return NotFound(new { message = ex.Message });
             }
         }
+
+        [HttpGet]
+        [Route("Categories")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<IEnumerable<long>>> GetUserWishesCategoriesIds()
+        {
+            var ids = await _wishService.GetUserWishesCategoriesIds(HttpContext.User.GetUserId());
+            return Ok(ids);
+        }
+
     }
 }
