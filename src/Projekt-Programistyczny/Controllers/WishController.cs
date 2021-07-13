@@ -6,9 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Projekt_Programistyczny.Extensions;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Projekt_Programistyczny.Controllers
@@ -40,6 +38,10 @@ namespace Projekt_Programistyczny.Controllers
             {
                 return NotFound(new { message = ex.Message });
             }
+            catch (RelationAlreadyExistException)
+            {
+                return Conflict();
+            }
         }
 
         [HttpPatch]
@@ -66,5 +68,31 @@ namespace Projekt_Programistyczny.Controllers
         {
             return Ok(await _wishService.CheckForUserWish(id, HttpContext.User.GetUserId()));
         }
+
+        [HttpDelete]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> Delete([FromQuery] long offerId, [FromQuery] long userId)
+        {
+            try
+            {
+                await _wishService.DeleteAsync(offerId, userId);
+                return Ok();
+            }
+            catch(NotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+        }
+
+        [HttpGet]
+        [Route("Categories")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<IEnumerable<long>>> GetUserWishesCategoriesIds()
+        {
+            var ids = await _wishService.GetUserWishesCategoriesIds(HttpContext.User.GetUserId());
+            return Ok(ids);
+        }
+
     }
 }

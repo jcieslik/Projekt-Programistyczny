@@ -7,6 +7,8 @@ using Application.DAL.DTO.CommandDTOs.Create;
 using AutoMapper;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -36,6 +38,13 @@ namespace Application.Services
                 Customer = customer,
                 Offer = offer
             };
+
+            var checkWish = _context.Wishes.Where(x => x.Offer == offer && x.Customer == customer && !x.IsHidden).Count();
+
+            if(checkWish > 0)
+            {
+                throw new RelationAlreadyExistException();
+            }
 
             _context.Wishes.Add(wish);
 
@@ -70,6 +79,34 @@ namespace Application.Services
                 return true;
             }
             return false;
+        }
+
+        public async Task DeleteAsync(long offerId, long userId)
+        {
+            var wishes = await _context.Wishes
+                .Include(x => x.Offer)
+                .Include(x => x.Customer)
+                .Where(x => x.Offer.Id == offerId && x.Customer.Id == userId).ToListAsync();
+
+            if (wishes.Count == 0)
+            {
+                throw new NotFoundException(nameof(Wish));
+            }
+
+            _context.Wishes.RemoveRange(wishes);
+
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<long>> GetUserWishesCategoriesIds(long userId)
+        {
+            return await _context.Wishes
+                .Include(x => x.Customer)
+                .Include(x => x.Offer).ThenInclude(x => x.Category)
+                .Where(x => x.Customer.Id == userId)
+                .Select(x => x.Offer.Category.Id)
+                .Distinct()
+                .ToListAsync();
         }
 
     }
