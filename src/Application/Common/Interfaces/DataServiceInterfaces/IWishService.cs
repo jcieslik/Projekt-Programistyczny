@@ -7,6 +7,7 @@ namespace Application.Common.Interfaces.DataServiceInterfaces
     public interface IWishService
     {
         Task<WishDTO> CreateWishAsync(CreateWishDto dto);
-        Task HideWish(long id);
+        Task HideWish(long offerId, long userId);
+        Task<bool> CheckForUserWish(long offerId, long userId);
     }
 }

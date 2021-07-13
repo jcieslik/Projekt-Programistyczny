@@ -22,6 +22,7 @@ namespace Application
             services.AddScoped<IDeliveryService, DeliveryService>();
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<ICartService, CartService>();
+            services.AddScoped<IWishService, WishService>();
             return services;
         }
     }

@@ -5,6 +5,7 @@ using Application.DAL.DTO.CommandDTOs.Create;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Projekt_Programistyczny.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,7 +50,7 @@ namespace Projekt_Programistyczny.Controllers
         {
             try
             {
-                await _wishService.HideWish(id);
+                await _wishService.HideWish(id, HttpContext.User.GetUserId());
                 return Ok();
             }
             catch (NotFoundException ex)
@@ -58,5 +59,12 @@ namespace Projekt_Programistyczny.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("CheckForUserWish")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> CheckForUserWish([FromQuery] long id)
+        {
+            return Ok(await _wishService.CheckForUserWish(id, HttpContext.User.GetUserId()));
+        }
     }
 }
