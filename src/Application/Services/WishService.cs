@@ -37,6 +37,13 @@ namespace Application.Services
                 Offer = offer
             };
 
+            var checkWish = _context.Wishes.Where(x => x.Offer == offer && x.Customer == customer && !x.IsHidden).Count();
+
+            if(checkWish > 0)
+            {
+                throw new RelationAlreadyExistException();
+            }
+
             _context.Wishes.Add(wish);
 
             await _context.SaveChangesAsync();
@@ -70,6 +77,23 @@ namespace Application.Services
                 return true;
             }
             return false;
+        }
+
+        public async Task DeleteAsync(long offerId, long userId)
+        {
+            var wishes = await _context.Wishes
+                .Include(x => x.Offer)
+                .Include(x => x.Customer)
+                .Where(x => x.Offer.Id == offerId && x.Customer.Id == userId).ToListAsync();
+
+            if (wishes.Count == 0)
+            {
+                throw new NotFoundException(nameof(Wish));
+            }
+
+            _context.Wishes.RemoveRange(wishes);
+
+            await _context.SaveChangesAsync();
         }
 
     }
