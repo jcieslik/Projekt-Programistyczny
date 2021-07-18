@@ -12,6 +12,6 @@ namespace Application.Common.Interfaces.DataServiceInterfaces
         Task<IEnumerable<ProductCategoryDTO>> GetProductCategoriesAsync();
         Task<ProductCategoryDTO> CreateProductCategoryAsync(CreateProductCategoryDTO dto);
         Task<ProductCategoryDTO> UpdateProductCategoryAsync(UpdateProductCategoryDTO dto);
-        Task<IEnumerable<ProductCategoryDTO>> GetProductCategoriesByIdsAsync(List<long> ids);
+        Task<IEnumerable<ProductCategoryDTO>> GetProductCategoriesFromUserWishesAsync(long userId);
     }
 }

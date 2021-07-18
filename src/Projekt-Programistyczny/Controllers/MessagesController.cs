@@ -53,7 +53,7 @@ namespace Projekt_Programistyczny.Controllers
 
         [HttpPost]
         [Authorize(Policy = "CustomerOnly")]
-        [Route("GetMessageFromUser/user/{userId}/type/{mailboxType}")]
+        [Route("GetMessagesFromUser")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<PaginatedList<MessageDTO>>> GetPaginatedMessagesFromUser([FromBody] PaginationProperties properties, [FromRoute] int mailboxType)
