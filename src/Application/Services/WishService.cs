@@ -97,17 +97,5 @@ namespace Application.Services
 
             await _context.SaveChangesAsync();
         }
-
-        public async Task<IEnumerable<long>> GetUserWishesCategoriesIds(long userId)
-        {
-            return await _context.Wishes
-                .Include(x => x.Customer)
-                .Include(x => x.Offer).ThenInclude(x => x.Category)
-                .Where(x => x.Customer.Id == userId)
-                .Select(x => x.Offer.Category.Id)
-                .Distinct()
-                .ToListAsync();
-        }
-
     }
 }

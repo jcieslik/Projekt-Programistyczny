@@ -4,6 +4,7 @@ using Application.Common.Models;
 using Application.DAL.DTO;
 using Application.DAL.DTO.CommandDTOs.Create;
 using Application.DAL.DTO.CommandDTOs.Update;
+using Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -53,10 +54,10 @@ namespace Projekt_Programistyczny.Controllers
 
         [HttpPost]
         [Authorize(Policy = "CustomerOnly")]
-        [Route("GetMessageFromUser/user/{userId}/type/{mailboxType}")]
+        [Route("GetMessagesFromUser")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<PaginatedList<MessageDTO>>> GetPaginatedMessagesFromUser([FromBody] PaginationProperties properties, [FromRoute] int mailboxType)
+        public async Task<ActionResult<PaginatedList<MessageDTO>>> GetPaginatedMessagesFromUser([FromBody] PaginationProperties properties, [FromQuery] MailboxType mailboxType)
         {
             try
             {

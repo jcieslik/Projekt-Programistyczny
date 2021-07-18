@@ -6,6 +6,7 @@ using Application.DAL.DTO.CommandDTOs.Update;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Projekt_Programistyczny.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,13 +49,14 @@ namespace Projekt_Programistyczny.Controllers
         }
 
         [HttpGet]
-        [Route("GetProductCategoriesByIds")]
+        [Authorize(Policy = "CustomerOnly")]
+        [Route("GetProductCategoriesFromUserWishes")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IEnumerable<ProductCategoryDTO>>> GetProductCategoriesByIds(List<long> ids)
+        public async Task<ActionResult<IEnumerable<ProductCategoryDTO>>> GetProductCategoriesFromUserWishes()
         {
-            var categories = await _productCategoryService.GetProductCategoriesByIdsAsync(ids);
-            return Ok(categories);
+            var categories = await _productCategoryService.GetProductCategoriesFromUserWishesAsync(HttpContext.User.GetUserId());
+            return Ok(categories.GroupBy(x => x.Id).Select(x => x.First()));
         }
 
 

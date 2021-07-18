@@ -11,6 +11,5 @@ namespace Application.Common.Interfaces.DataServiceInterfaces
         Task HideWish(long offerId, long userId);
         Task<bool> CheckForUserWish(long offerId, long userId);
         Task DeleteAsync(long offerId, long userId);
-        Task<IEnumerable<long>> GetUserWishesCategoriesIds(long userId);
     }
 }

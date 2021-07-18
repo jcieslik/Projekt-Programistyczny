@@ -37,7 +37,7 @@ namespace Application.Services
                 .Include(x => x.Message)
                 .SingleOrDefaultAsync(x => x.Id == id)
                 );
-        public async Task<PaginatedList<MessageDTO>> GetPaginatedMessagesFromUserAsync(long userId, int mailboxType, PaginationProperties properties)
+        public async Task<PaginatedList<MessageDTO>> GetPaginatedMessagesFromUserAsync(long userId, MailboxType mailboxType, PaginationProperties properties)
         {
             var messages = _context.MessageTransmissions
             .Include(m => m.Recipient)
@@ -45,7 +45,7 @@ namespace Application.Services
             .Include(m => m.MailboxOwner)
             .Include(m => m.Message)
             .AsNoTracking()
-            .Where(x => x.MailboxOwner.Id == userId && x.MailboxType == (MailboxType)mailboxType && !x.IsHidden);
+            .Where(x => x.MailboxOwner.Id == userId && x.MailboxType == mailboxType && !x.IsHidden);
 
             messages = properties.OrderBy switch
             {
