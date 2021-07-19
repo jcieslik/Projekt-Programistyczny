@@ -13,6 +13,7 @@ using Domain.Entities;
 using Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -31,21 +32,18 @@ namespace Application.Services
 
         public async Task<MessageDTO> GetMessageTransmissionByIdAsync(long id)
             => _mapper.Map<MessageDTO>(
-                await _context.MessageTransmissions
-                .Include(x => x.Recipient)
-                .Include(x => x.Sender)
-                .Include(x => x.Message)
-                .SingleOrDefaultAsync(x => x.Id == id)
-                );
+                    await _context.MessageTransmissions
+                        .Include(x => x.Message)
+                        .SingleOrDefaultAsync(x => x.Id == id)
+                    );
+
         public async Task<PaginatedList<MessageDTO>> GetPaginatedMessagesFromUserAsync(long userId, MailboxType mailboxType, PaginationProperties properties)
         {
             var messages = _context.MessageTransmissions
-            .Include(m => m.Recipient)
-            .Include(m => m.Sender)
-            .Include(m => m.MailboxOwner)
-            .Include(m => m.Message)
-            .AsNoTracking()
-            .Where(x => x.MailboxOwner.Id == userId && x.MailboxType == mailboxType && !x.IsHidden);
+                .Include(m => m.MailboxOwner)
+                .Include(m => m.Message)
+                .AsNoTracking()
+                .Where(x => x.MailboxOwner.Id == userId && x.MailboxType == mailboxType && !x.IsHidden);
 
             messages = properties.OrderBy switch
             {
@@ -60,16 +58,68 @@ namespace Application.Services
 
         public async Task<BaseMessageDTO> CreateMessageAsync(CreateMessageDTO dto)
         {
+            var sender = await _context.Users.FindAsync(dto.SenderId);
+
+            if (sender == null)
+            {
+                throw new NotFoundException(nameof(User), dto.SenderId);
+            }
+
+            var recipients = new List<MessageUser>();
+
+            var transmissionsForRecipients = new List<MessageTransmission>();
 
             var entity = new Message
             {
+
+                Sender = sender,
                 SendDate = dto.SendDate,
                 Topic = dto.Topic,
                 Content = dto.Content,
                 IsHidden = false,
             };
 
+            foreach (var id in dto.RecipientsIds)
+            {
+                var recipient = await _context.Users.FindAsync(id);
+
+                if (recipient == null)
+                {
+                    throw new NotFoundException(nameof(User), id);
+                }
+
+                recipients.Add(new MessageUser()
+                {
+                    Recipient = recipient,
+                    Message = entity,
+                });
+
+                transmissionsForRecipients.Add(new MessageTransmission()
+                {
+                    MailboxOwner = recipient,
+                    IsHidden = false,
+                    Message = entity,
+                    MailboxType = MailboxType.Inbox
+                });
+            }
+
+
+            var transmissionForSender = new MessageTransmission
+            {
+                MailboxOwner = sender,
+                IsHidden = false,
+                Message = entity,
+                MailboxType = MailboxType.Sent
+            };
+
+
             _context.Messages.Add(entity);
+
+            _context.MessageUser.AddRange(recipients);
+
+            _context.MessageTransmissions.AddRange(transmissionsForRecipients);
+
+            _context.MessageTransmissions.Add(transmissionForSender);
 
             await _context.SaveChangesAsync();
 
@@ -105,8 +155,6 @@ namespace Application.Services
             var entity = new MessageTransmission
             {
                 MailboxOwner = owner,
-                Sender = sender,
-                Recipient = recipient,
                 Message = message,
                 MailboxType = (MailboxType)dto.MailboxType,
                 IsHidden = false
