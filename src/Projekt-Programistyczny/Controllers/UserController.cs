@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 using Projekt_Programistyczny.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -149,6 +150,20 @@ namespace Projekt_Programistyczny.Controllers
             {
                 return NotFound(new { message = ex.Message });
             }
+        }
+
+        [HttpGet]
+        [Route("GetAllMessageRecipients")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<RecipientDTO>> GetAllMessageRecipients()
+        {
+            var users = await userService.GetAllUsers();
+
+            var currentUserId = HttpContext.User.GetUserId();
+
+            users = users.Where(u => u.Id != currentUserId);
+
+            return Ok(users);
         }
     }
 }

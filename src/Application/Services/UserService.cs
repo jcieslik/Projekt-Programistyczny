@@ -6,10 +6,11 @@ using Application.DAL.DTO;
 using Application.DAL.DTO.CommandDTOs.Create;
 using Application.DAL.DTO.CommandDTOs.Update;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Domain.Entities;
 using Domain.Enums;
 using Microsoft.EntityFrameworkCore;
-using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -33,6 +34,17 @@ namespace Application.Services
         public async Task<UserDTO> GetUserById(long Id)
         {
             return _mapper.Map<UserDTO>(await _context.Users.FindAsync(Id));
+        }
+
+
+        public async Task<IEnumerable<RecipientDTO>> GetAllUsers()
+        {
+            var users = _context.Users
+                .Where(u => u.Role == UserRole.Customer)
+                .AsNoTracking();
+
+            return await users.ProjectTo<RecipientDTO>(_mapper.ConfigurationProvider)
+                .ToListAsync();
         }
 
         public async Task<UserDTO> CreateUserAsync(CreateUserDTO dto)
