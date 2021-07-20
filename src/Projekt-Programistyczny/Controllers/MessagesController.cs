@@ -141,5 +141,23 @@ namespace Projekt_Programistyczny.Controllers
                 return NotFound(new { message = ex.Message });
             }
         }
+
+        [HttpGet]
+        [Authorize]
+        [Route("GetNumberOfUnreadMessages")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<MessageDTO>> GetNumberOfUnreadMessages()
+        {
+            try
+            {
+                var message = await _messageService.GetNumberOfUnreadMessages(HttpContext.User.GetUserId());
+                return Ok(message);
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+        }
     }
 }

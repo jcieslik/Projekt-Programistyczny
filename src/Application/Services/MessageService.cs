@@ -202,5 +202,19 @@ namespace Application.Services
 
             return _mapper.Map<MessageDTO>(transmission);
         }
+
+        public async Task<long> GetNumberOfUnreadMessages(long userId)
+        {
+            var user = await _context.Users.FindAsync(userId);
+
+            if (user == null)
+            {
+                throw new NotFoundException(nameof(User), userId);
+            }
+
+            return _context.MessageTransmissions
+                .Where(m => m.MailboxType == MailboxType.Inbox && m.MailboxOwner == user && m.IsRead == false)
+                .Count();
+        }
     }
 }

@@ -16,5 +16,6 @@ namespace Application.Common.Interfaces.DataServiceInterfaces
         Task<PaginatedList<MessageDTO>> GetPaginatedMessagesFromUserAsync(long userId, MailboxType mailboxType, PaginationProperties properties);
         Task<BaseMessageDTO> UpdateMessageAsync(UpdateMessageDTO dto);
         Task<MessageDTO> UpdateTransmissionAsync(UpdateTransmissionDTO dto);
+        Task<long> GetNumberOfUnreadMessages(long userId);
     }
 }
