@@ -125,7 +125,7 @@ namespace Projekt_Programistyczny.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpPut]
         [Authorize]
         [Route("ChangeMessagesStatus")]
         [ProducesResponseType(StatusCodes.Status200OK)]
