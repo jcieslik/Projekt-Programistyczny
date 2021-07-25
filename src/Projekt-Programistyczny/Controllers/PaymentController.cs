@@ -27,15 +27,15 @@ namespace Projekt_Programistyczny.Controllers
         [Route("MakePayment")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> MakePayment([FromBody] PaymentRequestDTO paymentRequest)
+        public ActionResult MakePayment([FromBody] PaymentRequestDTO paymentRequest)
         {
             StripeConfiguration.ApiKey = userConfig.StripeSecret;
 
             var options = new ChargeCreateOptions
             {
-                Amount = paymentRequest.amount,
-                Source = paymentRequest.tokenId,
-                Description = paymentRequest.description,
+                Amount = paymentRequest.Amount,
+                Source = paymentRequest.TokenId,
+                Description = paymentRequest.Description,
                 Currency = "pln",
             };
             var service = new ChargeService();

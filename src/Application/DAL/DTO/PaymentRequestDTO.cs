@@ -8,8 +8,8 @@ namespace Application.DAL.DTO
 {
     public class PaymentRequestDTO
     {
-        public string tokenId { get; set; }
-        public string description { get; set; }
-        public int amount { get; set; }
+        public string TokenId { get; set; }
+        public string Description { get; set; }
+        public int Amount { get; set; }
     }
 }

@@ -73,7 +73,7 @@ namespace Application.Services
             {
 
                 Sender = sender,
-                SendDate = dto.SendDate,
+                SendDate = DateTime.Now,
                 Topic = dto.Topic,
                 Content = dto.Content,
                 IsHidden = false,
@@ -215,6 +215,78 @@ namespace Application.Services
             return _context.MessageTransmissions
                 .Where(m => m.MailboxType == MailboxType.Inbox && m.MailboxOwner == user && m.IsRead == false)
                 .Count();
+        }
+
+        public async Task<bool> ChangeMessagesStatus(List<long> messageIds, long userId, bool isRead)
+        {
+            MessageTransmission transmission;
+
+            try
+            {
+                foreach (var id in messageIds)
+                {
+                    transmission = await GetMessageTransmissionAsyncByMessageAndUser(id, userId);
+
+                    transmission.IsRead = isRead;
+                }
+
+                await _context.SaveChangesAsync();
+            }
+            catch(Exception)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public async Task<bool> DeleteMessages(List<long> messageIds, long userId)
+        {
+            MessageTransmission transmission;
+
+            try
+            {
+                foreach (var id in messageIds)
+                {
+                    transmission = await GetMessageTransmissionAsyncByMessageAndUser(id, userId);
+                    switch (transmission.MailboxType)
+                    {
+                        case MailboxType.Inbox:
+                            transmission.MailboxType = MailboxType.Trash;
+                            break;
+                        case MailboxType.Sent:
+                            transmission.MailboxType = MailboxType.Trash;
+                            break;
+                        case MailboxType.Trash:
+                            _context.MessageTransmissions.Remove(transmission);
+                            break;
+                    }
+                }
+
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        private async Task<MessageTransmission> GetMessageTransmissionAsyncByMessageAndUser(long messageId, long userId)
+        {
+            var message = await _context.Messages
+                .Include(m => m.Transmissions)
+                .ThenInclude(m => m.MailboxOwner)
+                .Where(m => m.Id == messageId)
+                .FirstOrDefaultAsync();
+
+            if (message == null)
+            {
+                throw new NotFoundException(nameof(Message), messageId);
+            }
+
+            return message.Transmissions.Where(t => t.MailboxOwner.Id == userId).FirstOrDefault();
         }
     }
 }

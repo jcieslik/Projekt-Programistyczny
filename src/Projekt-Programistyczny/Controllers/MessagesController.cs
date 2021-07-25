@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Projekt_Programistyczny.Extensions;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Projekt_Programistyczny.Controllers
@@ -88,24 +89,6 @@ namespace Projekt_Programistyczny.Controllers
             }
         }
 
-        [HttpPost]
-        [Authorize(Policy = "CustomerOnly")]
-        [Route("CreateTransmission")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<MessageDTO>> CreateTransmission([FromBody] CreateTransmissionDTO dto)
-        {
-            try
-            {
-                var transmission = await _messageService.CreateTransmissionAsync(dto);
-                return Ok(transmission);
-            }
-            catch (NotFoundException ex)
-            {
-                return NotFound(new { message = ex.Message });
-            }
-        }
-
         [HttpPut]
         [Authorize]
         [Route("UpdateMessage")]
@@ -116,24 +99,6 @@ namespace Projekt_Programistyczny.Controllers
             try
             {
                 var message = await _messageService.UpdateMessageAsync(dto);
-                return Ok(message);
-            }
-            catch (NotFoundException ex)
-            {
-                return NotFound(new { message = ex.Message });
-            }
-        }
-
-        [HttpPut]
-        [Authorize]
-        [Route("UpdateTransmission")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<MessageDTO>> UpdateTransmission([FromBody] UpdateTransmissionDTO dto)
-        {
-            try
-            {
-                var message = await _messageService.UpdateTransmissionAsync(dto);
                 return Ok(message);
             }
             catch (NotFoundException ex)
@@ -157,6 +122,40 @@ namespace Projekt_Programistyczny.Controllers
             catch (NotFoundException ex)
             {
                 return NotFound(new { message = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        [Authorize]
+        [Route("ChangeMessagesStatus")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<MessageDTO>> ChangeMessagesStatus([FromBody] List<long> messageIds, [FromQuery] bool IsRead)
+        {
+            if(await _messageService.ChangeMessagesStatus(messageIds, HttpContext.User.GetUserId(), IsRead))
+            {
+                return Ok();
+            }
+            else
+            {
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpDelete]
+        [Authorize]
+        [Route("DeleteMessages")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<MessageDTO>> DeleteMessages([FromBody] List<long> messageIds)
+        {
+            if (await _messageService.DeleteMessages(messageIds, HttpContext.User.GetUserId()))
+            {
+                return Ok();
+            }
+            else
+            {
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
     }
