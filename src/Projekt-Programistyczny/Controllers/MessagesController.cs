@@ -130,11 +130,11 @@ namespace Projekt_Programistyczny.Controllers
         [Route("ChangeMessagesStatus")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<MessageDTO>> ChangeMessagesStatus([FromBody] List<long> messageIds, [FromQuery] bool IsRead)
+        public async Task<ActionResult<bool>> ChangeMessagesStatus([FromBody] List<long> messageIds, [FromQuery] bool IsRead)
         {
             if(await _messageService.ChangeMessagesStatus(messageIds, HttpContext.User.GetUserId(), IsRead))
             {
-                return Ok();
+                return Ok(true);
             }
             else
             {
@@ -147,11 +147,28 @@ namespace Projekt_Programistyczny.Controllers
         [Route("DeleteMessages")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<MessageDTO>> DeleteMessages([FromBody] List<long> messageIds)
+        public async Task<ActionResult<bool>> DeleteMessages([FromBody] List<long> messageIds)
         {
             if (await _messageService.DeleteMessages(messageIds, HttpContext.User.GetUserId()))
             {
-                return Ok();
+                return Ok(true);
+            }
+            else
+            {
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpPut]
+        [Authorize]
+        [Route("TakeMessagesFromTrash")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<bool>> TakeMessagesFromTrash([FromBody] List<long> messageIds)
+        {
+            if (await _messageService.TakeMessagesFromTrash(messageIds, HttpContext.User.GetUserId()))
+            {
+                return Ok(true);
             }
             else
             {

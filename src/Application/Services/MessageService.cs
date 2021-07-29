@@ -288,5 +288,37 @@ namespace Application.Services
 
             return message.Transmissions.Where(t => t.MailboxOwner.Id == userId).FirstOrDefault();
         }
+
+        public async Task<bool> TakeMessagesFromTrash(List<long> messageIds, long userId)
+        {
+            MessageTransmission transmission;
+
+            try
+            {
+                foreach (var id in messageIds)
+                {
+                    transmission = await GetMessageTransmissionAsyncByMessageAndUser(id, userId);
+                    if(transmission.MailboxType == MailboxType.Trash)
+                    {
+                        if (transmission.Message.Sender.Id == userId)
+                        {
+                            transmission.MailboxType = MailboxType.Sent;
+                        }
+                        else
+                        {
+                            transmission.MailboxType = MailboxType.Inbox;
+                        }
+                    }
+                }
+
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+            return true;
+        }
     }
 }

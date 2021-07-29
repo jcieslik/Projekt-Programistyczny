@@ -20,5 +20,6 @@ namespace Application.Common.Interfaces.DataServiceInterfaces
         Task<bool> ChangeMessagesStatus(List<long> messageIds, long userId, bool isRead);
         Task<bool> DeleteMessages(List<long> messageIds, long userId);
         Task<long> GetNumberOfUnreadMessages(long userId);
+        Task<bool> TakeMessagesFromTrash(List<long> messageIds, long userId);
     }
 }
