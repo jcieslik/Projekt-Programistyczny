@@ -58,11 +58,11 @@ namespace Projekt_Programistyczny.Controllers
         [Route("GetMessagesFromUser")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<PaginatedList<MessageDTO>>> GetPaginatedMessagesFromUser([FromBody] PaginationProperties properties, [FromQuery] MailboxType mailboxType)
+        public async Task<ActionResult<PaginatedList<MessageDTO>>> GetPaginatedMessagesFromUser([FromBody] PaginationProperties properties, [FromQuery] MailboxType mailboxType, [FromQuery] string searchText)
         {
             try
             {
-                var messages = await _messageService.GetPaginatedMessagesFromUserAsync(HttpContext.User.GetUserId(), mailboxType, properties);
+                var messages = await _messageService.GetPaginatedMessagesFromUserAsync(HttpContext.User.GetUserId(), mailboxType, properties, searchText);
                 return Ok(messages);
             }
             catch(NotFoundException ex)

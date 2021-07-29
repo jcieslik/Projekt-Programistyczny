@@ -14,7 +14,7 @@ namespace Application.Common.Interfaces.DataServiceInterfaces
         Task<BaseMessageDTO> CreateMessageAsync(CreateMessageDTO dto);
         Task<MessageDTO> CreateTransmissionAsync(CreateTransmissionDTO dto);
         Task<MessageDTO> GetMessageTransmissionByIdAsync(long id);
-        Task<PaginatedList<MessageDTO>> GetPaginatedMessagesFromUserAsync(long userId, MailboxType mailboxType, PaginationProperties properties);
+        Task<PaginatedList<MessageDTO>> GetPaginatedMessagesFromUserAsync(long userId, MailboxType mailboxType, PaginationProperties properties, string searchText);
         Task<BaseMessageDTO> UpdateMessageAsync(UpdateMessageDTO dto);
         Task<MessageDTO> UpdateTransmissionAsync(UpdateTransmissionDTO dto);
         Task<bool> ChangeMessagesStatus(List<long> messageIds, long userId, bool isRead);

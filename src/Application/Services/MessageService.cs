@@ -37,13 +37,37 @@ namespace Application.Services
                         .SingleOrDefaultAsync(x => x.Id == id)
                     );
 
-        public async Task<PaginatedList<MessageDTO>> GetPaginatedMessagesFromUserAsync(long userId, MailboxType mailboxType, PaginationProperties properties)
+        public async Task<PaginatedList<MessageDTO>> GetPaginatedMessagesFromUserAsync(long userId, MailboxType mailboxType, PaginationProperties properties, string searchText)
         {
             var messages = _context.MessageTransmissions
                 .Include(m => m.MailboxOwner)
                 .Include(m => m.Message)
+                .ThenInclude(m => m.Sender)
+                .Include(m => m.Message)
+                .ThenInclude(m => m.Recipients)
+                .ThenInclude(m => m.Recipient)
                 .AsNoTracking()
                 .Where(x => x.MailboxOwner.Id == userId && x.MailboxType == mailboxType && !x.IsHidden);
+
+
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                switch (mailboxType)
+                {
+                    case MailboxType.Inbox:
+                        messages = messages.Where(m => m.Message.Topic.Contains(searchText) || m.Message.SendDate.ToString().Contains(searchText)
+                            || m.Message.Sender.Username.Contains(searchText));
+                        break;
+                    case MailboxType.Sent:
+                        messages = messages.Where(m => m.Message.Topic.Contains(searchText) || m.Message.SendDate.ToString().Contains(searchText)
+                            || m.Message.Recipients.Select(r => r.Recipient.Username).Contains(searchText));
+                        break;
+                    case MailboxType.Trash:
+                        messages = messages.Where(m => m.Message.Topic.Contains(searchText) || m.Message.SendDate.ToString().Contains(searchText)
+                            || m.Message.Sender.Username.Contains(searchText));
+                        break;
+                }
+            }
 
             messages = properties.OrderBy switch
             {
