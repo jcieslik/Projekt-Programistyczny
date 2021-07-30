@@ -1,4 +1,5 @@
 ﻿using Application.DAL.DTO.CommandDTOs.AddOrRemove;
+using Domain.Enums;
 using System;
 using System.Collections.Generic;
 
@@ -15,9 +16,9 @@ namespace Application.DAL.DTO.CommandDTOs.Create
         public long SellerId { get; set; }
         public string City { get; set; }
         public long ProvinceId { get; set; }
-        public int ProductState { get; set; }
-        public int State { get; set; }
-        public int OfferType { get; set; }
+        public ProductState ProductState { get; set; }
+        public OfferState State { get; set; }
+        public OfferType OfferType { get; set; }
         public long CategoryId { get; set; }
         public string Brand { get; set; }
         public IEnumerable<ProductImageDTO> Images { get; set; }
