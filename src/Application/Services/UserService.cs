@@ -160,6 +160,11 @@ namespace Application.Services
                 user.PostCode = dto.PostCode;
             }
 
+            if (!string.IsNullOrEmpty(dto.BankAccountNumber))
+            {
+                user.BankAccountNumber = dto.BankAccountNumber;
+            }
+
             if (dto.IsActive.HasValue)
             {
                 user.IsActive = dto.IsActive.Value;
