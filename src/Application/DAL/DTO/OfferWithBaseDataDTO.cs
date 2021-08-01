@@ -17,6 +17,7 @@ namespace Application.DAL.DTO
         public ProductState ProductState { get; set; }
         public ProductImageDTO Image { get; set; }
         public BidDTO BestBid { get; set; }
+        public double? MinimalBid { get; set; }
 
         public void Mapping(Profile profile)
         {

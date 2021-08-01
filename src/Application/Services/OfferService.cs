@@ -109,10 +109,18 @@ namespace Application.Services
                 offers = offers.Where(x => ids.Contains(x.Category.Id));
             }
             
-            offers = offers.Where(x => x.OfferType == (OfferType)filterModel.OfferType
-                    && x.ProductState == (ProductState)filterModel.ProductState
-                    && x.State == (OfferState)filterModel.OfferState
-                    );
+            if (filterModel.OfferType.HasValue)
+            {
+                offers = offers.Where(x => x.OfferType == filterModel.OfferType);
+            }
+            if (filterModel.ProductState.HasValue)
+            {
+                offers = offers.Where(x => x.ProductState == filterModel.ProductState);
+            }
+            if (filterModel.OfferState.HasValue)
+            {
+                offers = offers.Where(x => x.State == filterModel.OfferState);
+            }
             if (filterModel.Brands.Count > 0)
             {
                 offers = offers.Where(x => filterModel.Brands.Contains(x.Brand));
@@ -184,9 +192,9 @@ namespace Application.Services
                 Description = dto.Description,
                 StartDate = dto.StartDate,
                 ProductCount = dto.ProductCount,
-                State = (OfferState)dto.State,
-                OfferType = (OfferType)dto.OfferType,
-                ProductState = (ProductState)dto.ProductState,
+                State = dto.State,
+                OfferType = dto.OfferType,
+                ProductState = dto.ProductState,
                 PriceForOneProduct = dto.PriceForOneProduct,
                 EndDate = dto.EndDate,
                 IsHidden = false,
@@ -194,7 +202,8 @@ namespace Application.Services
                 City = dto.City,
                 Brand = dto.Brand,
                 Category = category,
-                Province = province
+                Province = province,
+                MinimalBid = dto.MinimalBid
             };
 
             _context.Offers.Add(entity);

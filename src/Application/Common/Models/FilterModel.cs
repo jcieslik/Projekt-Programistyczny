@@ -1,4 +1,4 @@
-﻿using System;
+﻿using Domain.Enums;
 using System.Collections.Generic;
 
 namespace Application.Common.Models
@@ -13,8 +13,8 @@ namespace Application.Common.Models
         public ICollection<long> ProvincesIds { get; set; }
         public ICollection<string> Brands { get; set; }
         public long? CategoryId { get; set; }
-        public int OfferType { get; set; }
-        public int ProductState { get; set; }
-        public int OfferState { get; set; }
+        public OfferType? OfferType { get; set; }
+        public ProductState? ProductState { get; set; }
+        public OfferState? OfferState { get; set; }
     }
 }

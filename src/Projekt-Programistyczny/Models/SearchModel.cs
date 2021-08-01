@@ -1,4 +1,4 @@
-﻿using System;
+﻿using Domain.Enums;
 using System.Collections.Generic;
 
 namespace Projekt_Programistyczny.Models
@@ -12,9 +12,9 @@ namespace Projekt_Programistyczny.Models
         public ICollection<long> ProvincesIds { get; set; }
         public ICollection<string> Brands { get; set; }
         public long? CategoryId { get; set; }
-        public int OfferType { get; set; }
-        public int ProductState { get; set; }
-        public int OfferState { get; set; }
+        public OfferType? OfferType { get; set; }
+        public ProductState? ProductState { get; set; }
+        public OfferState? OfferState { get; set; }
         public int PageIndex { get; set; }
         public int PageSize { get; set; }
         public string OrderBy { get; set; }
