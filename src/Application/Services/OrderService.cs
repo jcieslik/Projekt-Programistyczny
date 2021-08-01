@@ -70,15 +70,14 @@ namespace Application.Services
             var user = await _context.Users.FindAsync(dto.CustomerId);
             var offerWithDelivery = await _context.OffersAndDeliveryMethods
                 .Include(x => x.Offer)
-                .SingleOrDefaultAsync(x => x.Id == dto.OfferAndDeliveryId);
-
+                .SingleOrDefaultAsync(x => x.Id == dto.OfferWithDeliveryId);
             if (user == null)
             {
                 throw new NotFoundException(nameof(User), dto.CustomerId);
             }
             if (offerWithDelivery == null)
             {
-                throw new NotFoundException(nameof(OfferAndDeliveryMethod), dto.OfferAndDeliveryId);
+                throw new NotFoundException(nameof(OfferAndDeliveryMethod), dto.OfferWithDeliveryId);
             }
 
             var entity = new Order

@@ -6,7 +6,7 @@ namespace Application.DAL.DTO.CommandDTOs.Create
     public class CreateOrderDTO
     {
         public long CustomerId { get; set; }
-        public long OfferAndDeliveryId { get; set; }
+        public long OfferWithDeliveryId { get; set; }
         public OrderStatus OrderStatus { get; set; }
         public DateTime? PaymentDate { get; set; }
         public int ProductCount { get; set; }
