@@ -14,7 +14,7 @@ namespace Application.Common.Interfaces.DataServiceInterfaces
         Task DeleteDeliveryMethodAsync(long id);
         Task<DeliveryDTO> GetDeliveryMethodByIdAsync(long id);
         Task<IEnumerable<DeliveryDTO>> GetDeliveryMethodsAsync();
-        Task<IEnumerable<DeliveryDTO>> GetDeliveryMethodsFromOfferAsync(long offerId);
+        Task<IEnumerable<OfferDeliveryDTO>> GetDeliveryMethodsFromOfferAsync(long offerId);
         Task RemoveOfferAndDeliveryMethodRelation(long offerId, long deliveryMethodId);
         Task<DeliveryDTO> UpdateDeliveryMethod(UpdateDeliveryMethodDTO dto);
     }

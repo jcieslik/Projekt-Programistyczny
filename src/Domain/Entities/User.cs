@@ -45,6 +45,7 @@ namespace Domain.Entities
         public ICollection<Comment> Comments { get; set; }
         public ICollection<Bid> Bids { get; set; }
         public ICollection<MessageTransmission> Messages { get; set; }
+        public ICollection<MessageUser> MessagesReceived { get; set; }
         public ICollection<Wish> Wishes { get; set; }
         public Cart Cart { get; set; }
 

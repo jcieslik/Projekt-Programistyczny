@@ -139,7 +139,7 @@ namespace Application.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<DeliveryDTO>> GetDeliveryMethodsFromOfferAsync(long offerId)
+        public async Task<IEnumerable<OfferDeliveryDTO>> GetDeliveryMethodsFromOfferAsync(long offerId)
         {
             var offer = await _context.Offers.FindAsync(offerId);
             if (offer == null)
@@ -147,12 +147,13 @@ namespace Application.Services
                 throw new NotFoundException(nameof(Offer), offerId);
             }
 
-            return await _context.OffersAndDeliveryMethods
+            var offerDeliveries = _context.OffersAndDeliveryMethods
                 .Include(x => x.Offer)
                 .Include(x => x.DeliveryMethod)
                 .Where(x => x.Offer.Id == offerId)
-                .Select(x => new DeliveryDTO { Id = x.DeliveryMethod.Id, Name = x.DeliveryMethod.Name, Price = x.DeliveryFullPrice})
-                .ToListAsync();
+                .AsNoTracking();
+
+            return await offerDeliveries.ProjectTo<OfferDeliveryDTO>(_mapper.ConfigurationProvider).ToListAsync();
         }
     }
 }

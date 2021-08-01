@@ -15,5 +15,6 @@ namespace Application.DAL.DTO.CommandDTOs.Update
         public string Street { get; set; }
         public string PostCode { get; set; }
         public bool? IsActive { get; set; }
+        public string BankAccountNumber { get; set; }
     }
 }

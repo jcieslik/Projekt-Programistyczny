@@ -94,8 +94,10 @@ namespace Projekt_Programistyczny
 
             services.AddSingleton<IUserConfig, UserConfig>(options =>
             {
-                UserConfig opt = new UserConfig();
-                opt.StripeSecret = Configuration.GetValue<string>("secret");
+                UserConfig opt = new()
+                {
+                    StripeSecret = Configuration.GetValue<string>("secret")
+                };
 
                 return opt;
             });

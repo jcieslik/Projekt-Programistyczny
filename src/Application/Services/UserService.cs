@@ -6,10 +6,11 @@ using Application.DAL.DTO;
 using Application.DAL.DTO.CommandDTOs.Create;
 using Application.DAL.DTO.CommandDTOs.Update;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Domain.Entities;
 using Domain.Enums;
 using Microsoft.EntityFrameworkCore;
-using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -32,7 +33,18 @@ namespace Application.Services
             
         public async Task<UserDTO> GetUserById(long Id)
         {
-            return _mapper.Map<UserDTO>(await _context.Users.FindAsync(Id));
+            return _mapper.Map<UserDTO>(await _context.Users.Include(u => u.Province).Where(u => u.Id == Id).FirstOrDefaultAsync());
+        }
+
+
+        public async Task<IEnumerable<RecipientDTO>> GetAllUsers()
+        {
+            var users = _context.Users
+                .Where(u => u.Role == UserRole.Customer)
+                .AsNoTracking();
+
+            return await users.ProjectTo<RecipientDTO>(_mapper.ConfigurationProvider)
+                .ToListAsync();
         }
 
         public async Task<UserDTO> CreateUserAsync(CreateUserDTO dto)
@@ -101,6 +113,8 @@ namespace Application.Services
                 {
                     throw new NotFoundException(nameof(Province), dto.ProvinceId);
                 }
+
+                user.Province = province;
             }
 
             if (!string.IsNullOrEmpty(dto.Email)){
@@ -146,6 +160,11 @@ namespace Application.Services
             if (!string.IsNullOrEmpty(dto.PostCode))
             {
                 user.PostCode = dto.PostCode;
+            }
+
+            if (!string.IsNullOrEmpty(dto.BankAccountNumber))
+            {
+                user.BankAccountNumber = dto.BankAccountNumber;
             }
 
             if (dto.IsActive.HasValue)

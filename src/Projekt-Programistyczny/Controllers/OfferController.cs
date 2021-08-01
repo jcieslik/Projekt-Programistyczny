@@ -20,12 +20,10 @@ namespace Projekt_Programistyczny.Controllers
     public class OfferController : ControllerBase
     {
         private readonly IOfferService _offerService;
-        private readonly IUserService _userService;
 
-        public OfferController(IOfferService offerService, IUserService userService)
+        public OfferController(IOfferService offerService)
         {
-            _offerService = offerService;
-            _userService = userService;
+            _offerService = offerService; 
         }
 
         [HttpGet]

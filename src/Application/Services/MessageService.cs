@@ -13,6 +13,7 @@ using Domain.Entities;
 using Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -31,21 +32,42 @@ namespace Application.Services
 
         public async Task<MessageDTO> GetMessageTransmissionByIdAsync(long id)
             => _mapper.Map<MessageDTO>(
-                await _context.MessageTransmissions
-                .Include(x => x.Recipient)
-                .Include(x => x.Sender)
-                .Include(x => x.Message)
-                .SingleOrDefaultAsync(x => x.Id == id)
-                );
-        public async Task<PaginatedList<MessageDTO>> GetPaginatedMessagesFromUserAsync(long userId, MailboxType mailboxType, PaginationProperties properties)
+                    await _context.MessageTransmissions
+                        .Include(x => x.Message)
+                        .SingleOrDefaultAsync(x => x.Id == id)
+                    );
+
+        public async Task<PaginatedList<MessageDTO>> GetPaginatedMessagesFromUserAsync(long userId, MailboxType mailboxType, PaginationProperties properties, string searchText)
         {
             var messages = _context.MessageTransmissions
-            .Include(m => m.Recipient)
-            .Include(m => m.Sender)
-            .Include(m => m.MailboxOwner)
-            .Include(m => m.Message)
-            .AsNoTracking()
-            .Where(x => x.MailboxOwner.Id == userId && x.MailboxType == mailboxType && !x.IsHidden);
+                .Include(m => m.MailboxOwner)
+                .Include(m => m.Message)
+                .ThenInclude(m => m.Sender)
+                .Include(m => m.Message)
+                .ThenInclude(m => m.Recipients)
+                .ThenInclude(m => m.Recipient)
+                .AsNoTracking()
+                .Where(x => x.MailboxOwner.Id == userId && x.MailboxType == mailboxType && !x.IsHidden);
+
+
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                switch (mailboxType)
+                {
+                    case MailboxType.Inbox:
+                        messages = messages.Where(m => m.Message.Topic.Contains(searchText) || m.Message.SendDate.ToString().Contains(searchText)
+                            || m.Message.Sender.Username.Contains(searchText));
+                        break;
+                    case MailboxType.Sent:
+                        messages = messages.Where(m => m.Message.Topic.Contains(searchText) || m.Message.SendDate.ToString().Contains(searchText)
+                            || m.Message.Recipients.Select(r => r.Recipient.Username).Contains(searchText));
+                        break;
+                    case MailboxType.Trash:
+                        messages = messages.Where(m => m.Message.Topic.Contains(searchText) || m.Message.SendDate.ToString().Contains(searchText)
+                            || m.Message.Sender.Username.Contains(searchText));
+                        break;
+                }
+            }
 
             messages = properties.OrderBy switch
             {
@@ -60,6 +82,16 @@ namespace Application.Services
 
         public async Task<BaseMessageDTO> CreateMessageAsync(CreateMessageDTO dto)
         {
+            var sender = await _context.Users.FindAsync(dto.SenderId);
+
+            if (sender == null)
+            {
+                throw new NotFoundException(nameof(User), dto.SenderId);
+            }
+
+            var recipients = new List<MessageUser>();
+
+            var transmissionsForRecipients = new List<MessageTransmission>();
 
             var sender = await _context.Users.FindAsync(dto.SenderId);
 
@@ -70,13 +102,55 @@ namespace Application.Services
 
             var entity = new Message
             {
-                SendDate = dto.SendDate,
+
+                Sender = sender,
+                SendDate = DateTime.Now,
                 Topic = dto.Topic,
                 Content = dto.Content,
                 IsHidden = false,
             };
 
+            foreach (var id in dto.RecipientsIds)
+            {
+                var recipient = await _context.Users.FindAsync(id);
+
+                if (recipient == null)
+                {
+                    throw new NotFoundException(nameof(User), id);
+                }
+
+                recipients.Add(new MessageUser()
+                {
+                    Recipient = recipient,
+                    Message = entity,
+                });
+
+                transmissionsForRecipients.Add(new MessageTransmission()
+                {
+                    MailboxOwner = recipient,
+                    IsHidden = false,
+                    Message = entity,
+                    MailboxType = MailboxType.Inbox
+                });
+            }
+
+
+            var transmissionForSender = new MessageTransmission
+            {
+                MailboxOwner = sender,
+                IsHidden = false,
+                Message = entity,
+                MailboxType = MailboxType.Sent
+            };
+
+
             _context.Messages.Add(entity);
+
+            _context.MessageUser.AddRange(recipients);
+
+            _context.MessageTransmissions.AddRange(transmissionsForRecipients);
+
+            _context.MessageTransmissions.Add(transmissionForSender);
 
             await _context.SaveChangesAsync();
 
@@ -146,8 +220,6 @@ namespace Application.Services
             var entity = new MessageTransmission
             {
                 MailboxOwner = owner,
-                Sender = sender,
-                Recipient = recipient,
                 Message = message,
                 MailboxType = (MailboxType)dto.MailboxType,
                 IsHidden = false
@@ -194,6 +266,124 @@ namespace Application.Services
             await _context.SaveChangesAsync();
 
             return _mapper.Map<MessageDTO>(transmission);
+        }
+
+        public async Task<long> GetNumberOfUnreadMessages(long userId)
+        {
+            var user = await _context.Users.FindAsync(userId);
+
+            if (user == null)
+            {
+                throw new NotFoundException(nameof(User), userId);
+            }
+
+            return _context.MessageTransmissions
+                .Where(m => m.MailboxType == MailboxType.Inbox && m.MailboxOwner == user && m.IsRead == false)
+                .Count();
+        }
+
+        public async Task<bool> ChangeMessagesStatus(List<long> messageIds, long userId, bool isRead)
+        {
+            MessageTransmission transmission;
+
+            try
+            {
+                foreach (var id in messageIds)
+                {
+                    transmission = await GetMessageTransmissionAsyncByMessageAndUser(id, userId);
+
+                    transmission.IsRead = isRead;
+                }
+
+                await _context.SaveChangesAsync();
+            }
+            catch(Exception)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public async Task<bool> DeleteMessages(List<long> messageIds, long userId)
+        {
+            MessageTransmission transmission;
+
+            try
+            {
+                foreach (var id in messageIds)
+                {
+                    transmission = await GetMessageTransmissionAsyncByMessageAndUser(id, userId);
+                    switch (transmission.MailboxType)
+                    {
+                        case MailboxType.Inbox:
+                            transmission.MailboxType = MailboxType.Trash;
+                            break;
+                        case MailboxType.Sent:
+                            transmission.MailboxType = MailboxType.Trash;
+                            break;
+                        case MailboxType.Trash:
+                            _context.MessageTransmissions.Remove(transmission);
+                            break;
+                    }
+                }
+
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        private async Task<MessageTransmission> GetMessageTransmissionAsyncByMessageAndUser(long messageId, long userId)
+        {
+            var message = await _context.Messages
+                .Include(m => m.Transmissions)
+                .ThenInclude(m => m.MailboxOwner)
+                .Where(m => m.Id == messageId)
+                .FirstOrDefaultAsync();
+
+            if (message == null)
+            {
+                throw new NotFoundException(nameof(Message), messageId);
+            }
+
+            return message.Transmissions.Where(t => t.MailboxOwner.Id == userId).FirstOrDefault();
+        }
+
+        public async Task<bool> TakeMessagesFromTrash(List<long> messageIds, long userId)
+        {
+            MessageTransmission transmission;
+
+            try
+            {
+                foreach (var id in messageIds)
+                {
+                    transmission = await GetMessageTransmissionAsyncByMessageAndUser(id, userId);
+                    if(transmission.MailboxType == MailboxType.Trash)
+                    {
+                        if (transmission.Message.Sender.Id == userId)
+                        {
+                            transmission.MailboxType = MailboxType.Sent;
+                        }
+                        else
+                        {
+                            transmission.MailboxType = MailboxType.Inbox;
+                        }
+                    }
+                }
+
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }

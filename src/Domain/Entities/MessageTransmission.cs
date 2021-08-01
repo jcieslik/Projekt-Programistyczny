@@ -7,10 +7,9 @@ namespace Domain.Entities
     public class MessageTransmission : AuditableAndAbleToBeHiddenEntity
     {
         public User MailboxOwner { get; set; }
-        public User Sender { get; set; }
-        public User Recipient { get; set; }
         public Message Message { get; set; }
         [Required]
         public MailboxType MailboxType { get; set; }
+        public bool IsRead { get; set; }
     }
 }
