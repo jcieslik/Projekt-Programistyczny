@@ -21,6 +21,7 @@ namespace Application.DAL.DTO.CommandDTOs.Create
         public OfferType OfferType { get; set; }
         public long CategoryId { get; set; }
         public string Brand { get; set; }
+        public double MinimalBid { get; set; }
         public IEnumerable<ProductImageDTO> Images { get; set; }
         public IEnumerable<AddDeliveryMethodWihOfferRelationDTO> DeliveryMethods { get; set; }
     }
