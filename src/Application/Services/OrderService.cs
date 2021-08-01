@@ -71,6 +71,7 @@ namespace Application.Services
             var offerWithDelivery = await _context.OffersAndDeliveryMethods
                 .Include(x => x.Offer)
                 .SingleOrDefaultAsync(x => x.Id == dto.OfferAndDeliveryId);
+
             if (user == null)
             {
                 throw new NotFoundException(nameof(User), dto.CustomerId);
@@ -82,10 +83,11 @@ namespace Application.Services
 
             var entity = new Order
             {
-                OrderStatus = (OrderStatus)dto.OrderStatus,
+                OrderStatus = dto.OrderStatus,
                 Customer = user,
                 OfferWithDelivery = offerWithDelivery,
                 PaymentDate = dto.PaymentDate,
+                ProductCount = dto.ProductCount,
                 DestinationStreet = dto.DestinationStreet,
                 DestinationCity = dto.DestinationCity,
                 DestinationPostCode = dto.DestinationPostCode
@@ -93,7 +95,7 @@ namespace Application.Services
 
             _context.Orders.Add(entity);
 
-            offerWithDelivery.Offer.ProductCount -= 1;
+            offerWithDelivery.Offer.ProductCount -= dto.ProductCount;
 
             await _context.SaveChangesAsync();
 
