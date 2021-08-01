@@ -93,16 +93,8 @@ namespace Application.Services
 
             var transmissionsForRecipients = new List<MessageTransmission>();
 
-            var sender = await _context.Users.FindAsync(dto.SenderId);
-
-            if(sender == null)
-            {
-                throw new NotFoundException(nameof(User), dto.SenderId);
-            }
-
             var entity = new Message
             {
-
                 Sender = sender,
                 SendDate = DateTime.Now,
                 Topic = dto.Topic,
@@ -153,40 +145,6 @@ namespace Application.Services
             _context.MessageTransmissions.Add(transmissionForSender);
 
             await _context.SaveChangesAsync();
-
-            foreach(var id in dto.RecipientsIds)
-            {
-                var recipient = await _context.Users.FindAsync(id);
-
-                if (recipient == null)
-                {
-                    throw new NotFoundException(nameof(User), id);
-                }
-
-                var transmissionForCostumer = new MessageTransmission
-                {
-                    Sender = sender,
-                    Recipient = recipient,
-                    MailboxOwner = recipient,
-                    IsHidden = false,
-                    Message = entity,
-                    MailboxType = MailboxType.Inbox
-                };
-
-                var transmissionForSender = new MessageTransmission
-                {
-                    Sender = sender,
-                    Recipient = recipient,
-                    MailboxOwner = sender,
-                    IsHidden = false,
-                    Message = entity,
-                    MailboxType = MailboxType.Sent
-                };
-
-                _context.MessageTransmissions.AddRange(transmissionForCostumer, transmissionForSender);
-
-                await _context.SaveChangesAsync();
-            }
 
             return _mapper.Map<BaseMessageDTO>(entity);
         }
