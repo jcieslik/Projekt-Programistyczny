@@ -33,7 +33,7 @@ namespace Application.Services
             
         public async Task<UserDTO> GetUserById(long Id)
         {
-            return _mapper.Map<UserDTO>(await _context.Users.FindAsync(Id));
+            return _mapper.Map<UserDTO>(await _context.Users.Include(u => u.Province).Where(u => u.Id == Id).FirstOrDefaultAsync());
         }
 
 
@@ -113,6 +113,8 @@ namespace Application.Services
                 {
                     throw new NotFoundException(nameof(Province), dto.ProvinceId);
                 }
+
+                user.Province = province;
             }
 
             if (!string.IsNullOrEmpty(dto.Email)){
