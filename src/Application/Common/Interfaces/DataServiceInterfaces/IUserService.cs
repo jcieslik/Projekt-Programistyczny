@@ -1,4 +1,5 @@
-﻿using Application.DAL.DTO;
+﻿using Application.Common.Models;
+using Application.DAL.DTO;
 using Application.DAL.DTO.CommandDTOs.Create;
 using Application.DAL.DTO.CommandDTOs.Update;
 using System;
@@ -14,5 +15,6 @@ namespace Application.Common.Interfaces.DataServiceInterfaces
         Task<IEnumerable<RecipientDTO>> GetAllUsers();
         Task<UserDTO> CreateUserAsync(CreateUserDTO dto);
         Task<UserDTO> UpdateUserAsync(UpdateUserDTO dto);
+        Task<PaginatedList<UserDTO>> GetPaginatedUsers(PaginationProperties properties, bool onlyActive = false);
     }
 }

@@ -17,5 +17,6 @@ namespace Application.Common.Interfaces.DataServiceInterfaces
         Task<PaginatedList<OfferWithBaseDataDTO>> GetPaginatedOffersAsync(FilterModel filterModel, PaginationProperties paginationProperties);
         Task<OfferDTO> UpdateOfferAsync(UpdateOfferDTO dto);
         Task ChangeStatusOfOffersAfterEndDate();
+        Task<PaginatedList<OfferWithBaseDataDTO>> GetUserAciveBidOffers(long userId, PaginationProperties paginationProperties);
     }
 }

@@ -117,6 +117,24 @@ namespace Projekt_Programistyczny.Controllers
             }
         }
 
+        [HttpPut]
+        [Authorize]
+        [Route("UpdateDeliveryMethodRelation")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<OfferDeliveryDTO>> UpdateOfferAndDeliveryMethodRelation(UpdateDeliveryMethodWihOfferRelationDTO dto)
+        {
+            try
+            {
+                var result = _deliveryService.UpdateOfferAndDeliveryMethodRelation(dto);
+                return Ok(result);
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+        }
+
         [HttpDelete]
         [Authorize(Policy = "AdminOnly")]
         [Route("DeleteDeliveryMethod/{id}")]
