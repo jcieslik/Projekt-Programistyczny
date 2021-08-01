@@ -99,7 +99,12 @@ namespace Application.Services
                 .Include(x => x.Category)
                 .Include(x => x.Province)
                 .AsNoTracking()
-                .Where(x => !x.IsHidden && x.State == OfferState.Awaiting);
+                .Where(
+                x => !x.IsHidden && 
+                x.State == OfferState.Awaiting && 
+                DateTime.Compare(x.StartDate, DateTime.Now) <= 0 &&
+                DateTime.Compare(x.EndDate, DateTime.Now) >= 0
+                );
 
             if (filterModel.CategoryId.HasValue)
             {
@@ -339,6 +344,30 @@ namespace Application.Services
                 if(offer.OfferType == OfferType.Auction && offer.Bids.Count > 0)
                 {
                     offer.State = OfferState.Finished;
+                    var bid = _context.Bids
+                        .Include(x => x.Bidder)
+                        .Include(x => x.Value)
+                        .Where(X => X.Offer.Id == offer.Id).OrderByDescending(x => x.Value).FirstOrDefault();
+
+                    var offerWithNullDelivery = new OfferAndDeliveryMethod
+                    {
+                        Offer = offer
+                    };
+
+                    _context.OffersAndDeliveryMethods.Add(offerWithNullDelivery);
+
+                    //Jak będzie rzucać błąd przy tworzeniu order-a to odkomentujcie zapis, jak nie to się radujemy i usuwamy te linie
+                    //await _context.SaveChangesAsync();
+
+                    var order = new Order
+                    {
+                        OrderStatus = OrderStatus.AwaitingForPayment,
+                        Customer = bid.Bidder,
+                        OfferWithDelivery = offerWithNullDelivery,
+                    };
+
+                    _context.Orders.Add(order);
+
                 }
                 else
                 {
@@ -347,6 +376,27 @@ namespace Application.Services
             }
 
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<PaginatedList<OfferWithBaseDataDTO>> GetUserAciveBidOffers(long userId, PaginationProperties paginationProperties)
+        {
+            var offers = _context.Bids
+                .Include(x => x.Bidder)
+                .Include(x => x.Offer).ThenInclude(x => x.Images)
+                .Where(x => x.Bidder.Id == userId && x.Offer.State == OfferState.Awaiting && x.Offer.IsHidden == false);
+            offers = paginationProperties.OrderBy switch
+            {
+                "price_asc" => offers.OrderBy(x => x.Offer.PriceForOneProduct),
+                "price_desc" => offers.OrderByDescending(x => x.Offer.PriceForOneProduct),
+                "end_date_asc" => offers.OrderBy(x => x.Offer.EndDate),
+                "end_date_desc" => offers.OrderByDescending(x => x.Offer.EndDate),
+                "creation_asc" => offers.OrderBy(x => x.Offer.Created),
+                "creation_desc" => offers.OrderByDescending(x => x.Offer.Created),
+                _ => offers.OrderBy(x => x.Created)
+            };
+
+            return await offers.ProjectTo<OfferWithBaseDataDTO>(_mapper.ConfigurationProvider)
+                .PaginatedListAsync<OfferWithBaseDataDTO>(paginationProperties.PageIndex, paginationProperties.PageSize);
         }
     }
 }

@@ -28,19 +28,26 @@ namespace Application.Services
             var user = await _context.Users
                 .Include(e => e.Cart)
                 .AsNoTracking()
-                .Where(e => e.Id == userId).FirstOrDefaultAsync(); // ZROBIC INCLUDE TEGO JEBANEGO CARTA I DO NIEGO INCLUDE OFERT
+                .Where(e => e.Id == userId).FirstOrDefaultAsync();
 
-            return await _context.CartOffer
+
+
+            var offers = _context.CartOffer
                 .Include(x => x.Offer).ThenInclude(x => x.Images)
                 .Include(x => x.Cart)
-                .Where(x => x.Cart.Id == user.Cart.Id)
-                .ProjectTo<CartOfferDTO>(_mapper.ConfigurationProvider)
-                .ToListAsync();
+                .Where(x => x.Cart.Id == user.Cart.Id);
+
+            var notActiveOffers = offers.Where(x => x.Offer.State != Domain.Enums.OfferState.Awaiting);
+            var result = offers.Where(x => x.Offer.State != Domain.Enums.OfferState.Awaiting);
+            _context.CartOffer.RemoveRange(notActiveOffers);
+            await _context.SaveChangesAsync();
+
+            return await result.ProjectTo<CartOfferDTO>(_mapper.ConfigurationProvider).ToListAsync();
         }
 
         public async Task<Cart> GetCartByUser(long userId)
         {
-            var user = await _context.Users.Include(e => e.Cart).AsNoTracking().Where(e => e.Id == userId).FirstOrDefaultAsync(); // ZROBIC INCLUDE TEGO JEBANEGO CARTA I DO NIEGO INCLUDE OFERT
+            var user = await _context.Users.Include(e => e.Cart).AsNoTracking().Where(e => e.Id == userId).FirstOrDefaultAsync();
 
             if (user.Cart == null)
             {
@@ -54,7 +61,7 @@ namespace Application.Services
         {
             var offer = await _context.Offers.FindAsync(offerId);
             var user = await _context.Users.Include(e => e.Cart).AsNoTracking().Where(e => e.Id == userId).FirstOrDefaultAsync();
-            var cart = await _context.Carts.FindAsync(user.Cart.Id); // await GetCartByUser(userId);//
+            var cart = await _context.Carts.FindAsync(user.Cart.Id);
             if (offer == null)
             {
                 throw new NotFoundException(nameof(Offer), offerId);

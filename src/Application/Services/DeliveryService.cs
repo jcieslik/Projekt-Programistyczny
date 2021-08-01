@@ -121,6 +121,29 @@ namespace Application.Services
             await _context.SaveChangesAsync();
         }
 
+        public async Task UpdateOfferAndDeliveryMethodRelation(UpdateDeliveryMethodWihOfferRelationDTO dto)
+        {
+            var relation = await _context.OffersAndDeliveryMethods.FindAsync(dto.Id);
+            if (relation == null)
+            {
+                throw new NotFoundException(nameof(OfferAndDeliveryMethod), dto.Id);
+            }
+            if (dto.OfferId.HasValue)
+            {
+                var offer = await _context.Offers.FindAsync(dto.OfferId.Value);
+                relation.Offer = offer ?? throw new NotFoundException(nameof(Offer), dto.OfferId.Value);
+            }
+            var method = await _context.DeliveryMethods.FindAsync(dto.DeliveryMethodId);
+            relation.DeliveryMethod = method ?? throw new NotFoundException(nameof(DeliveryMethod), dto.DeliveryMethodId);
+
+            if (dto.FullPrice.HasValue)
+            {
+                relation.DeliveryFullPrice = dto.FullPrice.Value;
+            }
+
+            await _context.SaveChangesAsync();
+        }
+
         public async Task RemoveOfferAndDeliveryMethodRelation(long offerId, long deliveryMethodId)
         {
             var relation = await _context.OffersAndDeliveryMethods

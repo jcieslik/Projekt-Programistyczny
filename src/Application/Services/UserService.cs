@@ -1,6 +1,8 @@
 ﻿using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using Application.Common.Interfaces.DataServiceInterfaces;
+using Application.Common.Mappings;
+using Application.Common.Models;
 using Application.Common.Services;
 using Application.DAL.DTO;
 using Application.DAL.DTO.CommandDTOs.Create;
@@ -45,6 +47,24 @@ namespace Application.Services
 
             return await users.ProjectTo<RecipientDTO>(_mapper.ConfigurationProvider)
                 .ToListAsync();
+        }
+
+        public async Task<PaginatedList<UserDTO>> GetPaginatedUsers(PaginationProperties properties, bool onlyActive = false)
+        {
+            var users = _context.Users.AsNoTracking();
+
+            users = onlyActive ? users.Where(x => x.IsActive) : users;
+
+            users = properties.OrderBy switch
+            {
+                "id" => users.OrderBy(x => x.Id),
+                "username" => users.OrderBy(x => x.Username),
+                "name" => users.OrderBy(x => x.Surname).ThenBy(x => x.Name),
+                _ => users.OrderBy(x => x.Id)
+            };
+
+            return await users.ProjectTo<UserDTO>(_mapper.ConfigurationProvider)
+                .PaginatedListAsync<UserDTO>(properties.PageIndex, properties.PageSize);
         }
 
         public async Task<UserDTO> CreateUserAsync(CreateUserDTO dto)
@@ -109,12 +129,7 @@ namespace Application.Services
             if (dto.ProvinceId.HasValue)
             {
                 var province = await _context.Provinces.FindAsync(dto.ProvinceId);
-                if (province == null)
-                {
-                    throw new NotFoundException(nameof(Province), dto.ProvinceId);
-                }
-
-                user.Province = province;
+                user.Province = province ?? throw new NotFoundException(nameof(Province), dto.ProvinceId);
             }
 
             if (!string.IsNullOrEmpty(dto.Email)){
