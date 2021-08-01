@@ -121,7 +121,7 @@ namespace Application.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateOfferAndDeliveryMethodRelation(UpdateDeliveryMethodWihOfferRelationDTO dto)
+        public async Task<OfferDeliveryDTO> UpdateOfferAndDeliveryMethodRelation(UpdateDeliveryMethodWihOfferRelationDTO dto)
         {
             var relation = await _context.OffersAndDeliveryMethods.FindAsync(dto.Id);
             if (relation == null)
@@ -142,6 +142,8 @@ namespace Application.Services
             }
 
             await _context.SaveChangesAsync();
+
+            return _mapper.Map<OfferDeliveryDTO>(relation);
         }
 
         public async Task RemoveOfferAndDeliveryMethodRelation(long offerId, long deliveryMethodId)

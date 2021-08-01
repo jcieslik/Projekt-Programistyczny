@@ -129,6 +129,24 @@ namespace Projekt_Programistyczny.Controllers
             }
         }
 
+        [HttpPost]
+        [Authorize(Policy = "CustomerOnly")]
+        [Route("GetUserAciveBidOffers")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<PaginatedList<OfferWithBaseDataDTO>>> GetUserAciveBidOffers([FromQuery] long userId, [FromQuery] PaginationProperties paginationProperties)
+        {
+            try
+            {
+                var result = _offerService.GetUserAciveBidOffers(userId, paginationProperties);
+                return Ok(result);
+            }
+            catch(NotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+        }
+
         [HttpPut]
         [Authorize]
         [Route("UpdateOffer")]

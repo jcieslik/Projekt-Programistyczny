@@ -14,6 +14,9 @@ namespace Application.DAL.DTO
         public OrderStatus OrderStatus { get; set; }
         public DateTime? PaymentDate { get; set; }
         public int ProductCount { get; set; }
+        public string DestinationCity { get; set; }
+        public string DestinationStreet { get; set; }
+        public string DestinationPostCode { get; set; }
 
         public void Mapping(Profile profile)
         {

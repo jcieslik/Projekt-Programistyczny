@@ -85,7 +85,10 @@ namespace Application.Services
                 OrderStatus = (OrderStatus)dto.OrderStatus,
                 Customer = user,
                 OfferWithDelivery = offerWithDelivery,
-                PaymentDate = dto.PaymentDate
+                PaymentDate = dto.PaymentDate,
+                DestinationStreet = dto.DestinationStreet,
+                DestinationCity = dto.DestinationCity,
+                DestinationPostCode = dto.DestinationPostCode
             };
 
             _context.Orders.Add(entity);
@@ -113,6 +116,19 @@ namespace Application.Services
                 {
                     order.OfferWithDelivery.Offer.ProductCount += 1;
                 }
+            }
+
+            if (!string.IsNullOrEmpty(dto.DestinationCity))
+            {
+                order.DestinationCity = dto.DestinationCity;
+            }
+            if (!string.IsNullOrEmpty(dto.DestinationStreet))
+            {
+                order.DestinationStreet = dto.DestinationStreet;
+            }
+            if (!string.IsNullOrEmpty(dto.DestinationPostCode))
+            {
+                order.DestinationPostCode = dto.DestinationPostCode;
             }
 
             if (dto.PaymentDate.HasValue)
