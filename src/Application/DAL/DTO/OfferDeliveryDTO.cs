@@ -2,16 +2,12 @@
 using Application.Common.Mappings;
 using AutoMapper;
 using Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.DAL.DTO
 {
     public class OfferDeliveryDTO : EntityDTO, IMapFrom<OfferAndDeliveryMethod>
     {
+        public long DeliveryMethodId { get; set; }
         public long OfferId { get; set; }
         public double DeliveryFullPrice { get; set; }
         public string DeliveryMethodName { get; set; }
@@ -19,6 +15,7 @@ namespace Application.DAL.DTO
         public void Mapping(Profile profile)
         {
             profile.CreateMap<OfferAndDeliveryMethod, OfferDeliveryDTO>()
+                .ForMember(dest => dest.DeliveryMethodId, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.DeliveryMethodName, opt => opt.MapFrom(src => src.DeliveryMethod.Name));
         }
     }

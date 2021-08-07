@@ -1,7 +1,6 @@
 ﻿using Application.Common.Exceptions;
 using Application.Common.Interfaces.DataServiceInterfaces;
 using Application.DAL.DTO;
-using Application.DAL.DTO.CommandDTOs.Add;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -29,8 +28,7 @@ namespace Projekt_Programistyczny.Controllers
         {
             try
             {
-                var userId = HttpContext.User.GetUserId();
-                var offers = await _cartService.GetOffersFromCartAsync(userId);
+                var offers = await _cartService.GetOffersFromCartAsync(HttpContext.User.GetUserId());
                 return Ok(offers);
             }
             catch (NotFoundException ex)
@@ -47,8 +45,7 @@ namespace Projekt_Programistyczny.Controllers
         {
             try
             {
-                var userId = HttpContext.User.GetUserId();
-                var id = await _cartService.Create(userId);
+                var id = await _cartService.Create(HttpContext.User.GetUserId());
                 return Ok(id);
             }
             catch (NotFoundException ex)
@@ -65,8 +62,7 @@ namespace Projekt_Programistyczny.Controllers
         {
             try
             {
-                var userId = HttpContext.User.GetUserId();
-                await _cartService.AddOfferToCartAsync(offerId, userId);
+                await _cartService.AddOfferToCartAsync(offerId, HttpContext.User.GetUserId());
                 return Ok();
             }
             catch (NotFoundException ex)
@@ -83,7 +79,6 @@ namespace Projekt_Programistyczny.Controllers
         {
             try
             {
-                var userId = HttpContext.User.GetUserId();
                 await _cartService.RemoveOfferFromCartAsync(offerId);
                 return Ok();
             }
@@ -94,15 +89,15 @@ namespace Projekt_Programistyczny.Controllers
         }
 
         [HttpPut]
-        [Route("DecrementOfferCountInCart")]
+        [Route("UpdateProductCount")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> DecrementOfferCountInCart([FromQuery] long offerId)
+        public async Task<IActionResult> UpdateProductCount([FromQuery] long offerId, [FromQuery] int productCount)
         {
             try
             {
                 var userId = HttpContext.User.GetUserId();
-                await _cartService.DecrementOfferCountInCart(userId, offerId);
+                await _cartService.UpdateProductCountAsync(HttpContext.User.GetUserId(), offerId, productCount);
                 return Ok();
             }
             catch (NotFoundException ex)
@@ -110,6 +105,5 @@ namespace Projekt_Programistyczny.Controllers
                 return NotFound(new { message = ex.Message });
             }
         }
-
     }
 }

@@ -9,6 +9,7 @@ namespace Domain.Entities
     {
         public User Customer { get; set; }
         public int ProductCount { get; set; }
+        public double FullPrice { get; set; }
         public OfferAndDeliveryMethod OfferWithDelivery { get; set; }
 
         [Required]

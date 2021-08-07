@@ -113,7 +113,7 @@ namespace Application.Services
             {
                 DeliveryMethod = method,
                 Offer = offer,
-                DeliveryFullPrice = dto.FullPrice
+                DeliveryFullPrice = dto.DeliveryFullPrice,
             };
 
             _context.OffersAndDeliveryMethods.Add(entity);

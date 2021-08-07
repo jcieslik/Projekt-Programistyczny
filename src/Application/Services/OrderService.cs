@@ -79,6 +79,10 @@ namespace Application.Services
             {
                 throw new NotFoundException(nameof(OfferAndDeliveryMethod), dto.OfferWithDeliveryId);
             }
+            if (offerWithDelivery.Offer.State != OfferState.Awaiting)
+            {
+                throw new AuctionIsNotAwailableException();
+            }
 
             var entity = new Order
             {
@@ -87,6 +91,7 @@ namespace Application.Services
                 OfferWithDelivery = offerWithDelivery,
                 PaymentDate = dto.PaymentDate,
                 ProductCount = dto.ProductCount,
+                FullPrice = dto.FullPrice,
                 DestinationStreet = dto.DestinationStreet,
                 DestinationCity = dto.DestinationCity,
                 DestinationPostCode = dto.DestinationPostCode
@@ -95,6 +100,22 @@ namespace Application.Services
             _context.Orders.Add(entity);
 
             offerWithDelivery.Offer.ProductCount -= dto.ProductCount;
+
+            if(offerWithDelivery.Offer.ProductCount <= 0)
+            {
+                offerWithDelivery.Offer.State = OfferState.Finished;
+            }
+
+            if(dto.CartOfferId.HasValue)
+            {
+                var cartOffer = await _context.CartOffer.FindAsync(dto.CartOfferId);
+                if (offerWithDelivery == null)
+                {
+                    throw new NotFoundException(nameof(OfferAndDeliveryMethod), dto.OfferWithDeliveryId);
+                }
+
+                _context.CartOffer.Remove(cartOffer);
+            }
 
             await _context.SaveChangesAsync();
 
@@ -106,19 +127,20 @@ namespace Application.Services
             var order = await _context.Orders
                 .Include(x => x.OfferWithDelivery).ThenInclude(x => x.Offer)
                 .SingleOrDefaultAsync(x => x.Id == dto.Id);
+
             if (order == null)
             {
                 throw new NotFoundException(nameof(Order), dto.Id);
             }
+
             if (dto.OrderStatus.HasValue)
             {
-                order.OrderStatus = (OrderStatus)dto.OrderStatus.Value;
+                order.OrderStatus = dto.OrderStatus.Value;
                 if (order.OrderStatus == OrderStatus.Canceled)
                 {
-                    order.OfferWithDelivery.Offer.ProductCount += 1;
+                    order.OfferWithDelivery.Offer.ProductCount += order.ProductCount;
                 }
             }
-
             if (!string.IsNullOrEmpty(dto.DestinationCity))
             {
                 order.DestinationCity = dto.DestinationCity;
@@ -141,7 +163,7 @@ namespace Application.Services
             return _mapper.Map<OrderDTO>(order);
         }
 
-        public async Task<PaginatedList<OrderDTO>> GetPaginatedOrdersFromUser(long userId, PaginationProperties pagination)
+        public async Task<PaginatedList<OrderDTO>> GetPaginatedOrdersByCustomer(long userId, PaginationProperties pagination)
         {
             var user = await _context.Users.FindAsync(userId);
             if (user == null)
@@ -149,9 +171,29 @@ namespace Application.Services
                 throw new NotFoundException(nameof(User), userId);
             }
             var orders = _context.Orders
-                .Include(x => x.Customer).Include(x => x.OfferWithDelivery)
+                .Include(x => x.Customer)
+                .Include(x => x.OfferWithDelivery)
                 .AsNoTracking()
                 .Where(x => x.Customer.Id == userId);
+
+            return await orders.ProjectTo<OrderDTO>(_mapper.ConfigurationProvider)
+                .PaginatedListAsync(pagination.PageIndex, pagination.PageSize);
+        }
+
+        public async Task<PaginatedList<OrderDTO>> GetPaginatedOrdersBySeller(long userId, PaginationProperties pagination)
+        {
+            var user = await _context.Users.FindAsync(userId);
+            if (user == null)
+            {
+                throw new NotFoundException(nameof(User), userId);
+            }
+            var orders = _context.Orders
+                .Include(x => x.Customer)
+                .Include(x => x.OfferWithDelivery)
+                .ThenInclude(x => x.Offer)
+                .ThenInclude(x => x.Seller)
+                .AsNoTracking()
+                .Where(x => x.OfferWithDelivery.Offer.Seller.Id == userId);
 
             return await orders.ProjectTo<OrderDTO>(_mapper.ConfigurationProvider)
                 .PaginatedListAsync(pagination.PageIndex, pagination.PageSize);

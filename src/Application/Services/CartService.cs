@@ -3,16 +3,12 @@ using Application.Common.Interfaces;
 using Application.Common.Interfaces.DataServiceInterfaces;
 using Application.Common.Services;
 using Application.DAL.DTO;
-using Application.DAL.DTO.CommandDTOs.Add;
-using Application.DAL.DTO.CommandDTOs.AddOrRemove;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Application.Services
@@ -38,7 +34,7 @@ namespace Application.Services
                 .Where(x => x.Cart.Id == user.Cart.Id);
 
             var notActiveOffers = offers.Where(x => x.Offer.State != Domain.Enums.OfferState.Awaiting);
-            var result = offers.Where(x => x.Offer.State != Domain.Enums.OfferState.Awaiting);
+            var result = offers.Where(x => x.Offer.State == Domain.Enums.OfferState.Awaiting);
             _context.CartOffer.RemoveRange(notActiveOffers);
             await _context.SaveChangesAsync();
 
@@ -74,7 +70,7 @@ namespace Application.Services
             var cartOffer = _context.CartOffer.Where(e => e.Offer == offer && e.Cart == cart).FirstOrDefault();
             if (cartOffer != default)
             {
-                if (offer.ProductCount > 1)
+                if (offer.ProductCount - cartOffer.ProductsCount > 0)
                 {
                     cartOffer.ProductsCount++;
                 }
@@ -118,7 +114,7 @@ namespace Application.Services
             return entity.Id;
         }
 
-        public async Task DecrementOfferCountInCart(long userId, long offerId)
+        public async Task UpdateProductCountAsync(long userId, long offerId, int productCount)
         {
             var offer = await _context.Offers.FindAsync(offerId);
             var user = await _context.Users.Include(e => e.Cart).AsNoTracking().Where(e => e.Id == userId).FirstOrDefaultAsync();
@@ -135,20 +131,12 @@ namespace Application.Services
             var cartOffer = _context.CartOffer.Where(e => e.Offer == offer && e.Cart == cart).FirstOrDefault();
             if (cartOffer != default)
             {
-                if (cartOffer.ProductsCount > 1)
+                if(offer.ProductCount >= productCount)
                 {
-                    cartOffer.ProductsCount--;
+                    cartOffer.ProductsCount = productCount;
                 }
-                else
-                {
-                    _context.CartOffer.Remove(cartOffer);
-                }
-                await _context.SaveChangesAsync();
-            }
-            else
-            {
-                throw new NotFoundException(("There is no connection between cart with id {0} and offer with id {1}!", cart.Id, offer.Id).ToString());
-            }
+            } 
+            await _context.SaveChangesAsync();
         }
     }
 }

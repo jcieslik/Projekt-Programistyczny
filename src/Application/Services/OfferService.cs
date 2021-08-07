@@ -231,7 +231,7 @@ namespace Application.Services
                 {
                     Offer = entity,
                     DeliveryMethod = await _context.DeliveryMethods.FindAsync(item.DeliveryMethodId),
-                    DeliveryFullPrice = item.FullPrice
+                    DeliveryFullPrice = item.DeliveryFullPrice,
                 };
                 _context.OffersAndDeliveryMethods.Add(deliveryMethod);
             }

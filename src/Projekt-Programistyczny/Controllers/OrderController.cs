@@ -8,9 +8,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Projekt_Programistyczny.Extensions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Projekt_Programistyczny.Controllers
@@ -64,13 +61,22 @@ namespace Projekt_Programistyczny.Controllers
 
         [HttpPost]
         [Authorize(Policy = "CustomerOnly")]
-        [Route("GetOrdersFromUser")]
+        [Route("GetOrdersByCustomer")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<PaginatedList<OrderDTO>>> GetOrdersFromUser([FromBody] PaginationProperties pagination)
+        public async Task<ActionResult<PaginatedList<OrderDTO>>> GetOrdersByCustomer([FromBody] PaginationProperties pagination)
         {
-            var orders = await _orderService.GetPaginatedOrdersFromUser(HttpContext.User.GetUserId(), pagination);
+            var orders = await _orderService.GetPaginatedOrdersByCustomer(HttpContext.User.GetUserId(), pagination);
             return Ok(orders);
         }
 
+        [HttpPost]
+        [Authorize(Policy = "CustomerOnly")]
+        [Route("GetOrdersBySeller")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<PaginatedList<OrderDTO>>> GetOrdersBySeller([FromBody] PaginationProperties pagination)
+        {
+            var orders = await _orderService.GetPaginatedOrdersBySeller(HttpContext.User.GetUserId(), pagination);
+            return Ok(orders);
+        }
     }
 }
