@@ -52,7 +52,6 @@ namespace Domain.Entities
         public double? MinimalBid { get; set; }
 
         public ICollection<ProductImage> Images { get; set; }
-        public ICollection<Comment> Comments { get; set; }
         public ICollection<Bid> Bids { get; set; }
         public ICollection<Wish> Wishes { get; set; }
         public ICollection<CartOffer> Carts { get; set; }

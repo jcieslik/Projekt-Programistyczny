@@ -15,6 +15,7 @@ namespace Application.DAL.DTO
         public string Title { get; set; }
         public OfferType OfferType { get; set; }
         public ProductState ProductState { get; set; }
+        public OfferState State { get; set; }
         public ProductImageDTO Image { get; set; }
         public BidDTO BestBid { get; set; }
         public double? MinimalBid { get; set; }

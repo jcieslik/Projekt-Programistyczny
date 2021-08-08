@@ -9,7 +9,7 @@ namespace Domain.Entities
         public string Content { get; set; }
         [Required]
         public double RateValue { get; set; }
-        public Offer Offer { get; set; }
+        public Order Order { get; set; }
         public User Customer { get; set; }
         public User Seller { get; set; }
     }

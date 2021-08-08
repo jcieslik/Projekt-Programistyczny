@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Application.DAL.DTO.CommandDTOs.Update
+﻿namespace Application.DAL.DTO.CommandDTOs.Update
 {
     public class UpdateCommentDTO
     {

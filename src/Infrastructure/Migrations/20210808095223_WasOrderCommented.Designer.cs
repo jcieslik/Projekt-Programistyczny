@@ -4,14 +4,16 @@ using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210808095223_WasOrderCommented")]
+    partial class WasOrderCommented
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -155,6 +157,9 @@ namespace Infrastructure.Migrations
                     b.Property<long>("ModifiedBy")
                         .HasColumnType("bigint");
 
+                    b.Property<long?>("OfferId")
+                        .HasColumnType("bigint");
+
                     b.Property<double>("RateValue")
                         .HasColumnType("float");
 
@@ -164,6 +169,8 @@ namespace Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CustomerId");
+
+                    b.HasIndex("OfferId");
 
                     b.HasIndex("SellerId");
 
@@ -447,9 +454,6 @@ namespace Infrastructure.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<long?>("CommentId")
-                        .HasColumnType("bigint");
-
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
 
@@ -492,11 +496,10 @@ namespace Infrastructure.Migrations
                     b.Property<int>("ProductCount")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.Property<bool>("WasCommented")
+                        .HasColumnType("bit");
 
-                    b.HasIndex("CommentId")
-                        .IsUnique()
-                        .HasFilter("[CommentId] IS NOT NULL");
+                    b.HasKey("Id");
 
                     b.HasIndex("CustomerId");
 
@@ -765,11 +768,18 @@ namespace Infrastructure.Migrations
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade);
 
+                    b.HasOne("Domain.Entities.Offer", "Offer")
+                        .WithMany("Comments")
+                        .HasForeignKey("OfferId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
                     b.HasOne("Domain.Entities.User", "Seller")
                         .WithMany()
                         .HasForeignKey("SellerId");
 
                     b.Navigation("Customer");
+
+                    b.Navigation("Offer");
 
                     b.Navigation("Seller");
                 });
@@ -852,11 +862,6 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.Order", b =>
                 {
-                    b.HasOne("Domain.Entities.Comment", "Comment")
-                        .WithOne("Order")
-                        .HasForeignKey("Domain.Entities.Order", "CommentId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
                     b.HasOne("Domain.Entities.User", "Customer")
                         .WithMany("Orders")
                         .HasForeignKey("CustomerId");
@@ -868,8 +873,6 @@ namespace Infrastructure.Migrations
                     b.HasOne("Domain.Entities.OfferAndDeliveryMethod", "OfferWithDelivery")
                         .WithMany("Orders")
                         .HasForeignKey("OfferWithDeliveryId");
-
-                    b.Navigation("Comment");
 
                     b.Navigation("Customer");
 
@@ -925,11 +928,6 @@ namespace Infrastructure.Migrations
                     b.Navigation("Offers");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Comment", b =>
-                {
-                    b.Navigation("Order");
-                });
-
             modelBuilder.Entity("Domain.Entities.DeliveryMethod", b =>
                 {
                     b.Navigation("Offers");
@@ -947,6 +945,8 @@ namespace Infrastructure.Migrations
                     b.Navigation("Bids");
 
                     b.Navigation("Carts");
+
+                    b.Navigation("Comments");
 
                     b.Navigation("DeliveryMethods");
 

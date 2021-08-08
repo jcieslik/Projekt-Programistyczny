@@ -40,23 +40,6 @@ namespace Projekt_Programistyczny.Controllers
         }
 
         [HttpGet]
-        [Route("GetCommentsFromOffer")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IEnumerable<CommentDTO>>> GetCommentsFromOffer([FromQuery] long id, [FromQuery] bool onlyNotHidden = true)
-        {
-            try
-            {
-                var comments = await _commentService.GetCommentsFromOfferAsync(id, onlyNotHidden);
-                return Ok(comments);
-            }
-            catch(NotFoundException ex)
-            {
-                return NotFound(new { message = ex.Message });
-            }
-        }
-
-        [HttpGet]
         [Route("GetCommentsFromUser")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -84,15 +67,6 @@ namespace Projekt_Programistyczny.Controllers
         public async Task<ActionResult<PaginatedList<CommentDTO>>> GetPaginatedCommentsFromUser([FromBody] SearchCommentsVM vm)
         {
             var comments = await _commentService.GetPaginatedCommentsFromUserAsync(vm);
-            return Ok(comments);
-        }
-
-        [HttpPost]
-        [Route("GetPaginatedCommentsFromOffer")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<PaginatedList<CommentDTO>>> GetPaginatedCommentsFromOffer([FromBody] SearchCommentsVM vm)
-        {
-            var comments = await _commentService.GetPaginatedCommentsFromOfferAsync(vm);
             return Ok(comments);
         }
 

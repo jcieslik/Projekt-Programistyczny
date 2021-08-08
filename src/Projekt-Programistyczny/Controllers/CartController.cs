@@ -105,5 +105,23 @@ namespace Projekt_Programistyczny.Controllers
                 return NotFound(new { message = ex.Message });
             }
         }
+
+        [HttpGet]
+        [Route("GetNumberOfOffersInCart")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetNumberOfOffersInCart([FromQuery] long offerId, [FromQuery] int productCount)
+        {
+            try
+            {
+                var userId = HttpContext.User.GetUserId();
+                await _cartService.UpdateProductCountAsync(HttpContext.User.GetUserId(), offerId, productCount);
+                return Ok();
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+        }
     }
 }

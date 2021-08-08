@@ -32,7 +32,6 @@ namespace Application.Services
                 .Include(x => x.Category)
                 .Include(x => x.Province)
                 .Include(x => x.Seller)
-                .Include(x => x.Comments).ThenInclude(c => c.Customer)
                 .Include(x => x.Images)
                 .AsNoTracking()
                 .SingleOrDefaultAsync(x => x.Id == id);

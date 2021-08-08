@@ -8,10 +8,6 @@ namespace Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Offer> builder)
         {
-            builder.HasMany(o => o.Comments)
-                .WithOne(c => c.Offer)
-                .OnDelete(DeleteBehavior.Cascade);
-            
             builder.HasMany(o => o.Images)
                 .WithOne(i => i.Offer)
                 .OnDelete(DeleteBehavior.Cascade);

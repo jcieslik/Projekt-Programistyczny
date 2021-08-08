@@ -16,8 +16,12 @@ namespace Domain.Entities
         public OrderStatus OrderStatus { get; set; }
 
         public DateTime? PaymentDate { get; set; }
+
         public string DestinationCity { get; set; }
         public string DestinationStreet { get; set; }
         public string DestinationPostCode { get; set; }
+
+        public Comment Comment { get; set; }
+        public long? CommentId { get; set; }
     }
 }
