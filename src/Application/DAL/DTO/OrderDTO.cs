@@ -20,12 +20,14 @@ namespace Application.DAL.DTO
         public string DestinationPostCode { get; set; }
         public OfferWithBaseDataDTO Offer { get; set; }
         public CommentDTO Comment { get; set; }
+        public OfferDeliveryDTO Delivery { get; set; }
 
         public void Mapping(Profile profile)
         {
             profile.CreateMap<Order, OrderDTO>()
                 .ForMember(dest => dest.CustomerId, opt => opt.MapFrom(src => src.Customer.Id))
                 .ForMember(dest => dest.Comment, opt => opt.MapFrom(src => src.Comment))
+                .ForMember(dest => dest.Delivery, opt => opt.MapFrom(src => src.OfferWithDelivery))
                 .ForMember(dest => dest.Offer, opt => opt.MapFrom(src => src.OfferWithDelivery.Offer))
                 .ForMember(dest => dest.OfferWithDeliveryId, opt => opt.MapFrom(src => src.OfferWithDelivery.Id));
         }
