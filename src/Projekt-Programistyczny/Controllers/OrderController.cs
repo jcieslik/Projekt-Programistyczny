@@ -4,6 +4,7 @@ using Application.Common.Models;
 using Application.DAL.DTO;
 using Application.DAL.DTO.CommandDTOs.Create;
 using Application.DAL.DTO.CommandDTOs.Update;
+using Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -63,7 +64,7 @@ namespace Projekt_Programistyczny.Controllers
         [Authorize(Policy = "CustomerOnly")]
         [Route("GetOrdersByCustomer")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<PaginatedList<OrderDTO>>> GetOrdersByCustomer([FromBody] PaginationProperties pagination,[FromQuery] Domain.Enums.OrderStatus status = Domain.Enums.OrderStatus.All)
+        public async Task<ActionResult<PaginatedList<OrderDTO>>> GetOrdersByCustomer([FromBody] PaginationProperties pagination,[FromQuery] OrderStatus status = OrderStatus.All)
         {
             var orders = await _orderService.GetPaginatedOrdersByCustomer(HttpContext.User.GetUserId(), pagination, status);
             return Ok(orders);
@@ -73,7 +74,7 @@ namespace Projekt_Programistyczny.Controllers
         [Authorize(Policy = "CustomerOnly")]
         [Route("GetOrdersBySeller")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<PaginatedList<OrderDTO>>> GetOrdersBySeller([FromBody] PaginationProperties pagination, [FromQuery] Domain.Enums.OrderStatus status = Domain.Enums.OrderStatus.All)
+        public async Task<ActionResult<PaginatedList<OrderDTO>>> GetOrdersBySeller([FromBody] PaginationProperties pagination, [FromQuery] OrderStatus status = OrderStatus.All)
         {
             var orders = await _orderService.GetPaginatedOrdersBySeller(HttpContext.User.GetUserId(), pagination, status);
             return Ok(orders);

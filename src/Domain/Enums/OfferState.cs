@@ -6,6 +6,7 @@
         Finished = 1,
         Outdated = 2,
         Hidden = 3,
-        Banned = 4
+        Banned = 4,
+        All = 5
     }
 }

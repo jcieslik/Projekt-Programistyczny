@@ -90,7 +90,7 @@ namespace Application.Services
                 .PaginatedListAsync<OfferWithBaseDataDTO>(paginationProperties.PageIndex, paginationProperties.PageSize);
         }
 
-        public async Task<PaginatedList<OfferWithBaseDataDTO>> GetPaginatedOffersAsync(FilterModel filterModel, PaginationProperties paginationProperties)
+        public async Task<PaginatedList<OfferWithBaseDataDTO>> GetPaginatedOffersAsync(FilterModel filterModel, PaginationProperties paginationProperties, OfferState state = OfferState.All)
         {
             var offers = _context.Offers
                 .Include(x => x.Bids)
@@ -99,10 +99,15 @@ namespace Application.Services
                 .Include(x => x.Province)
                 .AsNoTracking()
                 .Where(
-                x => !x.IsHidden && 
-                x.State == OfferState.Awaiting && 
+                x => 
+                state == OfferState.All ? !x.IsHidden && 
+                (x.State == OfferState.Awaiting || x.State == OfferState.Finished || x.State == OfferState.Outdated) && 
+                DateTime.Compare(x.StartDate, DateTime.Now) <= 0 &&
+                DateTime.Compare(x.EndDate, DateTime.Now) >= 0 :
+                !x.IsHidden && x.State == state &&
                 DateTime.Compare(x.StartDate, DateTime.Now) <= 0 &&
                 DateTime.Compare(x.EndDate, DateTime.Now) >= 0
+
                 );
 
             if (filterModel.CategoryId.HasValue)

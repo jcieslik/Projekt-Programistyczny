@@ -5,6 +5,7 @@ using Application.DAL.DTO;
 using Application.DAL.DTO.CommandDTOs.Add;
 using Application.DAL.DTO.CommandDTOs.Create;
 using Application.DAL.DTO.CommandDTOs.Update;
+using Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -83,7 +84,7 @@ namespace Projekt_Programistyczny.Controllers
         [HttpPost]
         [Route("GetOffers")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<PaginatedList<OfferWithBaseDataDTO>>> GetOffers([FromBody] SearchModel searchModel)
+        public async Task<ActionResult<PaginatedList<OfferWithBaseDataDTO>>> GetOffers([FromBody] SearchModel searchModel, [FromQuery] OfferState state = OfferState.All)
         {
             var filterModel = new FilterModel
             {
@@ -107,7 +108,7 @@ namespace Projekt_Programistyczny.Controllers
                 PageIndex = searchModel.PageIndex
             };
 
-            var offers = await _offerService.GetPaginatedOffersAsync(filterModel, paginationProperties);
+            var offers = await _offerService.GetPaginatedOffersAsync(filterModel, paginationProperties, state);
             return Ok(offers);
         }
 
