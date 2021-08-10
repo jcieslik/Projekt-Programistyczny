@@ -163,7 +163,7 @@ namespace Application.Services
             return _mapper.Map<OrderDTO>(order);
         }
 
-        public async Task<PaginatedList<OrderDTO>> GetPaginatedOrdersByCustomer(long userId, PaginationProperties pagination)
+        public async Task<PaginatedList<OrderDTO>> GetPaginatedOrdersByCustomer(long userId, PaginationProperties pagination, OrderStatus status = OrderStatus.All)
         {
             var user = await _context.Users.FindAsync(userId);
             if (user == null)
@@ -174,13 +174,14 @@ namespace Application.Services
                 .Include(x => x.Customer)
                 .Include(x => x.OfferWithDelivery)
                 .AsNoTracking()
-                .Where(x => x.Customer.Id == userId);
+                .Where(x => status == OrderStatus.All ? 
+                    x.Customer.Id == userId : x.Customer.Id == userId && x.OrderStatus == status);
 
             return await orders.ProjectTo<OrderDTO>(_mapper.ConfigurationProvider)
                 .PaginatedListAsync(pagination.PageIndex, pagination.PageSize);
         }
 
-        public async Task<PaginatedList<OrderDTO>> GetPaginatedOrdersBySeller(long userId, PaginationProperties pagination)
+        public async Task<PaginatedList<OrderDTO>> GetPaginatedOrdersBySeller(long userId, PaginationProperties pagination, OrderStatus status = OrderStatus.All)
         {
             var user = await _context.Users.FindAsync(userId);
             if (user == null)
@@ -193,7 +194,8 @@ namespace Application.Services
                 .ThenInclude(x => x.Offer)
                 .ThenInclude(x => x.Seller)
                 .AsNoTracking()
-                .Where(x => x.OfferWithDelivery.Offer.Seller.Id == userId);
+                .Where(x => status == OrderStatus.All ? 
+                    x.OfferWithDelivery.Offer.Seller.Id == userId : x.OfferWithDelivery.Offer.Seller.Id == userId && x.OrderStatus == status);
 
             return await orders.ProjectTo<OrderDTO>(_mapper.ConfigurationProvider)
                 .PaginatedListAsync(pagination.PageIndex, pagination.PageSize);

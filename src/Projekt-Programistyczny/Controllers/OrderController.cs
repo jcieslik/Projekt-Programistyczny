@@ -63,9 +63,9 @@ namespace Projekt_Programistyczny.Controllers
         [Authorize(Policy = "CustomerOnly")]
         [Route("GetOrdersByCustomer")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<PaginatedList<OrderDTO>>> GetOrdersByCustomer([FromBody] PaginationProperties pagination)
+        public async Task<ActionResult<PaginatedList<OrderDTO>>> GetOrdersByCustomer([FromBody] PaginationProperties pagination,[FromQuery] Domain.Enums.OrderStatus status = Domain.Enums.OrderStatus.All)
         {
-            var orders = await _orderService.GetPaginatedOrdersByCustomer(HttpContext.User.GetUserId(), pagination);
+            var orders = await _orderService.GetPaginatedOrdersByCustomer(HttpContext.User.GetUserId(), pagination, status);
             return Ok(orders);
         }
 
@@ -73,9 +73,9 @@ namespace Projekt_Programistyczny.Controllers
         [Authorize(Policy = "CustomerOnly")]
         [Route("GetOrdersBySeller")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<PaginatedList<OrderDTO>>> GetOrdersBySeller([FromBody] PaginationProperties pagination)
+        public async Task<ActionResult<PaginatedList<OrderDTO>>> GetOrdersBySeller([FromBody] PaginationProperties pagination, [FromQuery] Domain.Enums.OrderStatus status = Domain.Enums.OrderStatus.All)
         {
-            var orders = await _orderService.GetPaginatedOrdersBySeller(HttpContext.User.GetUserId(), pagination);
+            var orders = await _orderService.GetPaginatedOrdersBySeller(HttpContext.User.GetUserId(), pagination, status);
             return Ok(orders);
         }
     }
