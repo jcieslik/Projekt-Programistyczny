@@ -363,6 +363,7 @@ namespace Application.Services
                         OrderStatus = OrderStatus.AwaitingForPayment,
                         Customer = bid.Bidder,
                         OfferWithDelivery = offerWithNullDelivery,
+                        FullPrice = bid.Value
                     };
 
                     _context.Orders.Add(order);

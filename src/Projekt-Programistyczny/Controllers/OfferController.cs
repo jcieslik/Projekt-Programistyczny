@@ -135,11 +135,11 @@ namespace Projekt_Programistyczny.Controllers
         [Route("GetUserAciveBidOffers")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<PaginatedList<OfferWithBaseDataDTO>>> GetUserAciveBidOffers([FromQuery] long userId, [FromQuery] PaginationProperties paginationProperties)
+        public async Task<ActionResult<PaginatedList<OfferWithBaseDataDTO>>> GetUserAciveBidOffers([FromBody] PaginationProperties paginationProperties)
         {
             try
             {
-                var result = await _offerService.GetUserAciveBidOffers(userId, paginationProperties);
+                var result = await _offerService.GetUserAciveBidOffers(HttpContext.User.GetUserId(), paginationProperties);
                 return Ok(result);
             }
             catch(NotFoundException ex)
