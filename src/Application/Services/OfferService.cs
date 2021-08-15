@@ -382,15 +382,16 @@ namespace Application.Services
             var offers = _context.Bids
                 .Include(x => x.Bidder)
                 .Include(x => x.Offer).ThenInclude(x => x.Images)
-                .Where(x => x.Bidder.Id == userId && x.Offer.State == OfferState.Awaiting && x.Offer.IsHidden == false);
+                .Where(x => x.Bidder.Id == userId && x.Offer.State == OfferState.Awaiting && x.Offer.IsHidden == false)
+                .Select(x => x.Offer);
             offers = paginationProperties.OrderBy switch
             {
-                "price_asc" => offers.OrderBy(x => x.Offer.PriceForOneProduct),
-                "price_desc" => offers.OrderByDescending(x => x.Offer.PriceForOneProduct),
-                "end_date_asc" => offers.OrderBy(x => x.Offer.EndDate),
-                "end_date_desc" => offers.OrderByDescending(x => x.Offer.EndDate),
-                "creation_asc" => offers.OrderBy(x => x.Offer.Created),
-                "creation_desc" => offers.OrderByDescending(x => x.Offer.Created),
+                "price_asc" => offers.OrderBy(x => x.PriceForOneProduct),
+                "price_desc" => offers.OrderByDescending(x => x.PriceForOneProduct),
+                "end_date_asc" => offers.OrderBy(x => x.EndDate),
+                "end_date_desc" => offers.OrderByDescending(x => x.EndDate),
+                "creation_asc" => offers.OrderBy(x => x.Created),
+                "creation_desc" => offers.OrderByDescending(x => x.Created),
                 _ => offers.OrderBy(x => x.Created)
             };
 
