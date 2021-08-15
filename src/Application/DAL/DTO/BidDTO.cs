@@ -10,12 +10,14 @@ namespace Application.DAL.DTO
     {
         public double Value { get; set; }
         public long BidderId { get; set; }
+        public long BidderUsername { get; set; }
         public long OfferId { get; set; }
 
         public void Mapping(Profile profile)
         {
             profile.CreateMap<Bid, BidDTO>()
                 .ForMember(dest => dest.BidderId, opt => opt.MapFrom(src => src.Bidder.Id))
+                .ForMember(dest => dest.BidderId, opt => opt.MapFrom(src => src.Bidder.Username))
                 .ForMember(dest => dest.OfferId, opt => opt.MapFrom(src => src.Offer.Id));
         }
     }
