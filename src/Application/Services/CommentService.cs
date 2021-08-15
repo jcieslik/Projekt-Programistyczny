@@ -50,7 +50,11 @@ namespace Application.Services
         public async Task<PaginatedList<CommentDTO>> GetPaginatedCommentsFromUserAsync(SearchCommentsVM vm)
         {
             var comments = _context.Comments
-                .Include(c => c.Customer).Include(c => c.Order)
+                .Include(c => c.Customer)
+                .Include(c => c.Seller)
+                .Include(c => c.Order)
+                .ThenInclude(o => o.OfferWithDelivery)
+                .ThenInclude(o => o.Offer)
                 .AsNoTracking()
                 .Where(c => c.Seller.Id == vm.SubjectId);
 
