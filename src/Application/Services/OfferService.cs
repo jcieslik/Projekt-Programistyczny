@@ -341,6 +341,7 @@ namespace Application.Services
         {
             var offers = _context.Offers
                 .Include(x => x.Bids)
+                .ThenInclude(x => x.Bidder)
                 .Where(x => x.State == OfferState.Awaiting && x.EndDate < DateTime.Now);
 
             foreach(var offer in offers)
@@ -348,10 +349,7 @@ namespace Application.Services
                 if(offer.OfferType == OfferType.Auction && offer.Bids.Count > 0)
                 {
                     offer.State = OfferState.Finished;
-                    var bid = _context.Bids
-                        .Include(x => x.Bidder)
-                        .Include(x => x.Value)
-                        .Where(X => X.Offer.Id == offer.Id).OrderByDescending(x => x.Value).FirstOrDefault();
+                    var bid = offer.Bids.OrderByDescending(x => x.Value).FirstOrDefault();
 
                     var offerWithNullDelivery = new OfferAndDeliveryMethod
                     {
@@ -359,9 +357,6 @@ namespace Application.Services
                     };
 
                     _context.OffersAndDeliveryMethods.Add(offerWithNullDelivery);
-
-                    //Jak będzie rzucać błąd przy tworzeniu order-a to odkomentujcie zapis, jak nie to się radujemy i usuwamy te linie
-                    //await _context.SaveChangesAsync();
 
                     var order = new Order
                     {
@@ -371,7 +366,6 @@ namespace Application.Services
                     };
 
                     _context.Orders.Add(order);
-
                 }
                 else
                 {
