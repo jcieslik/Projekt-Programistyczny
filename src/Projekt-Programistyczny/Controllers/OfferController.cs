@@ -139,7 +139,7 @@ namespace Projekt_Programistyczny.Controllers
         {
             try
             {
-                var result = _offerService.GetUserAciveBidOffers(userId, paginationProperties);
+                var result = await _offerService.GetUserAciveBidOffers(userId, paginationProperties);
                 return Ok(result);
             }
             catch(NotFoundException ex)
