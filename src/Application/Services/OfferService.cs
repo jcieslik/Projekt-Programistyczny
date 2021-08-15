@@ -33,6 +33,8 @@ namespace Application.Services
                 .Include(x => x.Province)
                 .Include(x => x.Seller)
                 .Include(x => x.Images)
+                .Include(x => x.DeliveryMethods)
+                .ThenInclude(x => x.DeliveryMethod)
                 .AsNoTracking()
                 .SingleOrDefaultAsync(x => x.Id == id);
 
@@ -377,7 +379,7 @@ namespace Application.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task<PaginatedList<OfferWithBaseDataDTO>> GetUserAciveBidOffers(long userId, PaginationProperties paginationProperties)
+        public async Task<PaginatedList<OfferWithBaseDataDTO>> GetUserActiveBidOffers(long userId, PaginationProperties paginationProperties)
         {
             var offers = _context.Bids
                 .Include(x => x.Bidder)

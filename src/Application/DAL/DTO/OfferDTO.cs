@@ -26,6 +26,7 @@ namespace Application.DAL.DTO
         public OfferState State { get; set; }
         public OfferType OfferType { get; set; }
         public IEnumerable<ProductImageDTO> Images { get; set; }
+        public IEnumerable<OfferDeliveryDTO> DeliveryMethods { get; set; }
         public BidDTO BestBid { get; set; }
         public double? MinimalBid { get; set; }
 
@@ -33,6 +34,7 @@ namespace Application.DAL.DTO
         {
             profile.CreateMap<Offer, OfferDTO>()
                 .ForMember(dest => dest.Seller, opt => opt.MapFrom(src => src.Seller))
+                .ForMember(dest => dest.DeliveryMethods, opt => opt.MapFrom(src => src.DeliveryMethods))
                 .ForMember(dest => dest.Category, opt => opt.MapFrom(src => src.Category.Name))
                 .ForMember(dest => dest.Province, opt => opt.MapFrom(src => src.Province.Name))
                 .ForMember(dest => dest.BestBid, opt => opt.MapFrom(src => src.Bids.OrderByDescending(x => x.Value).FirstOrDefault()));

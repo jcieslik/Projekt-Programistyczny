@@ -11,6 +11,7 @@ namespace Domain.Entities
         public int ProductCount { get; set; }
         public double FullPrice { get; set; }
         public OfferAndDeliveryMethod OfferWithDelivery { get; set; }
+        public long OfferWithDeliveryId { get; set; }
 
         [Required]
         public OrderStatus OrderStatus { get; set; }

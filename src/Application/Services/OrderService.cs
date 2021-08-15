@@ -153,7 +153,14 @@ namespace Application.Services
             {
                 order.DestinationPostCode = dto.DestinationPostCode;
             }
-
+            if (dto.OfferWithDeliveryId.HasValue)
+            {
+                order.OfferWithDeliveryId = dto.OfferWithDeliveryId.Value;
+            }
+            if (dto.FullPrice.HasValue)
+            {
+                order.FullPrice = dto.FullPrice.Value;
+            }
             if (dto.PaymentDate.HasValue)
             {
                 order.PaymentDate = dto.PaymentDate;

@@ -18,6 +18,6 @@ namespace Application.Common.Interfaces.DataServiceInterfaces
         Task<PaginatedList<OfferWithBaseDataDTO>> GetPaginatedOffersAsync(FilterModel filterModel, PaginationProperties paginationProperties, OfferState state = OfferState.All);
         Task<OfferDTO> UpdateOfferAsync(UpdateOfferDTO dto);
         Task ChangeStatusOfOffersAfterEndDate();
-        Task<PaginatedList<OfferWithBaseDataDTO>> GetUserAciveBidOffers(long userId, PaginationProperties paginationProperties);
+        Task<PaginatedList<OfferWithBaseDataDTO>> GetUserActiveBidOffers(long userId, PaginationProperties paginationProperties);
     }
 }
