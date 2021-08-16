@@ -53,7 +53,6 @@ namespace Application.Services
                 .Include(c => c.Customer)
                 .Include(c => c.Seller)
                 .Include(c => c.Order)
-                .ThenInclude(o => o.OfferWithDelivery)
                 .ThenInclude(o => o.Offer)
                 .AsNoTracking()
                 .Where(c => c.Seller.Id == vm.SubjectId);
@@ -80,8 +79,7 @@ namespace Application.Services
                 throw new NotFoundException(nameof(User), dto.CustomerId);
             }
             var order = await _context.Orders
-                .Include(o => o.OfferWithDelivery)
-                .ThenInclude(o => o.Offer)
+                .Include(o => o.Offer)
                 .ThenInclude(o => o.Seller)
                 .FirstOrDefaultAsync(o => o.Id == dto.OrderId);
 
@@ -96,7 +94,7 @@ namespace Application.Services
                 Customer = customer,
                 Content = dto.Content,
                 RateValue = dto.RateValue,
-                Seller = order.OfferWithDelivery.Offer.Seller,
+                Seller = order.Offer.Seller,
                 IsHidden = false
             };
 

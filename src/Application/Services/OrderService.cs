@@ -28,8 +28,9 @@ namespace Application.Services
         {
             return _mapper.Map<OrderDTO>(
                 await _context.Orders
-                .Include(x => x.OfferWithDelivery)
+                .Include(x => x.Offer)
                 .Include(x => x.Customer)
+                .Include(x => x.DeliveryMethod)
                 .SingleOrDefaultAsync(x => x.Id == id)
                 );
         }
@@ -42,7 +43,9 @@ namespace Application.Services
                 throw new NotFoundException(nameof(User), userId);
             }
             return await _context.Orders
-                .Include(x => x.Customer).Include(x => x.OfferWithDelivery)
+                .Include(x => x.Customer)
+                .Include(x => x.Offer)
+                .Include(x => x.DeliveryMethod)
                 .AsNoTracking()
                 .Where(x => x.Customer.Id == userId)
                 .ProjectTo<OrderDTO>(_mapper.ConfigurationProvider)
@@ -58,9 +61,10 @@ namespace Application.Services
             }
             return await _context.Orders
                 .Include(x => x.Customer)
-                .Include(x => x.OfferWithDelivery).ThenInclude(x => x.Offer)
+                .Include(x => x.Offer)
+                .Include(x => x.DeliveryMethod)
                 .AsNoTracking()
-                .Where(x => x.OfferWithDelivery.Offer.Id == offerId)
+                .Where(x => x.Offer.Id == offerId)
                 .ProjectTo<OrderDTO>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
@@ -70,6 +74,7 @@ namespace Application.Services
             var user = await _context.Users.FindAsync(dto.CustomerId);
             var offerWithDelivery = await _context.OffersAndDeliveryMethods
                 .Include(x => x.Offer)
+                .Include(x => x.DeliveryMethod)
                 .SingleOrDefaultAsync(x => x.Id == dto.OfferWithDeliveryId);
             if (user == null)
             {
@@ -88,7 +93,9 @@ namespace Application.Services
             {
                 OrderStatus = dto.OrderStatus,
                 Customer = user,
-                OfferWithDelivery = offerWithDelivery,
+                Offer = offerWithDelivery.Offer,
+                DeliveryMethod = offerWithDelivery.DeliveryMethod,
+                DeliveryFullPrice = offerWithDelivery.DeliveryFullPrice,
                 PaymentDate = dto.PaymentDate,
                 ProductCount = dto.ProductCount,
                 FullPrice = dto.FullPrice,
@@ -125,7 +132,8 @@ namespace Application.Services
         public async Task<OrderDTO> UpdateOrder(UpdateOrderDTO dto)
         {
             var order = await _context.Orders
-                .Include(x => x.OfferWithDelivery).ThenInclude(x => x.Offer)
+                .Include(x => x.Offer)
+                .Include(x => x.DeliveryMethod)
                 .SingleOrDefaultAsync(x => x.Id == dto.Id);
 
             if (order == null)
@@ -138,7 +146,7 @@ namespace Application.Services
                 order.OrderStatus = dto.OrderStatus.Value;
                 if (order.OrderStatus == OrderStatus.Canceled)
                 {
-                    order.OfferWithDelivery.Offer.ProductCount += order.ProductCount;
+                    order.Offer.ProductCount += order.ProductCount;
                 }
             }
             if (!string.IsNullOrEmpty(dto.DestinationCity))
@@ -155,7 +163,10 @@ namespace Application.Services
             }
             if (dto.OfferWithDeliveryId.HasValue)
             {
-                order.OfferWithDeliveryId = dto.OfferWithDeliveryId.Value;
+                var relation = await _context.OffersAndDeliveryMethods.FindAsync(dto.OfferWithDeliveryId.Value);
+                order.Offer = relation.Offer;
+                order.DeliveryMethod = relation.DeliveryMethod;
+                order.DeliveryFullPrice = relation.DeliveryFullPrice;
             }
             if (dto.FullPrice.HasValue)
             {
@@ -179,7 +190,8 @@ namespace Application.Services
             }
             var orders = _context.Orders
                 .Include(x => x.Customer)
-                .Include(x => x.OfferWithDelivery)
+                .Include(x => x.Offer)
+                .Include(x => x.DeliveryMethod)
                 .AsNoTracking()
                 .Where(x => status == OrderStatus.All ? 
                     x.Customer.Id == userId : x.Customer.Id == userId && x.OrderStatus == status);
@@ -197,12 +209,12 @@ namespace Application.Services
             }
             var orders = _context.Orders
                 .Include(x => x.Customer)
-                .Include(x => x.OfferWithDelivery)
-                .ThenInclude(x => x.Offer)
+                .Include(x => x.DeliveryMethod)
+                .Include(x => x.Offer)
                 .ThenInclude(x => x.Seller)
                 .AsNoTracking()
                 .Where(x => status == OrderStatus.All ? 
-                    x.OfferWithDelivery.Offer.Seller.Id == userId : x.OfferWithDelivery.Offer.Seller.Id == userId && x.OrderStatus == status);
+                    x.Offer.Seller.Id == userId : x.Offer.Seller.Id == userId && x.OrderStatus == status);
 
             return await orders.ProjectTo<OrderDTO>(_mapper.ConfigurationProvider)
                 .PaginatedListAsync(pagination.PageIndex, pagination.PageSize);

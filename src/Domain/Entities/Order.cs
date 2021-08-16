@@ -10,8 +10,9 @@ namespace Domain.Entities
         public User Customer { get; set; }
         public int ProductCount { get; set; }
         public double FullPrice { get; set; }
-        public OfferAndDeliveryMethod OfferWithDelivery { get; set; }
-        public long OfferWithDeliveryId { get; set; }
+        public Offer Offer { get; set; }
+        public DeliveryMethod DeliveryMethod { get; set; }
+        public double? DeliveryFullPrice { get; set; }
 
         [Required]
         public OrderStatus OrderStatus { get; set; }

@@ -353,19 +353,13 @@ namespace Application.Services
                     offer.State = OfferState.Finished;
                     var bid = offer.Bids.OrderByDescending(x => x.Value).FirstOrDefault();
 
-                    var offerWithNullDelivery = new OfferAndDeliveryMethod
-                    {
-                        Offer = offer
-                    };
-
-                    _context.OffersAndDeliveryMethods.Add(offerWithNullDelivery);
 
                     var order = new Order
                     {
                         OrderStatus = OrderStatus.AwaitingForPayment,
                         Customer = bid.Bidder,
-                        OfferWithDelivery = offerWithNullDelivery,
-                        FullPrice = bid.Value
+                        Offer = offer,
+                        FullPrice = bid.Value,
                     };
 
                     _context.Orders.Add(order);

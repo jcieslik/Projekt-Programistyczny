@@ -21,8 +21,8 @@ namespace Application.DAL.DTO
                 .ForMember(dest => dest.Customer, opt => opt.MapFrom(src => src.Customer))
                 .ForMember(dest => dest.SellerId, opt => opt.MapFrom(src => src.Seller.Id))
                 .ForMember(dest => dest.OrderId, opt => opt.MapFrom(src => src.Order.Id))
-                .ForMember(dest => dest.OfferId, opt => opt.MapFrom(src => src.Order.OfferWithDelivery.Offer.Id))
-                .ForMember(dest => dest.OfferTitle, opt => opt.MapFrom(src => src.Order.OfferWithDelivery.Offer.Title));
+                .ForMember(dest => dest.OfferId, opt => opt.MapFrom(src => src.Order.Offer.Id))
+                .ForMember(dest => dest.OfferTitle, opt => opt.MapFrom(src => src.Order.Offer.Title));
         }
     }
 }
