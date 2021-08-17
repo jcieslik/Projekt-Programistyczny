@@ -13,8 +13,11 @@ namespace Infrastructure.Persistence.Configurations
                 .HasForeignKey<Order>(c => c.CommentId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.HasOne(x => x.OfferWithDelivery)
+            builder.HasOne(x => x.Offer)
                 .WithMany(x => x.Orders);
+            builder.HasOne(x => x.DeliveryMethod)
+                .WithMany(x => x.Orders)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }
