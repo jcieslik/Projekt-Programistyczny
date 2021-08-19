@@ -15,7 +15,7 @@ namespace Application.DAL.DTO
         public void Mapping(Profile profile)
         {
             profile.CreateMap<OfferAndDeliveryMethod, OfferDeliveryDTO>()
-                .ForMember(dest => dest.DeliveryMethodId, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.DeliveryMethodId, opt => opt.MapFrom(src => src.DeliveryMethod.Id))
                 .ForMember(dest => dest.DeliveryMethodName, opt => opt.MapFrom(src => src.DeliveryMethod.Name));
         }
     }

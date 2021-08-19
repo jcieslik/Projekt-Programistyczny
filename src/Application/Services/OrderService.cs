@@ -72,19 +72,25 @@ namespace Application.Services
         public async Task<OrderDTO> CreateOrderAsync(CreateOrderDTO dto)
         {
             var user = await _context.Users.FindAsync(dto.CustomerId);
-            var offerWithDelivery = await _context.OffersAndDeliveryMethods
-                .Include(x => x.Offer)
-                .Include(x => x.DeliveryMethod)
-                .SingleOrDefaultAsync(x => x.Id == dto.OfferWithDeliveryId);
+            var offer = await _context.Offers
+                .Include(x => x.DeliveryMethods)
+                .SingleOrDefaultAsync(x => x.Id == dto.OfferId);
+            var deliveryMethod = await _context.DeliveryMethods
+                .SingleOrDefaultAsync(x => x.Id == dto.DeliveryMethodId);
+
             if (user == null)
             {
                 throw new NotFoundException(nameof(User), dto.CustomerId);
             }
-            if (offerWithDelivery == null)
+            if (offer == null)
             {
-                throw new NotFoundException(nameof(OfferAndDeliveryMethod), dto.OfferWithDeliveryId);
+                throw new NotFoundException(nameof(Offer), dto.OfferId);
             }
-            if (offerWithDelivery.Offer.State != OfferState.Awaiting)
+            if (deliveryMethod == null)
+            {
+                throw new NotFoundException(nameof(DeliveryMethod), dto.DeliveryMethodId);
+            }
+            if (offer.State != OfferState.Awaiting)
             {
                 throw new AuctionIsNotAwailableException();
             }
@@ -93,9 +99,9 @@ namespace Application.Services
             {
                 OrderStatus = dto.OrderStatus,
                 Customer = user,
-                Offer = offerWithDelivery.Offer,
-                DeliveryMethod = offerWithDelivery.DeliveryMethod,
-                DeliveryFullPrice = offerWithDelivery.DeliveryFullPrice,
+                Offer = offer,
+                DeliveryMethod = deliveryMethod,
+                DeliveryFullPrice = offer.DeliveryMethods.Where(e => e.DeliveryMethod.Id == deliveryMethod.Id).FirstOrDefault().DeliveryFullPrice,
                 PaymentDate = dto.PaymentDate,
                 ProductCount = dto.ProductCount,
                 FullPrice = dto.FullPrice,
@@ -106,19 +112,19 @@ namespace Application.Services
 
             _context.Orders.Add(entity);
 
-            offerWithDelivery.Offer.ProductCount -= dto.ProductCount;
+            offer.ProductCount -= dto.ProductCount;
 
-            if(offerWithDelivery.Offer.ProductCount <= 0)
+            if(offer.ProductCount <= 0)
             {
-                offerWithDelivery.Offer.State = OfferState.Finished;
+                offer.State = OfferState.Finished;
             }
 
             if(dto.CartOfferId.HasValue)
             {
                 var cartOffer = await _context.CartOffer.FindAsync(dto.CartOfferId);
-                if (offerWithDelivery == null)
+                if (cartOffer == null)
                 {
-                    throw new NotFoundException(nameof(OfferAndDeliveryMethod), dto.OfferWithDeliveryId);
+                    throw new NotFoundException(nameof(CartOfferDTO), dto.CartOfferId);
                 }
 
                 _context.CartOffer.Remove(cartOffer);
