@@ -64,12 +64,12 @@ namespace Projekt_Programistyczny.Controllers
         }
 
         [HttpPut]
-        [Authorize(Policy = "CustomerOnly")]
+        [Authorize(Policy = "AdminOnly")]
         [Route("UpdateProvince")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<ActionResult<ProvinceDTO>> UpdateProvince([FromQuery] UpdateProvinceDTO dto)
+        public async Task<ActionResult<ProvinceDTO>> UpdateProvince([FromBody] UpdateProvinceDTO dto)
         {
             try
             {
