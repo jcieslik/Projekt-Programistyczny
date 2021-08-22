@@ -74,6 +74,7 @@ namespace Application.Services
             var user = await _context.Users.FindAsync(dto.CustomerId);
             var offer = await _context.Offers
                 .Include(x => x.DeliveryMethods)
+                .ThenInclude(x => x.DeliveryMethod)
                 .SingleOrDefaultAsync(x => x.Id == dto.OfferId);
             var deliveryMethod = await _context.DeliveryMethods
                 .SingleOrDefaultAsync(x => x.Id == dto.DeliveryMethodId);
@@ -86,10 +87,6 @@ namespace Application.Services
             {
                 throw new NotFoundException(nameof(Offer), dto.OfferId);
             }
-            if (deliveryMethod == null)
-            {
-                throw new NotFoundException(nameof(DeliveryMethod), dto.DeliveryMethodId);
-            }
             if (offer.State != OfferState.Awaiting)
             {
                 throw new AuctionIsNotAwailableException();
@@ -101,7 +98,7 @@ namespace Application.Services
                 Customer = user,
                 Offer = offer,
                 DeliveryMethod = deliveryMethod,
-                DeliveryFullPrice = offer.DeliveryMethods.Where(e => e.DeliveryMethod.Id == deliveryMethod.Id).FirstOrDefault().DeliveryFullPrice,
+                DeliveryFullPrice = offer.DeliveryMethods.Where(e => e.DeliveryMethod.Id == deliveryMethod?.Id).FirstOrDefault()?.DeliveryFullPrice,
                 PaymentDate = dto.PaymentDate,
                 ProductCount = dto.ProductCount,
                 FullPrice = dto.FullPrice,
