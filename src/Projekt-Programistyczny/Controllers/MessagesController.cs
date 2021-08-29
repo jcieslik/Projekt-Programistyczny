@@ -26,6 +26,7 @@ namespace Projekt_Programistyczny.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         [Route("GetMessageById")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -40,6 +41,7 @@ namespace Projekt_Programistyczny.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         [Route("GetTransmissionById")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -54,7 +56,7 @@ namespace Projekt_Programistyczny.Controllers
         }
 
         [HttpPost]
-        [Authorize(Policy = "CustomerOnly")]
+        [Authorize]
         [Route("GetMessagesFromUser")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -72,7 +74,7 @@ namespace Projekt_Programistyczny.Controllers
         }
 
         [HttpPost]
-        [Authorize(Policy = "CustomerOnly")]
+        [Authorize]
         [Route("CreateMessage")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

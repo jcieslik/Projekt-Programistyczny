@@ -42,7 +42,6 @@ namespace Application.Services
         public async Task<IEnumerable<RecipientDTO>> GetAllUsers()
         {
             var users = _context.Users
-                .Where(u => u.Role == UserRole.Customer)
                 .AsNoTracking();
 
             return await users.ProjectTo<RecipientDTO>(_mapper.ConfigurationProvider)
@@ -51,9 +50,11 @@ namespace Application.Services
 
         public async Task<PaginatedList<UserDTO>> GetPaginatedUsers(PaginationProperties properties, bool onlyActive = false)
         {
-            var users = _context.Users.AsNoTracking();
+            var users = _context.Users.Include(u => u.Cart).Include(u => u.Province).AsNoTracking();
 
             users = onlyActive ? users.Where(x => x.IsActive) : users;
+
+            users = users.Where(u => u.Role == UserRole.Customer);
 
             users = properties.OrderBy switch
             {

@@ -1,6 +1,7 @@
 ﻿using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using Application.Common.Interfaces.DataServiceInterfaces;
+using Application.Common.Models;
 using Application.DAL.DTO;
 using Application.DAL.DTO.CommandDTOs.Create;
 using Application.DAL.DTO.CommandDTOs.Update;
@@ -11,7 +12,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Projekt_Programistyczny.Extensions;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -137,6 +137,7 @@ namespace Projekt_Programistyczny.Controllers
 
         [HttpGet]
         [Route("GetUserInfo")]
+        [Authorize(Policy = "AdminOnly")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<UserDTO>> GetUserInfo([FromQuery] long userId)
@@ -164,6 +165,35 @@ namespace Projekt_Programistyczny.Controllers
             users = users.Where(u => u.Id != currentUserId);
 
             return Ok(users);
+        }
+
+        [HttpPost]
+        [Route("GetAllUsers")]
+        [Authorize(Policy = "AdminOnly")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<UserDTO>> GetAllUsers([FromBody] PaginationProperties pagination)
+        {
+            var users = await userService.GetPaginatedUsers(pagination);
+
+            return Ok(users);
+        }
+
+        [HttpPost]
+        [Route("BanUser")]
+        [Authorize(Policy = "AdminOnly")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<UserDTO>> BanUser([FromBody] string banInfo, [FromQuery] long userId)
+        {
+            return Ok();
+        }
+
+        [HttpPost]
+        [Route("UnbanUser")]
+        [Authorize(Policy = "AdminOnly")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<UserDTO>> UnbanUser([FromQuery] long userId)
+        {
+            return Ok();
         }
     }
 }

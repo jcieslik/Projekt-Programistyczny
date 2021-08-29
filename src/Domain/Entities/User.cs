@@ -52,5 +52,6 @@ namespace Domain.Entities
         [Required]
         public bool IsActive { get; set; }
 
+        public string BanInfo { get; set; }
     }
 }

@@ -19,6 +19,7 @@ namespace Application.DAL.DTO
         public string PostCode { get; set; }
         public string BankAccountNumber { get; set; }
         public long CartId { get; set; }
+        public bool IsActive { get; set; }
 
         public void Mapping(Profile profile)
         {
