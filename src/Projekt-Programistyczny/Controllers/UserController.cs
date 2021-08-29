@@ -182,18 +182,34 @@ namespace Projekt_Programistyczny.Controllers
         [Route("BanUser")]
         [Authorize(Policy = "AdminOnly")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<UserDTO>> BanUser([FromBody] string banInfo, [FromQuery] long userId)
+        public async Task<ActionResult<bool>> BanUser([FromBody] BanDto banDto)
         {
-            return Ok();
+            try
+            {
+                await userService.BanUser(banDto.BanInfo, banDto.UserId);
+                return Ok(true);
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
         }
 
         [HttpPost]
         [Route("UnbanUser")]
         [Authorize(Policy = "AdminOnly")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<UserDTO>> UnbanUser([FromQuery] long userId)
+        public async Task<ActionResult<bool>> UnbanUser([FromQuery] long userId)
         {
-            return Ok();
+            try
+            {
+                await userService.UnbanUser(userId);
+                return Ok(true);
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
         }
     }
 }

@@ -16,5 +16,7 @@ namespace Application.Common.Interfaces.DataServiceInterfaces
         Task<UserDTO> CreateUserAsync(CreateUserDTO dto);
         Task<UserDTO> UpdateUserAsync(UpdateUserDTO dto);
         Task<PaginatedList<UserDTO>> GetPaginatedUsers(PaginationProperties properties, bool onlyActive = false);
+        Task BanUser(string banInfo, long userId); 
+        Task UnbanUser(long userId); 
     }
 }

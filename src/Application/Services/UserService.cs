@@ -192,5 +192,36 @@ namespace Application.Services
 
             return _mapper.Map<UserDTO>(user);
         }
+
+        public async Task BanUser(string banInfo, long userId)
+        {
+            var user = await _context.Users.FindAsync(userId);
+
+            if (user != null)
+            {
+                user.IsActive = false;
+                user.BanInfo = banInfo;
+                await _context.SaveChangesAsync();
+            }
+            else
+            {
+                throw new NotFoundException(nameof(User), userId);
+            }
+        }
+
+        public async Task UnbanUser(long userId)
+        {
+            var user = await _context.Users.FindAsync(userId);
+
+            if (user != null)
+            {
+                user.IsActive = true;
+                user.BanInfo = "";
+                await _context.SaveChangesAsync();
+            }
+            else { 
+                throw new NotFoundException(nameof(User), userId);
+            }
+        }
     }
 }
