@@ -137,7 +137,6 @@ namespace Projekt_Programistyczny.Controllers
 
         [HttpGet]
         [Route("GetUserInfo")]
-        [Authorize(Policy = "AdminOnly")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<UserDTO>> GetUserInfo([FromQuery] long userId)

@@ -100,17 +100,11 @@ namespace Application.Services
                 .Include(x => x.Category)
                 .Include(x => x.Province)
                 .AsNoTracking()
-                .Where(
-                x => 
-                state == OfferState.All ? !x.IsHidden && 
-                (x.State == OfferState.Awaiting || x.State == OfferState.Finished || x.State == OfferState.Outdated) && 
-                DateTime.Compare(x.StartDate, DateTime.Now) <= 0 &&
-                DateTime.Compare(x.EndDate, DateTime.Now) >= 0 :
-                !x.IsHidden && x.State == state &&
-                DateTime.Compare(x.StartDate, DateTime.Now) <= 0 &&
-                DateTime.Compare(x.EndDate, DateTime.Now) >= 0
-
-                );
+                .Where(x => state == OfferState.All
+                ? !x.IsHidden && (x.State == OfferState.Awaiting || x.State == OfferState.Finished || x.State == OfferState.Outdated)
+                : !x.IsHidden && x.State == state
+                )
+                .Where(x => x.StartDate >= DateTime.Now);
 
             if (filterModel.CategoryId.HasValue)
             {
