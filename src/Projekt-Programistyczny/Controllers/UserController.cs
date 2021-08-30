@@ -190,7 +190,7 @@ namespace Projekt_Programistyczny.Controllers
         {
             try
             {
-                await userService.BanUser(banDto.BanInfo, banDto.UserId);
+                await userService.BanUser(banDto.BanInfo, banDto.Id);
                 return Ok(true);
             }
             catch (NotFoundException ex)

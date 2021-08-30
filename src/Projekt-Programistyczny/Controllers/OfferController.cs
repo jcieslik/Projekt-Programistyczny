@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Projekt_Programistyczny.Extensions;
 using Projekt_Programistyczny.Models;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -21,10 +22,12 @@ namespace Projekt_Programistyczny.Controllers
     public class OfferController : ControllerBase
     {
         private readonly IOfferService _offerService;
+        private readonly IMessageService _messageService;
 
-        public OfferController(IOfferService offerService)
+        public OfferController(IOfferService offerService, IMessageService messageService)
         {
-            _offerService = offerService; 
+            _offerService = offerService;
+            _messageService = messageService;
         }
 
         [HttpGet]
@@ -34,7 +37,7 @@ namespace Projekt_Programistyczny.Controllers
         public async Task<ActionResult<OfferDTO>> GetOfferById([FromQuery] long id)
         {
             var offer = await _offerService.GetOfferByIdAsync(id);
-            if(offer == null)
+            if (offer == null)
             {
                 return NotFound();
             }
@@ -47,7 +50,7 @@ namespace Projekt_Programistyczny.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<OfferWithBaseDataDTO>>> GetOffersFromUser([FromQuery] long id)
         {
-            try 
+            try
             {
                 var offers = await _offerService.GetOffersFromUserAsync(id);
                 return Ok(offers);
@@ -124,7 +127,7 @@ namespace Projekt_Programistyczny.Controllers
                 var offer = await _offerService.CreateOfferAsync(dto);
                 return Ok(offer);
             }
-            catch(NotFoundException ex)
+            catch (NotFoundException ex)
             {
                 return NotFound(new { message = ex.Message });
             }
@@ -142,7 +145,7 @@ namespace Projekt_Programistyczny.Controllers
                 var result = await _offerService.GetUserActiveBidOffers(HttpContext.User.GetUserId(), paginationProperties);
                 return Ok(result);
             }
-            catch(NotFoundException ex)
+            catch (NotFoundException ex)
             {
                 return NotFound(new { message = ex.Message });
             }
@@ -173,12 +176,65 @@ namespace Projekt_Programistyczny.Controllers
         public async Task<ActionResult<bool>> DecrementOfferProductCount([FromBody] long offerId, int count)
         {
             try
-            {   if (count > 0)
+            {
+                if (count > 0)
                 {
                     var offer = await _offerService.GetOfferByIdAsync(offerId);
                     return Ok(offer.ProductCount > 1);
                 }
                 return Ok(false);
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+        }
+
+        [HttpPut]
+        [Authorize]
+        [Route("BanOffer")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<bool>> BanOffer([FromBody] BanDto banDto)
+        {
+            try
+            {
+                var offerDto = new UpdateOfferDTO();
+                offerDto.Id = banDto.Id;
+                offerDto.State = (int?)OfferState.Banned;
+                await _offerService.UpdateOfferAsync(offerDto);
+                
+                var offer = await _offerService.GetOfferByIdAsync(banDto.Id);
+                var messageDto = new CreateMessageDTO();
+                messageDto.Content = "Twoje ogłoszenie zostało zbanowane!<br>" + "Tytuł ogłoszenia: " + offer.Title + "<br>"
+                    + "Powód blokady: " + banDto.BanInfo + "<br><br>Prosimy spróbować ponownie po ponownym zapoznaniu się z regulaminem.<br><br>Życzymy miłego dnia!";
+                messageDto.SenderId = 1;
+                messageDto.Topic = "Blokada ogłoszenia";
+                messageDto.SendDate = DateTime.Now;
+                messageDto.RecipientsIds = new List<long>() { offer.Seller.Id };
+                await _messageService.CreateMessageAsync(messageDto);
+                return Ok(true);
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+        }
+
+        [HttpPut]
+        [Authorize]
+        [Route("UnbanOffer")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<bool>> UnbanOffer([FromBody] long offerId)
+        {
+            try
+            {
+                var offerDto = new UpdateOfferDTO();
+                offerDto.Id = offerId;
+                offerDto.State = (int?)OfferState.Awaiting;
+                await _offerService.UpdateOfferAsync(offerDto);
+                return Ok(true);
             }
             catch (NotFoundException ex)
             {
