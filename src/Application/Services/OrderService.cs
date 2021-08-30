@@ -166,7 +166,7 @@ namespace Application.Services
             }
             if (dto.OfferWithDeliveryId.HasValue)
             {
-                var relation = await _context.OffersAndDeliveryMethods.FindAsync(dto.OfferWithDeliveryId.Value);
+                var relation = await _context.OffersAndDeliveryMethods.Include(x => x.DeliveryMethod).FirstOrDefaultAsync(x => x.Id == dto.OfferWithDeliveryId.Value);
                 order.Offer = relation.Offer;
                 order.DeliveryMethod = relation.DeliveryMethod;
                 order.DeliveryFullPrice = relation.DeliveryFullPrice;

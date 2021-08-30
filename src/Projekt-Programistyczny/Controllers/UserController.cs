@@ -40,9 +40,14 @@ namespace Projekt_Programistyczny.Controllers
         public async Task<ActionResult<UserDTO>> Authenticate(string login, string password)
         {
             var user = await userService.AuthenticateUser(login, password);
-            if(user == null)
+            if (user == null)
             {
                 return Unauthorized();
+            }
+
+            if (user.IsActive == false)
+            {
+                return Ok(user);
             }
 
             var claims = new List<Claim>()

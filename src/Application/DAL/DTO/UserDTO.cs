@@ -20,6 +20,7 @@ namespace Application.DAL.DTO
         public string BankAccountNumber { get; set; }
         public long CartId { get; set; }
         public bool IsActive { get; set; }
+        public string BanInfo { get; set; }
 
         public void Mapping(Profile profile)
         {
