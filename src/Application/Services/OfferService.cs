@@ -104,7 +104,7 @@ namespace Application.Services
                 ? !x.IsHidden && (x.State == OfferState.Awaiting || x.State == OfferState.Finished || x.State == OfferState.Outdated)
                 : !x.IsHidden && x.State == state
                 )
-                .Where(x => x.StartDate >= DateTime.Now);
+                .Where(x => x.StartDate <= DateTime.Now);
 
             if (filterModel.CategoryId.HasValue)
             {
