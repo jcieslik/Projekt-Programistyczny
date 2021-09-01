@@ -200,11 +200,11 @@ namespace Projekt_Programistyczny.Controllers
             try
             {
                 var offerDto = new UpdateOfferDTO();
-                offerDto.Id = banDto.Id;
+                offerDto.Id = banDto.UserId;
                 offerDto.State = (int?)OfferState.Banned;
                 await _offerService.UpdateOfferAsync(offerDto);
                 
-                var offer = await _offerService.GetOfferByIdAsync(banDto.Id);
+                var offer = await _offerService.GetOfferByIdAsync(banDto.UserId);
                 var messageDto = new CreateMessageDTO();
                 messageDto.Content = "Twoje ogłoszenie zostało zbanowane!<br>" + "Tytuł ogłoszenia: " + offer.Title + "<br>"
                     + "Powód blokady: " + banDto.BanInfo + "<br><br>Prosimy spróbować ponownie po ponownym zapoznaniu się z regulaminem.<br><br>Życzymy miłego dnia!";
