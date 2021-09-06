@@ -99,12 +99,17 @@ namespace Application.Services
                 .Include(x => x.Images)
                 .Include(x => x.Category)
                 .Include(x => x.Province)
-                .AsNoTracking()
-                .Where(x => state == OfferState.All
-                ? !x.IsHidden && (x.State == OfferState.Awaiting || x.State == OfferState.Finished || x.State == OfferState.Outdated)
-                : !x.IsHidden && x.State == state
-                )
-                .Where(x => x.StartDate <= DateTime.Now);
+                .Where(x => x.StartDate <= DateTime.Now)
+                .AsNoTracking();
+
+            if (state == OfferState.All)
+            {
+                offers = offers.Where(x => !x.IsHidden && (x.State == OfferState.Awaiting || x.State == OfferState.Finished || x.State == OfferState.Outdated));
+            }
+            else if (state != OfferState.AllForAdmin)
+            {
+                offers = offers.Where(x => !x.IsHidden && x.State == state);
+            }
 
             if (filterModel.CategoryId.HasValue)
             {
