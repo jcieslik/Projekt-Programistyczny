@@ -53,7 +53,7 @@ namespace Application.Services
             return await _context.Carts.Include(e => e.Offers).Include(e => e.Customer).AsNoTracking().Where(e => e.CustomerId == user.Id).FirstOrDefaultAsync();
         }
 
-        public async Task AddOfferToCartAsync(long offerId, long userId)
+        public async Task AddOfferToCartAsync(long offerId, int amount, long userId)
         {
             var offer = await _context.Offers.FindAsync(offerId);
             var user = await _context.Users.Include(e => e.Cart).AsNoTracking().Where(e => e.Id == userId).FirstOrDefaultAsync();
@@ -81,7 +81,7 @@ namespace Application.Services
                 {
                     Cart = cart,
                     Offer = offer,
-                    ProductsCount = 1
+                    ProductsCount = amount
                 };
 
                 _context.CartOffer.Add(entity);
