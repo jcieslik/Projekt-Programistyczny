@@ -2,7 +2,7 @@
 {
     public class BanDto
     {
-        public long UserId { get; set; }
+        public long Id { get; set; }
 
         public string BanInfo { get; set; }
     }
