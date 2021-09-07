@@ -374,11 +374,27 @@ namespace Application.Services
 
         public async Task<PaginatedList<OfferWithBaseDataDTO>> GetUserActiveBidOffers(long userId, PaginationProperties paginationProperties)
         {
-            var offers = _context.Bids
+            var offerIds = _context.Bids
                 .Include(x => x.Bidder)
                 .Include(x => x.Offer).ThenInclude(x => x.Images)
                 .Where(x => x.Bidder.Id == userId && x.Offer.State == OfferState.Awaiting && x.Offer.IsHidden == false)
-                .Select(x => x.Offer);
+                .Select(x => x.Offer)
+                .Select(x => x.Id)
+                .Distinct()
+                .ToList();
+
+            var offers = _context.Offers
+                .Include(x => x.Bids)
+                .ThenInclude(b => b.Bidder)
+                .Include(x => x.Category)
+                .Include(x => x.Province)
+                .Include(x => x.Seller)
+                .Include(x => x.Images)
+                .Include(x => x.DeliveryMethods)
+                .ThenInclude(x => x.DeliveryMethod)
+                .AsNoTracking()
+                .Where(x => offerIds.Contains(x.Id));
+
 
             offers = paginationProperties.OrderBy switch
             {
@@ -391,7 +407,7 @@ namespace Application.Services
                 _ => offers.OrderBy(x => x.Created)
             };
 
-            return await offers.ProjectTo<OfferWithBaseDataDTO>(_mapper.ConfigurationProvider)
+            return await offers.AsQueryable().ProjectTo<OfferWithBaseDataDTO>(_mapper.ConfigurationProvider)
                 .PaginatedListAsync<OfferWithBaseDataDTO>(paginationProperties.PageIndex, paginationProperties.PageSize);
         }
     }
