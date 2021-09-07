@@ -325,6 +325,7 @@ namespace Application.Services
                 var ids = GetChildrenCategoriesIds(id);
                 result.AddRange(ids);
             }
+            result.AddRange(childrenIds);
             return result;
         }
 
