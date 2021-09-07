@@ -49,7 +49,6 @@ namespace Application.Services
                 .AsNoTracking()
                 .Where(x => x.MailboxOwner.Id == userId && x.MailboxType == mailboxType && !x.IsHidden);
 
-
             if (!string.IsNullOrEmpty(searchText))
             {
                 switch (mailboxType)
@@ -73,7 +72,7 @@ namespace Application.Services
             {
                 "delivery_time_asc" => messages.OrderBy(x => x.Created),
                 "delivery_time_desc" => messages.OrderByDescending(x => x.Created),
-                _ => messages.OrderBy(x => x.Created)
+                _ => messages.OrderByDescending(x => x.Created)
             };
 
             return await messages.ProjectTo<MessageDTO>(_mapper.ConfigurationProvider)
